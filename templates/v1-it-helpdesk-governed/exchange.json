@@ -1,0 +1,117 @@
+{
+  "main": "agent-network.yaml",
+  "name": "it-helpdesk-governed-v1",
+  "classifier": "agent-network",
+  "descriptorVersion": "1.0.0",
+  "apiVersion": "v1",
+  "tags": [
+    "octoloom-example"
+  ],
+  "metadata": {
+    "variables": {
+      "ingressgw": {
+        "url": {
+          "description": "Ingress gateway base URL (the broker is served under it)",
+          "default": "",
+          "secret": false
+        }
+      },
+      "openai": {
+        "apiKey": {
+          "description": "OpenAI API key (secret, injected at deploy time)",
+          "default": "",
+          "secret": true
+        }
+      },
+      "itsmMcp": {
+        "url": {
+          "description": "ITSM MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/f5f65633-e17d-47c0-b614-d7938491a0d4/",
+          "secret": false
+        }
+      },
+      "monitoringMcp": {
+        "url": {
+          "description": "Monitoring MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/9561493a-b2ee-43ba-8886-a66c16c16c60/",
+          "secret": false
+        }
+      },
+      "knowledgeBaseMcp": {
+        "url": {
+          "description": "Knowledge Base MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/24391eb8-75c8-4a2e-b3b1-1381c9cf4447/",
+          "secret": false
+        }
+      },
+      "triageAgent": {
+        "url": {
+          "description": "IT Triage Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/db876bb1-f86f-4835-b40f-97c66079debc/a2a",
+          "secret": false
+        }
+      },
+      "accessRequestAgent": {
+        "url": {
+          "description": "Access Request Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/d1d495b2-e51a-447e-bdb1-4ac7d36c2fe1/a2a",
+          "secret": false
+        }
+      },
+      "deviceSupportAgent": {
+        "url": {
+          "description": "Device Support Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/ba36ab0b-df70-4dd9-bc15-6a17008798cc/a2a",
+          "secret": false
+        }
+      }
+    }
+  },
+  "dependencies": [
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "rate-limiting",
+      "version": "1.5.1"
+    },
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "mcp-pii-detector",
+      "version": "1.0.1"
+    },
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "mcp-schema-validation",
+      "version": "1.3.0"
+    },
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "header-injection",
+      "version": "1.3.3"
+    },
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "a-two-a-pii-detector",
+      "version": "1.0.2"
+    },
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "a-two-a-prompt-decorator",
+      "version": "1.0.2"
+    }
+  ],
+  "groupId": "${organizationId}",
+  "assetId": "it-helpdesk-governed-v1",
+  "version": "1.0.0"
+}

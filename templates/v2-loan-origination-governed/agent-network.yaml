@@ -1,0 +1,430 @@
+agentNetwork: 2.0.0
+info:
+  label: Loan Origination (governed)
+  version: v1
+  description: Five agents (A2A 1.0 and 0.3.0) and three banking tool servers take a loan from application to decision.
+registry:
+  agents:
+    octo_lo2g_intake_agent:
+      info:
+        label: Loan Intake Agent
+        description: Collects application details and missing documents.
+      metadata:
+        platform: AgentForce
+        interfaces:
+          a2a:
+            card:
+              name: Loan Intake Agent
+              description: Collects application details and missing documents.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: loan-intake
+                  name: Loan Intake
+                  description: Collect application details.
+                  tags:
+                    - intake
+                  examples:
+                    - Start an application for APP-100
+              supportedInterfaces:
+                - url: https://www.a2d-ai.com/api/platform/2ea30f69-75a2-4381-a635-29e555bd4bd3/a2a
+                  protocolBinding: JSONRPC
+                  protocolVersion: "1.0"
+    octo_lo2g_kyc_agent:
+      info:
+        label: KYC Agent
+        description: Identity, sanctions and PEP screening.
+      metadata:
+        platform: Azure
+        interfaces:
+          a2a:
+            card:
+              name: KYC Agent
+              description: Identity, sanctions and PEP screening.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: kyc-check
+                  name: KYC Check
+                  description: Screen an applicant.
+                  tags:
+                    - kyc
+                  examples:
+                    - Run KYC for APP-100
+              supportedInterfaces:
+                - url: https://www.a2d-ai.com/api/platform/97024288-98ec-4586-92b6-13b6f0f74a72/a2a
+                  protocolBinding: JSONRPC
+                  protocolVersion: "1.0"
+    octo_lo2g_credit_agent:
+      info:
+        label: Credit Analysis Agent
+        description: Analyses affordability from bureau and account data.
+      metadata:
+        platform: Snowflake
+        interfaces:
+          a2a_v03:
+            card:
+              name: Credit Analysis Agent
+              description: Analyses affordability from bureau and account data.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: credit-analysis
+                  name: Credit Analysis
+                  description: Analyse affordability.
+                  tags:
+                    - credit
+                  examples:
+                    - Analyse APP-100
+              url: https://www.a2d-ai.com/api/platform/6a1f14e9-59ea-411e-9d81-c90b1ebd5ca5/a2a
+              protocolVersion: 0.3.0
+    octo_lo2g_underwriting_agent:
+      info:
+        label: Underwriting Agent
+        description: Reviews applications that need a human-style underwriting decision.
+      metadata:
+        platform: MuleSoft
+        interfaces:
+          a2a_v03:
+            card:
+              name: Underwriting Agent
+              description: Reviews applications that need a human-style underwriting decision.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: underwrite
+                  name: Underwrite
+                  description: Underwrite a referred application.
+                  tags:
+                    - underwriting
+                  examples:
+                    - Underwrite LA-200
+              url: https://www.a2d-ai.com/api/platform/5da083cf-f7d6-49e5-897b-234894062950/a2a
+              protocolVersion: 0.3.0
+    octo_lo2g_notification_agent:
+      info:
+        label: Customer Notification Agent
+        description: Sends the decision to the applicant.
+      metadata:
+        platform: Vertex
+        interfaces:
+          a2a:
+            card:
+              name: Customer Notification Agent
+              description: Sends the decision to the applicant.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: notify
+                  name: Notify Applicant
+                  description: Send the decision letter.
+                  tags:
+                    - notify
+                  examples:
+                    - Notify APP-100 of approval
+              supportedInterfaces:
+                - url: https://www.a2d-ai.com/api/platform/7e50ef53-bf45-4efb-b816-165f22551a1d/a2a
+                  protocolBinding: JSONRPC
+                  protocolVersion: "1.0"
+  mcps:
+    octo_lo2g_credit_bureau_mcp:
+      info:
+        label: Credit Bureau MCP
+        description: Credit bureau scores.
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: get_credit_score
+            description: Get the bureau score of an applicant.
+            inputSchema:
+              type: object
+              properties:
+                applicant_id:
+                  type: string
+                  description: Applicant id
+              required:
+                - applicant_id
+    octo_lo2g_core_banking_mcp:
+      info:
+        label: Core Banking MCP
+        description: Accounts and loan booking.
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: get_accounts
+            description: Get the accounts and income of an applicant.
+            inputSchema:
+              type: object
+              properties:
+                applicant_id:
+                  type: string
+                  description: Applicant id
+              required:
+                - applicant_id
+          - name: book_loan
+            description: Book an approved loan.
+            inputSchema:
+              type: object
+              properties:
+                applicant_id:
+                  type: string
+                  description: Applicant id
+                amount:
+                  type: number
+                  description: Amount in CHF
+              required:
+                - applicant_id
+                - amount
+    octo_lo2g_documents_mcp:
+      info:
+        label: Documents MCP
+        description: Contract documents.
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: generate_contract
+            description: Generate the loan contract.
+            inputSchema:
+              type: object
+              properties:
+                applicant_id:
+                  type: string
+                  description: Applicant id
+              required:
+                - applicant_id
+  llms:
+    octo_lo2g_openai:
+      info:
+        label: OpenAI
+      metadata:
+        platform: OpenAI
+        models:
+          - gpt-5-mini
+context:
+  connections:
+    intake_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_lo2g_intake_agent
+      url: ${intakeAgent.url}
+      policies:
+        inbound:
+          - ref:
+              name: a2a_v1_pii
+    kyc_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_lo2g_kyc_agent
+      url: ${kycAgent.url}
+      policies:
+        inbound:
+          - policy:
+              ref:
+                name: header-injection
+                namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+              configuration:
+                inboundHeaders:
+                  - key: x-correlation-source
+                    value: octo_lo2g_loan_broker
+    credit_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_lo2g_credit_agent
+      url: ${creditAgent.url}
+      policies:
+        inbound:
+          - ref:
+              name: a2a_pii
+    underwriting_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_lo2g_underwriting_agent
+      url: ${underwritingAgent.url}
+      policies:
+        inbound:
+          - policy:
+              ref:
+                name: header-injection
+                namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+              configuration:
+                inboundHeaders:
+                  - key: x-correlation-source
+                    value: octo_lo2g_loan_broker
+    notification_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_lo2g_notification_agent
+      url: ${notificationAgent.url}
+      policies:
+        inbound:
+          - ref:
+              name: a2a_v1_pii
+    credit_bureau_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_lo2g_credit_bureau_mcp
+      url: ${creditBureauMcp.url}
+      policies:
+        inbound:
+          - ref:
+              name: mcp_pii
+          - ref:
+              name: mcp_schema
+    core_banking_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_lo2g_core_banking_mcp
+      url: ${coreBankingMcp.url}
+      policies:
+        inbound:
+          - ref:
+              name: mcp_pii
+          - policy:
+              ref:
+                name: header-injection
+                namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+              configuration:
+                inboundHeaders:
+                  - key: x-octoloom-source
+                    value: loan-origination-governed-v2
+    documents_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_lo2g_documents_mcp
+      url: ${documentsMcp.url}
+      policies:
+        inbound:
+          - ref:
+              name: mcp_pii
+          - ref:
+              name: mcp_schema
+    openai_connection:
+      kind: llm
+      ref:
+        name: octo_lo2g_openai
+      url: https://api.openai.com/v1
+      authentication:
+        kind: apiKey
+        apiKey: ${openai.apiKey}
+  policies:
+    a2a_v1_pii:
+      ref:
+        name: a2a-v1-pii-detector
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+      configuration:
+        entities:
+          - Email
+          - US SSN
+          - Credit Card
+        action: Log
+    a2a_pii:
+      ref:
+        name: a-two-a-pii-detector
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+      configuration:
+        entities:
+          - Email
+          - US SSN
+          - Credit Card
+        action: Log
+    mcp_pii:
+      ref:
+        name: mcp-pii-detector
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+      configuration:
+        entities:
+          - Email
+          - US SSN
+          - Credit Card
+          - Phone Number
+        action: Log and mask
+    mcp_schema:
+      ref:
+        name: mcp-schema-validation
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+      configuration:
+        validateToolSchema: true
+    rate_limit:
+      ref:
+        name: rate-limiting
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+      configuration:
+        rateLimits:
+          - maximumRequests: 30
+            timePeriodInMilliseconds: 60000
+        exposeHeaders: true
+brokers:
+  octo_lo2g_loan_broker:
+    kind: AgentScript
+    implementation: ./brokers/loan-broker.agent
+    interfaces:
+      a2a:
+        card:
+          name: Loan Origination Broker
+          description: Five agents (A2A 1.0 and 0.3.0) and three banking tool servers take a loan from application to decision.
+          version: 1.0.0
+          capabilities:
+            streaming: true
+            pushNotifications: false
+          defaultInputModes:
+            - text/plain
+          defaultOutputModes:
+            - text/plain
+          skills:
+            - id: apply-loan
+              name: Apply for a Loan
+              description: Assess and decide a loan application.
+              tags:
+                - banking
+                - lending
+              examples:
+                - Applicant APP-100 asks for a 25,000 CHF personal loan
+                - Applicant APP-200 wants 300,000 CHF for a mortgage
+        policies:
+          inbound:
+            - ref:
+                name: rate_limit

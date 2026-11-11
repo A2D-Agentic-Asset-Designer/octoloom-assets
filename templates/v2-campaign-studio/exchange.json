@@ -1,0 +1,67 @@
+{
+  "main": "agent-network.yaml",
+  "name": "campaign-studio-v2",
+  "classifier": "agentic-network",
+  "descriptorVersion": "1.0.0",
+  "apiVersion": "v1",
+  "tags": [
+    "octoloom-example"
+  ],
+  "metadata": {
+    "variables": {
+      "openai": {
+        "apiKey": {
+          "description": "OpenAI API key (secret, injected at deploy time)",
+          "default": "",
+          "secret": true
+        }
+      },
+      "contentAgent": {
+        "url": {
+          "description": "Content Agent (A2D mock, A2A 1.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/5261ec66-5cdc-4b03-84ff-129004f4c483/a2a",
+          "secret": false
+        }
+      },
+      "complianceAgent": {
+        "url": {
+          "description": "Marketing Compliance Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/206e0016-f88e-44e4-9a9d-094591cc5284/a2a",
+          "secret": false
+        }
+      },
+      "segmentsMcp": {
+        "url": {
+          "description": "Audience Segments MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/8a185e0c-57c4-46de-999e-6f5fa94a7927/",
+          "secret": false
+        }
+      },
+      "brandAssetsMcp": {
+        "url": {
+          "description": "Brand Assets MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/7cbd3dc7-ad75-4a42-b17d-f3a4d81ae690/",
+          "secret": false
+        }
+      },
+      "emailMcp": {
+        "url": {
+          "description": "Email MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/693ad3bf-5696-43cd-b5a1-830aa3d5ab46/",
+          "secret": false
+        }
+      },
+      "analyticsMcp": {
+        "url": {
+          "description": "Analytics MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/9d7ad145-5382-4369-a0c8-14ef0d293ef0/",
+          "secret": false
+        }
+      }
+    }
+  },
+  "dependencies": [],
+  "groupId": "${organizationId}",
+  "assetId": "campaign-studio-v2",
+  "version": "1.0.0"
+}

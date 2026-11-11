@@ -1,0 +1,67 @@
+{
+  "main": "agent-network.yaml",
+  "name": "employee-onboarding-v1",
+  "classifier": "agent-network",
+  "descriptorVersion": "1.0.0",
+  "apiVersion": "v1",
+  "tags": [
+    "octoloom-example"
+  ],
+  "metadata": {
+    "variables": {
+      "ingressgw": {
+        "url": {
+          "description": "Ingress gateway base URL (the broker is served under it)",
+          "default": "",
+          "secret": false
+        }
+      },
+      "openai": {
+        "apiKey": {
+          "description": "OpenAI API key (secret, injected at deploy time)",
+          "default": "",
+          "secret": true
+        }
+      },
+      "identityDirectoryMcp": {
+        "url": {
+          "description": "Identity Directory MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/d0608b5d-b24a-462c-9e10-6e6c536eb215/",
+          "secret": false
+        }
+      },
+      "learningMcp": {
+        "url": {
+          "description": "Learning MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/b5a630ea-1d3d-474a-91b1-951f46627398/",
+          "secret": false
+        }
+      },
+      "hrRecordsAgent": {
+        "url": {
+          "description": "HR Records Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/6d627753-51a7-4f80-9ac0-00707da79726/a2a",
+          "secret": false
+        }
+      },
+      "itProvisioningAgent": {
+        "url": {
+          "description": "IT Provisioning Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/d71282de-bfde-428c-a8a4-97c6a5da3dc6/a2a",
+          "secret": false
+        }
+      },
+      "facilitiesAgent": {
+        "url": {
+          "description": "Facilities Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/1f45271b-07ad-42c3-b429-57d0cf223abf/a2a",
+          "secret": false
+        }
+      }
+    }
+  },
+  "dependencies": [],
+  "groupId": "${organizationId}",
+  "assetId": "employee-onboarding-v1",
+  "version": "1.0.0"
+}

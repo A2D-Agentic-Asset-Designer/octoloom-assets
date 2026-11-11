@@ -1,0 +1,134 @@
+{
+  "v2-retail-returns": {
+    "project": null,
+    "agents": {
+      "returns_desk_agent": "5bf5ade2-6c7a-465b-b465-243935b3ea91",
+      "refund_agent": "3d1bcf9c-e00f-44dd-8a88-2be871b4d7bb"
+    },
+    "mcps": {
+      "orders_mcp": "5aaa63c0-3f1c-462b-bc61-06cb4557ea43"
+    }
+  },
+  "v1-employee-onboarding": {
+    "project": null,
+    "agents": {
+      "hr-records-agent": "6d627753-51a7-4f80-9ac0-00707da79726",
+      "it-provisioning-agent": "d71282de-bfde-428c-a8a4-97c6a5da3dc6",
+      "facilities-agent": "1f45271b-07ad-42c3-b429-57d0cf223abf"
+    },
+    "mcps": {
+      "identity-directory-mcp": "d0608b5d-b24a-462c-9e10-6e6c536eb215",
+      "learning-mcp": "b5a630ea-1d3d-474a-91b1-951f46627398"
+    }
+  },
+  "v1-customer-service": {
+    "project": null,
+    "agents": {
+      "order-status-agent": "9d3edc31-a603-4aa6-aee9-990cb856467b",
+      "returns-agent": "1950885c-191f-4e08-a1b5-1aa2654100a7",
+      "billing-agent": "7798938a-e34c-40db-bea2-f95f58830928",
+      "loyalty-agent": "bc04526d-59b6-4e1c-816f-f93f8a1f01bd"
+    },
+    "mcps": {
+      "crm-mcp": "31f7ded2-aede-4897-8c52-19b294630e28"
+    }
+  },
+  "v1-it-helpdesk": {
+    "project": null,
+    "agents": {
+      "triage-agent": "db876bb1-f86f-4835-b40f-97c66079debc",
+      "access-request-agent": "d1d495b2-e51a-447e-bdb1-4ac7d36c2fe1",
+      "device-support-agent": "ba36ab0b-df70-4dd9-bc15-6a17008798cc"
+    },
+    "mcps": {
+      "itsm-mcp": "f5f65633-e17d-47c0-b614-d7938491a0d4",
+      "monitoring-mcp": "9561493a-b2ee-43ba-8886-a66c16c16c60",
+      "knowledge-base-mcp": "24391eb8-75c8-4a2e-b3b1-1381c9cf4447"
+    }
+  },
+  "v1-travel-expense": {
+    "project": null,
+    "agents": {
+      "travel-booking-agent": "e106ec8c-02ee-4ce5-b015-2cd536b26b77",
+      "policy-advisor-agent": "cdf8b42e-2666-42f6-a5ae-09b40aee71bc",
+      "visa-agent": "7256173e-0e33-484b-b11b-1f07610c1f75",
+      "expense-audit-agent": "bcc0eab9-61c0-48e5-9092-6d4ce1a6c0d9",
+      "reimbursement-agent": "c0ffe718-d2aa-4298-b713-96c807aa2551"
+    },
+    "mcps": {
+      "flights-mcp": "1f6d63f2-3c3d-4268-9471-40e6d18955d3",
+      "hotels-mcp": "6875794f-e1ea-479e-a2f8-4d9ed4b29dfc",
+      "expense-mcp": "75a62546-5ff3-4c98-ac92-d1bf91a1265c",
+      "currency-mcp": "54c12af9-4b43-4be6-a861-fe9ad82c0944"
+    }
+  },
+  "v1-procurement": {
+    "project": null,
+    "agents": {
+      "supplier-risk-agent": "61c4b202-4364-402c-bc08-6a6c0c5c719c",
+      "sourcing-agent": "6c82f3d9-b7fe-460e-82b8-768e047ba83d"
+    },
+    "mcps": {
+      "catalog-mcp": "fc34bc2e-353d-47e5-bd83-92e6bf54fc62",
+      "budget-mcp": "f4b4d8b6-3665-461b-bdc7-ddad0844cd4a",
+      "supplier-registry-mcp": "4ce2b160-071c-4dc2-92c6-8b25b6d6bbd4",
+      "contracts-mcp": "622d4561-4016-44f6-b158-2f642bbb3fe8",
+      "purchase-orders-mcp": "701ff77b-9e79-4dda-84bb-867e3aa7ad1b"
+    }
+  },
+  "v2-insurance-claims": {
+    "project": null,
+    "agents": {
+      "fnol_agent": "2fba0256-4819-484e-a00a-5a622f41c178",
+      "fraud_agent": "d6dbd985-7aa4-4629-be75-860b1fb9d7f0",
+      "adjuster_agent": "8e75ca41-b1ce-4dd8-b84c-90c80d864ce9",
+      "payments_agent": "4b5b6ba6-bbc0-48f2-a8f5-fdbe4af3f0bf"
+    },
+    "mcps": {
+      "policy_admin_mcp": "8de15fa9-276c-459f-8243-c4b4c882fcb1",
+      "claims_mcp": "587c6f66-199a-4a79-b1d4-5c77953ee271"
+    }
+  },
+  "v2-loan-origination": {
+    "project": null,
+    "agents": {
+      "intake_agent": "2ea30f69-75a2-4381-a635-29e555bd4bd3",
+      "kyc_agent": "97024288-98ec-4586-92b6-13b6f0f74a72",
+      "credit_agent": "6a1f14e9-59ea-411e-9d81-c90b1ebd5ca5",
+      "underwriting_agent": "5da083cf-f7d6-49e5-897b-234894062950",
+      "notification_agent": "7e50ef53-bf45-4efb-b816-165f22551a1d"
+    },
+    "mcps": {
+      "credit_bureau_mcp": "c41e39ee-96a3-4e06-b5fe-c7fb4b4d7e67",
+      "core_banking_mcp": "07001b9c-9654-4d45-a016-31eb73dd5a5d",
+      "documents_mcp": "80adaf50-d7fe-48dc-807c-2ebddd187893"
+    }
+  },
+  "v2-field-service": {
+    "project": null,
+    "agents": {
+      "dispatch_agent": "69ebd12e-296f-4eed-949f-26296e3c7fe9",
+      "parts_agent": "1f49d5bd-b631-498b-b2a6-84de58a41521",
+      "customer_comms_agent": "f3d6ebd7-0b13-43c2-b2ef-f55ac045c18a"
+    },
+    "mcps": {
+      "asset_registry_mcp": "e63366bc-fc42-4a5f-82c6-960245f373d8",
+      "diagnostics_mcp": "9c1cb10f-5950-428c-88aa-d2b0f52f508e",
+      "inventory_mcp": "646e87d9-595d-4194-8ffd-4eeb958fc2f5",
+      "weather_mcp": "1839bfc8-fb85-4256-9195-26c193243b7d"
+    }
+  },
+  "v2-campaign-studio": {
+    "project": null,
+    "agents": {
+      "content_agent": "5261ec66-5cdc-4b03-84ff-129004f4c483",
+      "compliance_agent": "206e0016-f88e-44e4-9a9d-094591cc5284"
+    },
+    "mcps": {
+      "segments_mcp": "8a185e0c-57c4-46de-999e-6f5fa94a7927",
+      "brand_assets_mcp": "7cbd3dc7-ad75-4a42-b17d-f3a4d81ae690",
+      "email_mcp": "693ad3bf-5696-43cd-b5a1-830aa3d5ab46",
+      "analytics_mcp": "9d7ad145-5382-4369-a0c8-14ef0d293ef0"
+    }
+  }
+}

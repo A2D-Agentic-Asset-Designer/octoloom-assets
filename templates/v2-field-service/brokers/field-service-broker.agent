@@ -1,0 +1,151 @@
+# @dialect: AGENTFABRIC=1.0
+# Field Service Dispatch: Diagnose an equipment fault, check parts and weather, and dispatch or resolve remotely.
+# Upstreams are A2D mocks; see README.md for test prompts.
+
+system:
+  instructions: "You run field service for heating and solar equipment. Fix remotely when possible; dispatch only when needed and safe."
+
+config:
+  agent_name: "field-service-broker"
+  default_llm: @llm.default
+
+llm:
+  default:
+    target: "llm://openai_connection"
+    kind: "OpenAI"
+    model: "gpt-5-mini"
+
+actions:
+  dispatch_agent:
+    target: "a2a://dispatch_agent_connection"
+    kind: "a2a:send_message"
+  parts_agent:
+    target: "a2a://parts_agent_connection"
+    kind: "a2a:send_message"
+  customer_comms_agent:
+    target: "a2a://customer_comms_agent_connection"
+    kind: "a2a:send_message"
+  get_asset:
+    target: "mcp://asset_registry_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "get_asset"
+  run_diagnostics:
+    target: "mcp://diagnostics_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "run_diagnostics"
+  check_stock:
+    target: "mcp://inventory_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "check_stock"
+  get_forecast:
+    target: "mcp://weather_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "get_forecast"
+
+trigger fieldServiceBrokerTrigger:
+  kind: "a2a"
+  target: "brokers://octo_fs2_field_service_broker/a2a"
+  on_message: ->
+    transition to @generator.parseRequest
+
+generator parseRequest:
+  description: "Extracts the asset id and the symptom."
+  label: "Parse Request"
+  prompt: ->
+    | Extract the asset id (for example HP-301 or INV-77) and the symptom from: {!@request.payload.message.parts[0].text}
+  outputs:
+    properties:
+      asset_id:
+        type: "string"
+        description: "Asset id"
+      symptom:
+        type: "string"
+        description: "Reported symptom"
+  on_exit: ->
+    transition to @subagent.diagnose
+
+subagent diagnose:
+  description: "Looks up the asset and runs remote diagnostics."
+  label: "Diagnose"
+  system:
+    instructions: |
+      Look up the asset and run remote diagnostics.
+      Set remote_fix to "yes" when diagnostics fixed the fault remotely, otherwise "no".
+      Return the part id when a part is needed and the town of the site.
+  reasoning:
+    instructions: ->
+      | Asset {!@generator.parseRequest.output.asset_id}: {!@generator.parseRequest.output.symptom}
+    actions:
+      asset: @actions.get_asset
+      diagnostics: @actions.run_diagnostics
+    max_number_of_loops: 4
+    outputs:
+      properties:
+        remote_fix:
+          type: "string"
+          description: "Fixed remotely"
+          enum:
+            - "yes"
+            - "no"
+        part_id:
+          type: "string"
+          description: "Needed part id or NONE"
+        town:
+          type: "string"
+          description: "Town of the site"
+        detail:
+          type: "string"
+          description: "Diagnosis detail"
+  on_exit: ->
+    transition to @router.fixRouter
+
+router fixRouter:
+  description: "Remote fixes only need a customer update; the rest are dispatched."
+  routes:
+    - target: @subagent.informCustomer
+      when: @subagent.diagnose.output.remote_fix == "yes"
+      label: "Fixed remotely"
+  otherwise:
+    target: @orchestrator.dispatchVisit
+
+subagent informCustomer:
+  description: "Tells the customer the fault was fixed remotely."
+  label: "Inform Customer"
+  reasoning:
+    instructions: ->
+      | Tell the customer the fault on {!@generator.parseRequest.output.asset_id} was fixed remotely: {!@subagent.diagnose.output.detail}
+    actions:
+      comms: @actions.customer_comms_agent
+  on_exit: ->
+    transition to @echo.resolvedRemotely
+
+echo resolvedRemotely:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Resolved remotely: " + @subagent.diagnose.output.detail)]})
+
+orchestrator dispatchVisit:
+  description: "Checks parts and weather, reserves the part and books a technician."
+  label: "Dispatch Visit"
+  system:
+    instructions: |
+      Check stock for the part and the weather for the town. Reserve the part with the parts agent,
+      book a technician with the dispatch agent and inform the customer of the visit window.
+      If the forecast is unsafe for outdoor work, book the next safe day instead.
+  reasoning:
+    instructions: ->
+      | Asset {!@generator.parseRequest.output.asset_id} in {!@subagent.diagnose.output.town} needs part {!@subagent.diagnose.output.part_id}: {!@subagent.diagnose.output.detail}
+    actions:
+      stock: @actions.check_stock
+      weather: @actions.get_forecast
+      parts: @actions.parts_agent
+      dispatch: @actions.dispatch_agent
+      comms: @actions.customer_comms_agent
+    max_number_of_loops: 8
+  on_exit: ->
+    transition to @echo.dispatched
+
+echo dispatched:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart(@orchestrator.dispatchVisit.output)]})

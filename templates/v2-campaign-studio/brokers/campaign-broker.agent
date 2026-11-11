@@ -1,0 +1,143 @@
+# @dialect: AGENTFABRIC=1.0
+# Marketing Campaign Studio: A tool-heavy deterministic flow: two agents and four marketing tool servers build and launch a campaign.
+# Upstreams are A2D mocks; see README.md for test prompts.
+
+system:
+  instructions: "You build marketing campaigns. Nothing is scheduled without compliance approval and consented audiences."
+
+config:
+  agent_name: "campaign-broker"
+  default_llm: @llm.default
+
+llm:
+  default:
+    target: "llm://openai_connection"
+    kind: "OpenAI"
+    model: "gpt-5-mini"
+
+actions:
+  content_agent:
+    target: "a2a://content_agent_connection"
+    kind: "a2a:send_message"
+  compliance_agent:
+    target: "a2a://compliance_agent_connection"
+    kind: "a2a:send_message"
+  get_segment:
+    target: "mcp://segments_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "get_segment"
+  find_assets:
+    target: "mcp://brand_assets_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "find_assets"
+  schedule_email:
+    target: "mcp://email_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "schedule_email"
+    inputs:
+      segment_id: string
+      subject: string
+  forecast:
+    target: "mcp://analytics_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "forecast"
+
+trigger campaignBrokerTrigger:
+  kind: "a2a"
+  target: "brokers://octo_cs2_campaign_broker/a2a"
+  on_message: ->
+    transition to @generator.brief
+
+generator brief:
+  description: "Turns the request into a campaign brief."
+  label: "Campaign Brief"
+  prompt: ->
+    | Extract the segment id (for example SEG-VIP), the channel and the theme from: {!@request.payload.message.parts[0].text}
+  outputs:
+    properties:
+      segment_id:
+        type: "string"
+        description: "Audience segment id"
+      channel:
+        type: "string"
+        description: "Campaign channel"
+        enum:
+          - "email"
+          - "social"
+      theme:
+        type: "string"
+        description: "Campaign theme"
+  on_exit: ->
+    transition to @orchestrator.createCampaign
+
+orchestrator createCampaign:
+  description: "Checks the audience, writes copy, gets compliance approval and a forecast."
+  label: "Create Campaign"
+  system:
+    instructions: |
+      Check the segment size and consent, find brand assets for the theme, have the content agent write the copy,
+      and have the compliance agent review it. Get a forecast for the segment and channel.
+      Set approved to "yes" only when compliance approved and, for email, the segment has consented contacts.
+      Return the email subject line in subject.
+  reasoning:
+    instructions: ->
+      | Segment {!@generator.brief.output.segment_id}, channel {!@generator.brief.output.channel}, theme {!@generator.brief.output.theme}.
+    actions:
+      segment: @actions.get_segment
+      assets: @actions.find_assets
+      write: @actions.content_agent
+      review: @actions.compliance_agent
+      forecast: @actions.forecast
+    max_number_of_loops: 8
+    outputs:
+      properties:
+        approved:
+          type: "string"
+          description: "Compliance and consent approved"
+          enum:
+            - "yes"
+            - "no"
+        subject:
+          type: "string"
+          description: "Email subject or post headline"
+        summary:
+          type: "string"
+          description: "Copy, assets and forecast"
+  on_exit: ->
+    transition to @router.launchRouter
+
+router launchRouter:
+  description: "Approved email campaigns are scheduled; approved social posts are handed over; the rest are returned."
+  routes:
+    - target: @executor.scheduleEmail
+      when: @orchestrator.createCampaign.output.approved == "yes" and @generator.brief.output.channel == "email"
+      label: "Email approved"
+    - target: @echo.socialReady
+      when: @orchestrator.createCampaign.output.approved == "yes"
+      label: "Social approved"
+  otherwise:
+    target: @echo.rejected
+
+executor scheduleEmail:
+  description: "Schedules the approved email campaign."
+  do: ->
+    run @actions.schedule_email
+      with segment_id = @generator.brief.output.segment_id
+      with subject = @orchestrator.createCampaign.output.subject
+  on_exit: ->
+    transition to @echo.scheduled
+
+echo scheduled:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Email campaign scheduled for " + @generator.brief.output.segment_id + ". " + @orchestrator.createCampaign.output.summary)]})
+
+echo socialReady:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Social post approved and ready to publish: " + @orchestrator.createCampaign.output.summary)]})
+
+echo rejected:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Campaign not approved: " + @orchestrator.createCampaign.output.summary)]})

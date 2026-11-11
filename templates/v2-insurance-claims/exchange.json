@@ -1,0 +1,67 @@
+{
+  "main": "agent-network.yaml",
+  "name": "insurance-claims-v2",
+  "classifier": "agentic-network",
+  "descriptorVersion": "1.0.0",
+  "apiVersion": "v1",
+  "tags": [
+    "octoloom-example"
+  ],
+  "metadata": {
+    "variables": {
+      "openai": {
+        "apiKey": {
+          "description": "OpenAI API key (secret, injected at deploy time)",
+          "default": "",
+          "secret": true
+        }
+      },
+      "fnolAgent": {
+        "url": {
+          "description": "FNOL Intake Agent (A2D mock, A2A 1.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/2fba0256-4819-484e-a00a-5a622f41c178/a2a",
+          "secret": false
+        }
+      },
+      "fraudAgent": {
+        "url": {
+          "description": "Fraud Screening Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/d6dbd985-7aa4-4629-be75-860b1fb9d7f0/a2a",
+          "secret": false
+        }
+      },
+      "adjusterAgent": {
+        "url": {
+          "description": "Claims Adjuster Agent (A2D mock, A2A 1.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/8e75ca41-b1ce-4dd8-b84c-90c80d864ce9/a2a",
+          "secret": false
+        }
+      },
+      "paymentsAgent": {
+        "url": {
+          "description": "Claims Payments Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/4b5b6ba6-bbc0-48f2-a8f5-fdbe4af3f0bf/a2a",
+          "secret": false
+        }
+      },
+      "policyAdminMcp": {
+        "url": {
+          "description": "Policy Admin MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/8de15fa9-276c-459f-8243-c4b4c882fcb1/",
+          "secret": false
+        }
+      },
+      "claimsMcp": {
+        "url": {
+          "description": "Claims MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/587c6f66-199a-4a79-b1d4-5c77953ee271/",
+          "secret": false
+        }
+      }
+    }
+  },
+  "dependencies": [],
+  "groupId": "${organizationId}",
+  "assetId": "insurance-claims-v2",
+  "version": "1.0.0"
+}

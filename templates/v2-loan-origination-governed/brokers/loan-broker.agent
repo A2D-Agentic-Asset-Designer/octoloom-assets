@@ -1,0 +1,187 @@
+# @dialect: AGENTFABRIC=1.0
+# Loan Origination: Five agents (A2A 1.0 and 0.3.0) and three banking tool servers take a loan from application to decision.
+# Upstreams are A2D mocks; see README.md for test prompts.
+
+system:
+  instructions: "You are a loan origination desk. Decisions follow the credit data; never promise an approval before the assessment."
+
+config:
+  agent_name: "loan-broker"
+  default_llm: @llm.default
+
+llm:
+  default:
+    target: "llm://openai_connection"
+    kind: "OpenAI"
+    model: "gpt-5-mini"
+
+actions:
+  intake_agent:
+    target: "a2a://intake_agent_connection"
+    kind: "a2a:send_message"
+  kyc_agent:
+    target: "a2a://kyc_agent_connection"
+    kind: "a2a:send_message"
+  credit_agent:
+    target: "a2a://credit_agent_connection"
+    kind: "a2a:send_message"
+  underwriting_agent:
+    target: "a2a://underwriting_agent_connection"
+    kind: "a2a:send_message"
+  notification_agent:
+    target: "a2a://notification_agent_connection"
+    kind: "a2a:send_message"
+  get_credit_score:
+    target: "mcp://credit_bureau_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "get_credit_score"
+  get_accounts:
+    target: "mcp://core_banking_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "get_accounts"
+  book_loan:
+    target: "mcp://core_banking_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "book_loan"
+    inputs:
+      applicant_id: string
+      amount: number
+  generate_contract:
+    target: "mcp://documents_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "generate_contract"
+
+trigger loanBrokerTrigger:
+  kind: "a2a"
+  target: "brokers://octo_lo2g_loan_broker/a2a"
+  on_message: ->
+    transition to @generator.parseApplication
+
+generator parseApplication:
+  description: "Extracts applicant, amount and product."
+  label: "Parse Application"
+  system:
+    instructions: |
+      Extract the applicant id (for example APP-100), the requested amount in CHF as a number, and the product.
+      Product is "mortgage" for property financing, otherwise "personal".
+  prompt: ->
+    | {!@request.payload.message.parts[0].text}
+  outputs:
+    properties:
+      applicant_id:
+        type: "string"
+        description: "Applicant id, e.g. APP-100"
+      amount:
+        type: "number"
+        description: "Requested amount in CHF"
+      product:
+        type: "string"
+        description: "Loan product"
+        enum:
+          - "personal"
+          - "mortgage"
+  on_exit: ->
+    transition to @orchestrator.assess
+
+orchestrator assess:
+  description: "Runs intake, KYC and the credit analysis."
+  label: "Assess Application"
+  system:
+    instructions: |
+      Run intake, KYC and the credit analysis, and read the bureau score and the accounts.
+      Decision rules: "approve" when KYC passed, score >= 700 and debt-to-income <= 35%.
+      "refer" when KYC passed but the score or affordability is borderline. "decline" when KYC fails.
+  reasoning:
+    instructions: ->
+      | Applicant {!@generator.parseApplication.output.applicant_id} requests {!@generator.parseApplication.output.amount} CHF ({!@generator.parseApplication.output.product}).
+    actions:
+      intake: @actions.intake_agent
+      kyc: @actions.kyc_agent
+      credit: @actions.credit_agent
+      score: @actions.get_credit_score
+      accounts: @actions.get_accounts
+    max_number_of_loops: 8
+    outputs:
+      properties:
+        decision:
+          type: "string"
+          description: "Assessment decision"
+          enum:
+            - "approve"
+            - "refer"
+            - "decline"
+        summary:
+          type: "string"
+          description: "Reasons for the decision"
+  on_exit: ->
+    transition to @router.decisionRouter
+
+router decisionRouter:
+  description: "Approve books the loan, refer goes to underwriting, decline notifies."
+  routes:
+    - target: @executor.bookLoan
+      when: @orchestrator.assess.output.decision == "approve"
+      label: "Approve"
+    - target: @subagent.underwrite
+      when: @orchestrator.assess.output.decision == "refer"
+      label: "Refer"
+  otherwise:
+    target: @subagent.notifyDecline
+
+executor bookLoan:
+  description: "Books the approved loan."
+  do: ->
+    run @actions.book_loan
+      with applicant_id = @generator.parseApplication.output.applicant_id
+      with amount = @generator.parseApplication.output.amount
+  on_exit: ->
+    transition to @subagent.notifyApproval
+
+subagent notifyApproval:
+  description: "Generates the contract and notifies the applicant."
+  label: "Notify Approval"
+  reasoning:
+    instructions: ->
+      | The loan for {!@generator.parseApplication.output.applicant_id} is booked. Generate the contract and notify the applicant.
+    actions:
+      contract: @actions.generate_contract
+      notify: @actions.notification_agent
+  on_exit: ->
+    transition to @echo.approved
+
+echo approved:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Approved: " + @orchestrator.assess.output.summary + " " + @subagent.notifyApproval.output)]})
+
+subagent underwrite:
+  description: "Sends borderline applications to underwriting."
+  label: "Underwriting"
+  reasoning:
+    instructions: ->
+      | Underwrite application of {!@generator.parseApplication.output.applicant_id}: {!@orchestrator.assess.output.summary}
+    actions:
+      underwriting: @actions.underwriting_agent
+  on_exit: ->
+    transition to @echo.underwritten
+
+echo underwritten:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart(@subagent.underwrite.output)]})
+
+subagent notifyDecline:
+  description: "Notifies the applicant of a decline."
+  label: "Notify Decline"
+  reasoning:
+    instructions: ->
+      | Notify {!@generator.parseApplication.output.applicant_id} that the application was declined: {!@orchestrator.assess.output.summary}
+    actions:
+      notify: @actions.notification_agent
+  on_exit: ->
+    transition to @echo.declined
+
+echo declined:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Declined: " + @orchestrator.assess.output.summary)]})

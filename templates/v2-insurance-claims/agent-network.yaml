@@ -1,0 +1,272 @@
+agentNetwork: 2.0.0
+info:
+  label: Insurance Claims (FNOL to Payout)
+  version: v1
+  description: Classify a claim, check coverage, gate on fraud risk, then settle through adjuster and payment agents.
+registry:
+  agents:
+    octo_ic2_fnol_agent:
+      info:
+        label: FNOL Intake Agent
+        description: Captures the first notice of loss with all required facts.
+      metadata:
+        platform: AgentForce
+        interfaces:
+          a2a:
+            card:
+              name: FNOL Intake Agent
+              description: Captures the first notice of loss with all required facts.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: capture-fnol
+                  name: Capture FNOL
+                  description: Record the loss facts.
+                  tags:
+                    - fnol
+                  examples:
+                    - Record a car accident for POL-5001
+              supportedInterfaces:
+                - url: https://www.a2d-ai.com/api/platform/2fba0256-4819-484e-a00a-5a622f41c178/a2a
+                  protocolBinding: JSONRPC
+                  protocolVersion: "1.0"
+    octo_ic2_fraud_agent:
+      info:
+        label: Fraud Screening Agent
+        description: Scores claims for fraud indicators.
+      metadata:
+        platform: Databricks
+        interfaces:
+          a2a_v03:
+            card:
+              name: Fraud Screening Agent
+              description: Scores claims for fraud indicators.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: score-fraud
+                  name: Score Fraud
+                  description: Return a fraud risk level.
+                  tags:
+                    - fraud
+                  examples:
+                    - Screen claim for POL-5002
+              url: https://www.a2d-ai.com/api/platform/d6dbd985-7aa4-4629-be75-860b1fb9d7f0/a2a
+              protocolVersion: 0.3.0
+    octo_ic2_adjuster_agent:
+      info:
+        label: Claims Adjuster Agent
+        description: Estimates the loss and proposes a settlement.
+      metadata:
+        platform: MuleSoft
+        interfaces:
+          a2a:
+            card:
+              name: Claims Adjuster Agent
+              description: Estimates the loss and proposes a settlement.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: adjust-claim
+                  name: Adjust Claim
+                  description: Estimate and propose a settlement.
+                  tags:
+                    - adjusting
+                  examples:
+                    - Adjust motor claim for POL-5001
+              supportedInterfaces:
+                - url: https://www.a2d-ai.com/api/platform/8e75ca41-b1ce-4dd8-b84c-90c80d864ce9/a2a
+                  protocolBinding: JSONRPC
+                  protocolVersion: "1.0"
+    octo_ic2_payments_agent:
+      info:
+        label: Claims Payments Agent
+        description: Pays settled claims.
+      metadata:
+        platform: Bedrock
+        interfaces:
+          a2a_v03:
+            card:
+              name: Claims Payments Agent
+              description: Pays settled claims.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: pay-claim
+                  name: Pay Claim
+                  description: Pay a settlement.
+                  tags:
+                    - payments
+                  examples:
+                    - Pay 1,980 CHF to the customer
+              url: https://www.a2d-ai.com/api/platform/4b5b6ba6-bbc0-48f2-a8f5-fdbe4af3f0bf/a2a
+              protocolVersion: 0.3.0
+  mcps:
+    octo_ic2_policy_admin_mcp:
+      info:
+        label: Policy Admin MCP
+        description: "Policy administration: coverage checks."
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: check_coverage
+            description: Check whether a loss type is covered by a policy.
+            inputSchema:
+              type: object
+              properties:
+                policy_id:
+                  type: string
+                  description: Policy id, e.g. POL-5001
+                loss_type:
+                  type: string
+                  description: motor or property
+              required:
+                - policy_id
+    octo_ic2_claims_mcp:
+      info:
+        label: Claims MCP
+        description: Claims system of record.
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: create_claim
+            description: Create a claim record.
+            inputSchema:
+              type: object
+              properties:
+                policy_id:
+                  type: string
+                  description: Policy id
+                loss_type:
+                  type: string
+                  description: motor or property
+                summary:
+                  type: string
+                  description: Loss summary
+              required:
+                - policy_id
+                - loss_type
+                - summary
+          - name: refer_to_siu
+            description: Refer a claim to the special investigations unit.
+            inputSchema:
+              type: object
+              properties:
+                policy_id:
+                  type: string
+                  description: Policy id
+                reason:
+                  type: string
+                  description: Why
+              required:
+                - policy_id
+                - reason
+  llms:
+    octo_ic2_openai:
+      info:
+        label: OpenAI
+      metadata:
+        platform: OpenAI
+        models:
+          - gpt-5-mini
+context:
+  connections:
+    fnol_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_ic2_fnol_agent
+      url: ${fnolAgent.url}
+    fraud_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_ic2_fraud_agent
+      url: ${fraudAgent.url}
+    adjuster_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_ic2_adjuster_agent
+      url: ${adjusterAgent.url}
+    payments_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_ic2_payments_agent
+      url: ${paymentsAgent.url}
+    policy_admin_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_ic2_policy_admin_mcp
+      url: ${policyAdminMcp.url}
+    claims_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_ic2_claims_mcp
+      url: ${claimsMcp.url}
+    openai_connection:
+      kind: llm
+      ref:
+        name: octo_ic2_openai
+      url: https://api.openai.com/v1
+      authentication:
+        kind: apiKey
+        apiKey: ${openai.apiKey}
+brokers:
+  octo_ic2_claims_broker:
+    kind: AgentScript
+    implementation: ./brokers/claims-broker.agent
+    interfaces:
+      a2a:
+        card:
+          name: Claims Broker
+          description: Classify a claim, check coverage, gate on fraud risk, then settle through adjuster and payment agents.
+          version: 1.0.0
+          capabilities:
+            streaming: true
+            pushNotifications: false
+          defaultInputModes:
+            - text/plain
+          defaultOutputModes:
+            - text/plain
+          skills:
+            - id: handle-claim
+              name: Handle Claim
+              description: Take a first notice of loss and drive it to settlement.
+              tags:
+                - insurance
+                - claims
+              examples:
+                - My car was hit in a parking lot, policy POL-5001
+                - Water damage in the kitchen, policy POL-5002, about 18,000 CHF

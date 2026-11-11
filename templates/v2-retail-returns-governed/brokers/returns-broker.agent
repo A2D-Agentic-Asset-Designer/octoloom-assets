@@ -1,0 +1,142 @@
+# @dialect: AGENTFABRIC=1.0
+# Retail Returns: The smallest deterministic flow: extract the order, check eligibility, create the RMA and refund.
+# Upstreams are A2D mocks; see README.md for test prompts.
+
+system:
+  instructions: "You are the returns desk of an online retailer. Process returns only when the order system says the order is eligible."
+
+config:
+  agent_name: "returns-broker"
+  default_llm: @llm.default
+
+llm:
+  default:
+    target: "llm://openai_connection"
+    kind: "OpenAI"
+    model: "gpt-5-mini"
+
+actions:
+  check_return_eligibility:
+    target: "mcp://orders_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "check_return_eligibility"
+  create_rma:
+    target: "mcp://orders_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "create_rma"
+    inputs:
+      order_id: string
+      reason: string
+  returns_desk_agent:
+    target: "a2a://returns_desk_agent_connection"
+    kind: "a2a:send_message"
+  refund_agent:
+    target: "a2a://refund_agent_connection"
+    kind: "a2a:send_message"
+
+trigger returnsBrokerTrigger:
+  kind: "a2a"
+  target: "brokers://octo_rr2g_returns_broker/a2a"
+  on_message: ->
+    transition to @generator.extractReturn
+
+# Step 1: one LLM call turns the free-text request into structured fields.
+generator extractReturn:
+  description: "Extracts the order id and the return reason from the request."
+  label: "Extract Return"
+  system:
+    instructions: |
+      Extract the order id (for example ORD-1001) and a short return reason from the customer message.
+      Use "UNKNOWN" when no order id is present.
+  prompt: ->
+    | {!@request.payload.message.parts[0].text}
+  outputs:
+    properties:
+      order_id:
+        type: "string"
+        description: "Order id, e.g. ORD-1001, or UNKNOWN"
+      reason:
+        type: "string"
+        description: "Short return reason"
+  on_exit: ->
+    transition to @subagent.eligibilityGate
+
+# Step 2: a deterministic gate. The subagent calls one MCP tool and classifies its answer.
+subagent eligibilityGate:
+  description: "Checks return eligibility with the Orders MCP."
+  label: "Eligibility Gate"
+  system:
+    instructions: |
+      Call the eligibility tool for the order id and report whether the order can be returned.
+      Set eligible to "yes" only when the tool returns eligible true.
+  reasoning:
+    instructions: ->
+      | Order: {!@generator.extractReturn.output.order_id}. Request: {!@request.payload.message.parts[0].text}
+    actions:
+      check: @actions.check_return_eligibility
+    max_number_of_loops: 3
+    outputs:
+      properties:
+        eligible:
+          type: "string"
+          description: "Whether the order can be returned"
+          enum:
+            - "yes"
+            - "no"
+        detail:
+          type: "string"
+          description: "Eligibility detail from the tool"
+  on_exit: ->
+    transition to @router.eligibilityRouter
+
+router eligibilityRouter:
+  description: "Eligible orders get an RMA and a refund; the others get advice."
+  routes:
+    - target: @executor.createRma
+      when: @subagent.eligibilityGate.output.eligible == "yes"
+      label: "Eligible"
+  otherwise:
+    target: @subagent.explainDecline
+
+# Step 3a: no LLM. The RMA is created with bound arguments only.
+executor createRma:
+  description: "Creates the return authorisation."
+  do: ->
+    run @actions.create_rma
+      with order_id = @generator.extractReturn.output.order_id
+      with reason = @generator.extractReturn.output.reason
+  on_exit: ->
+    transition to @subagent.refund
+
+subagent refund:
+  description: "Issues the refund through the Refund agent."
+  label: "Refund"
+  reasoning:
+    instructions: ->
+      | Refund order {!@generator.extractReturn.output.order_id}. Reason: {!@generator.extractReturn.output.reason}
+    actions:
+      refund: @actions.refund_agent
+  on_exit: ->
+    transition to @echo.returnAccepted
+
+echo returnAccepted:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Return accepted for " + @generator.extractReturn.output.order_id + ". " + @subagent.refund.output)]})
+
+# Step 3b: explain the decision and offer alternatives.
+subagent explainDecline:
+  description: "Explains why the return is declined and offers alternatives."
+  label: "Explain Decline"
+  reasoning:
+    instructions: ->
+      | Order {!@generator.extractReturn.output.order_id} cannot be returned: {!@subagent.eligibilityGate.output.detail}. Explain this and offer alternatives.
+    actions:
+      returns_desk: @actions.returns_desk_agent
+  on_exit: ->
+    transition to @echo.returnDeclined
+
+echo returnDeclined:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart(@subagent.explainDecline.output)]})

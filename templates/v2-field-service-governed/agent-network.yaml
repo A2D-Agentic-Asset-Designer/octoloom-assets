@@ -1,0 +1,356 @@
+agentNetwork: 2.0.0
+info:
+  label: Field Service Dispatch (governed)
+  version: v1
+  description: Diagnose an equipment fault, check parts and weather, and dispatch or resolve remotely.
+registry:
+  agents:
+    octo_fs2g_dispatch_agent:
+      info:
+        label: Dispatch Agent
+        description: Books technicians for on-site visits.
+      metadata:
+        platform: ServiceNow
+        interfaces:
+          a2a:
+            card:
+              name: Dispatch Agent
+              description: Books technicians for on-site visits.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: dispatch-tech
+                  name: Dispatch Technician
+                  description: Book a technician.
+                  tags:
+                    - dispatch
+                  examples:
+                    - Dispatch for HP-301
+              supportedInterfaces:
+                - url: https://www.a2d-ai.com/api/platform/69ebd12e-296f-4eed-949f-26296e3c7fe9/a2a
+                  protocolBinding: JSONRPC
+                  protocolVersion: "1.0"
+    octo_fs2g_parts_agent:
+      info:
+        label: Parts Logistics Agent
+        description: Reserves and ships spare parts.
+      metadata:
+        platform: MuleSoft
+        interfaces:
+          a2a_v03:
+            card:
+              name: Parts Logistics Agent
+              description: Reserves and ships spare parts.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: reserve-part
+                  name: Reserve Part
+                  description: Reserve a spare part.
+                  tags:
+                    - parts
+                  examples:
+                    - Reserve CMP-42
+              url: https://www.a2d-ai.com/api/platform/1f49d5bd-b631-498b-b2a6-84de58a41521/a2a
+              protocolVersion: 0.3.0
+    octo_fs2g_customer_comms_agent:
+      info:
+        label: Customer Communications Agent
+        description: Keeps the customer informed.
+      metadata:
+        platform: AgentForce
+        interfaces:
+          a2a:
+            card:
+              name: Customer Communications Agent
+              description: Keeps the customer informed.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: notify-customer
+                  name: Notify Customer
+                  description: Send updates to the customer.
+                  tags:
+                    - comms
+                  examples:
+                    - Tell the customer about the visit
+              supportedInterfaces:
+                - url: https://www.a2d-ai.com/api/platform/f3d6ebd7-0b13-43c2-b2ef-f55ac045c18a/a2a
+                  protocolBinding: JSONRPC
+                  protocolVersion: "1.0"
+  mcps:
+    octo_fs2g_asset_registry_mcp:
+      info:
+        label: Asset Registry MCP
+        description: Installed equipment.
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: get_asset
+            description: Get an installed asset.
+            inputSchema:
+              type: object
+              properties:
+                asset_id:
+                  type: string
+                  description: Asset id
+              required:
+                - asset_id
+    octo_fs2g_diagnostics_mcp:
+      info:
+        label: Diagnostics MCP
+        description: Remote diagnostics.
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: run_diagnostics
+            description: Run remote diagnostics on an asset.
+            inputSchema:
+              type: object
+              properties:
+                asset_id:
+                  type: string
+                  description: Asset id
+              required:
+                - asset_id
+    octo_fs2g_inventory_mcp:
+      info:
+        label: Parts Inventory MCP
+        description: Spare parts stock.
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: check_stock
+            description: Check stock of a part.
+            inputSchema:
+              type: object
+              properties:
+                part_id:
+                  type: string
+                  description: Part id
+              required:
+                - part_id
+    octo_fs2g_weather_mcp:
+      info:
+        label: Weather MCP
+        description: Weather for safe outdoor work.
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: get_forecast
+            description: Forecast for a town.
+            inputSchema:
+              type: object
+              properties:
+                town:
+                  type: string
+                  description: Town
+              required:
+                - town
+  llms:
+    octo_fs2g_openai:
+      info:
+        label: OpenAI
+      metadata:
+        platform: OpenAI
+        models:
+          - gpt-5-mini
+context:
+  connections:
+    dispatch_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_fs2g_dispatch_agent
+      url: ${dispatchAgent.url}
+      policies:
+        inbound:
+          - ref:
+              name: a2a_v1_pii
+    parts_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_fs2g_parts_agent
+      url: ${partsAgent.url}
+      policies:
+        inbound:
+          - policy:
+              ref:
+                name: header-injection
+                namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+              configuration:
+                inboundHeaders:
+                  - key: x-correlation-source
+                    value: octo_fs2g_field_service_broker
+    customer_comms_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_fs2g_customer_comms_agent
+      url: ${customerCommsAgent.url}
+      policies:
+        inbound:
+          - ref:
+              name: a2a_v1_pii
+    asset_registry_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_fs2g_asset_registry_mcp
+      url: ${assetRegistryMcp.url}
+      policies:
+        inbound:
+          - ref:
+              name: mcp_pii
+          - ref:
+              name: mcp_schema
+    diagnostics_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_fs2g_diagnostics_mcp
+      url: ${diagnosticsMcp.url}
+      policies:
+        inbound:
+          - ref:
+              name: mcp_pii
+          - policy:
+              ref:
+                name: header-injection
+                namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+              configuration:
+                inboundHeaders:
+                  - key: x-octoloom-source
+                    value: field-service-governed-v2
+    inventory_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_fs2g_inventory_mcp
+      url: ${inventoryMcp.url}
+      policies:
+        inbound:
+          - ref:
+              name: mcp_pii
+          - ref:
+              name: mcp_schema
+    weather_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_fs2g_weather_mcp
+      url: ${weatherMcp.url}
+      policies:
+        inbound:
+          - ref:
+              name: mcp_pii
+          - policy:
+              ref:
+                name: header-injection
+                namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+              configuration:
+                inboundHeaders:
+                  - key: x-octoloom-source
+                    value: field-service-governed-v2
+    openai_connection:
+      kind: llm
+      ref:
+        name: octo_fs2g_openai
+      url: https://api.openai.com/v1
+      authentication:
+        kind: apiKey
+        apiKey: ${openai.apiKey}
+  policies:
+    a2a_v1_pii:
+      ref:
+        name: a2a-v1-pii-detector
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+      configuration:
+        entities:
+          - Email
+          - US SSN
+          - Credit Card
+        action: Log
+    mcp_pii:
+      ref:
+        name: mcp-pii-detector
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+      configuration:
+        entities:
+          - Email
+          - US SSN
+          - Credit Card
+          - Phone Number
+        action: Log and mask
+    mcp_schema:
+      ref:
+        name: mcp-schema-validation
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+      configuration:
+        validateToolSchema: true
+    rate_limit:
+      ref:
+        name: rate-limiting
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+      configuration:
+        rateLimits:
+          - maximumRequests: 30
+            timePeriodInMilliseconds: 60000
+        exposeHeaders: true
+brokers:
+  octo_fs2g_field_service_broker:
+    kind: AgentScript
+    implementation: ./brokers/field-service-broker.agent
+    interfaces:
+      a2a:
+        card:
+          name: Field Service Broker
+          description: Diagnose an equipment fault, check parts and weather, and dispatch or resolve remotely.
+          version: 1.0.0
+          capabilities:
+            streaming: true
+            pushNotifications: false
+          defaultInputModes:
+            - text/plain
+          defaultOutputModes:
+            - text/plain
+          skills:
+            - id: service-request
+              name: Service Request
+              description: Handle an equipment service request.
+              tags:
+                - field-service
+              examples:
+                - Heat pump HP-301 shows error E42
+                - Solar inverter INV-77 is offline
+        policies:
+          inbound:
+            - ref:
+                name: rate_limit

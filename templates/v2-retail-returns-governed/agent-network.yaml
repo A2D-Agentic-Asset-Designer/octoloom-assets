@@ -1,0 +1,225 @@
+agentNetwork: 2.0.0
+info:
+  label: Retail Returns (governed)
+  version: v1
+  description: "The smallest deterministic flow: extract the order, check eligibility, create the RMA and refund."
+registry:
+  agents:
+    octo_rr2g_returns_desk_agent:
+      info:
+        label: Returns Desk Agent
+        description: Explains return rules and alternatives to the customer.
+      metadata:
+        platform: AgentForce
+        interfaces:
+          a2a:
+            card:
+              name: Returns Desk Agent
+              description: Explains return rules and alternatives to the customer.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: return-advice
+                  name: Return Advice
+                  description: Explain why a return is not possible and offer alternatives.
+                  tags:
+                    - returns
+                  examples:
+                    - Why can I not return ORD-1002?
+              supportedInterfaces:
+                - url: https://www.a2d-ai.com/api/platform/5bf5ade2-6c7a-465b-b465-243935b3ea91/a2a
+                  protocolBinding: JSONRPC
+                  protocolVersion: "1.0"
+    octo_rr2g_refund_agent:
+      info:
+        label: Refund Agent
+        description: Issues refunds to the original payment method.
+      metadata:
+        platform: MuleSoft
+        interfaces:
+          a2a_v03:
+            card:
+              name: Refund Agent
+              description: Issues refunds to the original payment method.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: issue-refund
+                  name: Issue Refund
+                  description: Refund a returned order.
+                  tags:
+                    - refunds
+                  examples:
+                    - Refund ORD-1001
+              url: https://www.a2d-ai.com/api/platform/3d1bcf9c-e00f-44dd-8a88-2be871b4d7bb/a2a
+              protocolVersion: 0.3.0
+  mcps:
+    octo_rr2g_orders_mcp:
+      info:
+        label: Orders MCP
+        description: "Order management: eligibility and RMAs."
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: check_return_eligibility
+            description: Check whether an order can be returned.
+            inputSchema:
+              type: object
+              properties:
+                order_id:
+                  type: string
+                  description: Order id, e.g. ORD-1001
+              required:
+                - order_id
+          - name: create_rma
+            description: Create a return merchandise authorisation.
+            inputSchema:
+              type: object
+              properties:
+                order_id:
+                  type: string
+                  description: Order id
+                reason:
+                  type: string
+                  description: Return reason
+              required:
+                - order_id
+                - reason
+  llms:
+    octo_rr2g_openai:
+      info:
+        label: OpenAI
+      metadata:
+        platform: OpenAI
+        models:
+          - gpt-5-mini
+context:
+  connections:
+    returns_desk_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_rr2g_returns_desk_agent
+      url: ${returnsDeskAgent.url}
+      policies:
+        inbound:
+          - ref:
+              name: a2a_v1_pii
+    refund_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_rr2g_refund_agent
+      url: ${refundAgent.url}
+      policies:
+        inbound:
+          - policy:
+              ref:
+                name: header-injection
+                namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+              configuration:
+                inboundHeaders:
+                  - key: x-correlation-source
+                    value: octo_rr2g_returns_broker
+    orders_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_rr2g_orders_mcp
+      url: ${ordersMcp.url}
+      policies:
+        inbound:
+          - ref:
+              name: mcp_pii
+          - ref:
+              name: mcp_schema
+    openai_connection:
+      kind: llm
+      ref:
+        name: octo_rr2g_openai
+      url: https://api.openai.com/v1
+      authentication:
+        kind: apiKey
+        apiKey: ${openai.apiKey}
+  policies:
+    a2a_v1_pii:
+      ref:
+        name: a2a-v1-pii-detector
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+      configuration:
+        entities:
+          - Email
+          - US SSN
+          - Credit Card
+        action: Log
+    mcp_pii:
+      ref:
+        name: mcp-pii-detector
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+      configuration:
+        entities:
+          - Email
+          - US SSN
+          - Credit Card
+          - Phone Number
+        action: Log and mask
+    mcp_schema:
+      ref:
+        name: mcp-schema-validation
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+      configuration:
+        validateToolSchema: true
+    rate_limit:
+      ref:
+        name: rate-limiting
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+      configuration:
+        rateLimits:
+          - maximumRequests: 30
+            timePeriodInMilliseconds: 60000
+        exposeHeaders: true
+brokers:
+  octo_rr2g_returns_broker:
+    kind: AgentScript
+    implementation: ./brokers/returns-broker.agent
+    interfaces:
+      a2a:
+        card:
+          name: Returns Broker
+          description: "The smallest deterministic flow: extract the order, check eligibility, create the RMA and refund."
+          version: 1.0.0
+          capabilities:
+            streaming: true
+            pushNotifications: false
+          defaultInputModes:
+            - text/plain
+          defaultOutputModes:
+            - text/plain
+          skills:
+            - id: return-item
+              name: Return an Item
+              description: Return an item from an order and get a refund.
+              tags:
+                - retail
+                - returns
+              examples:
+                - I want to return order ORD-1001, the jacket is too small
+                - Return ORD-1002 please
+        policies:
+          inbound:
+            - ref:
+                name: rate_limit

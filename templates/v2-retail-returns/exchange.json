@@ -1,0 +1,46 @@
+{
+  "main": "agent-network.yaml",
+  "name": "retail-returns-v2",
+  "classifier": "agentic-network",
+  "descriptorVersion": "1.0.0",
+  "apiVersion": "v1",
+  "tags": [
+    "octoloom-example"
+  ],
+  "metadata": {
+    "variables": {
+      "openai": {
+        "apiKey": {
+          "description": "OpenAI API key (secret, injected at deploy time)",
+          "default": "",
+          "secret": true
+        }
+      },
+      "returnsDeskAgent": {
+        "url": {
+          "description": "Returns Desk Agent (A2D mock, A2A 1.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/5bf5ade2-6c7a-465b-b465-243935b3ea91/a2a",
+          "secret": false
+        }
+      },
+      "refundAgent": {
+        "url": {
+          "description": "Refund Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/3d1bcf9c-e00f-44dd-8a88-2be871b4d7bb/a2a",
+          "secret": false
+        }
+      },
+      "ordersMcp": {
+        "url": {
+          "description": "Orders MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/5aaa63c0-3f1c-462b-bc61-06cb4557ea43/",
+          "secret": false
+        }
+      }
+    }
+  },
+  "dependencies": [],
+  "groupId": "${organizationId}",
+  "assetId": "retail-returns-v2",
+  "version": "1.0.0"
+}

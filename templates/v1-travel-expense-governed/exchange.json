@@ -1,0 +1,138 @@
+{
+  "main": "agent-network.yaml",
+  "name": "travel-expense-governed-v1",
+  "classifier": "agent-network",
+  "descriptorVersion": "1.0.0",
+  "apiVersion": "v1",
+  "tags": [
+    "octoloom-example"
+  ],
+  "metadata": {
+    "variables": {
+      "ingressgw": {
+        "url": {
+          "description": "Ingress gateway base URL (the broker is served under it)",
+          "default": "",
+          "secret": false
+        }
+      },
+      "openai": {
+        "apiKey": {
+          "description": "OpenAI API key (secret, injected at deploy time)",
+          "default": "",
+          "secret": true
+        }
+      },
+      "flightsMcp": {
+        "url": {
+          "description": "Flights MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/1f6d63f2-3c3d-4268-9471-40e6d18955d3/",
+          "secret": false
+        }
+      },
+      "hotelsMcp": {
+        "url": {
+          "description": "Hotels MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/6875794f-e1ea-479e-a2f8-4d9ed4b29dfc/",
+          "secret": false
+        }
+      },
+      "expenseMcp": {
+        "url": {
+          "description": "Expense MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/75a62546-5ff3-4c98-ac92-d1bf91a1265c/",
+          "secret": false
+        }
+      },
+      "currencyMcp": {
+        "url": {
+          "description": "Currency MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/54c12af9-4b43-4be6-a861-fe9ad82c0944/",
+          "secret": false
+        }
+      },
+      "travelBookingAgent": {
+        "url": {
+          "description": "Travel Booking Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/e106ec8c-02ee-4ce5-b015-2cd536b26b77/a2a",
+          "secret": false
+        }
+      },
+      "policyAdvisorAgent": {
+        "url": {
+          "description": "Policy Advisor Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/cdf8b42e-2666-42f6-a5ae-09b40aee71bc/a2a",
+          "secret": false
+        }
+      },
+      "visaAgent": {
+        "url": {
+          "description": "Visa Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/7256173e-0e33-484b-b11b-1f07610c1f75/a2a",
+          "secret": false
+        }
+      },
+      "expenseAuditAgent": {
+        "url": {
+          "description": "Expense Audit Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/bcc0eab9-61c0-48e5-9092-6d4ce1a6c0d9/a2a",
+          "secret": false
+        }
+      },
+      "reimbursementAgent": {
+        "url": {
+          "description": "Reimbursement Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/c0ffe718-d2aa-4298-b713-96c807aa2551/a2a",
+          "secret": false
+        }
+      }
+    }
+  },
+  "dependencies": [
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "rate-limiting",
+      "version": "1.5.1"
+    },
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "mcp-pii-detector",
+      "version": "1.0.1"
+    },
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "mcp-schema-validation",
+      "version": "1.3.0"
+    },
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "header-injection",
+      "version": "1.3.3"
+    },
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "a-two-a-pii-detector",
+      "version": "1.0.2"
+    },
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "a-two-a-prompt-decorator",
+      "version": "1.0.2"
+    }
+  ],
+  "groupId": "${organizationId}",
+  "assetId": "travel-expense-governed-v1",
+  "version": "1.0.0"
+}

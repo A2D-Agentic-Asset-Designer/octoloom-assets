@@ -1,0 +1,322 @@
+agentNetwork: 2.0.0
+info:
+  label: Marketing Campaign Studio (governed)
+  version: v1
+  description: "A tool-heavy deterministic flow: two agents and four marketing tool servers build and launch a campaign."
+registry:
+  agents:
+    octo_cs2g_content_agent:
+      info:
+        label: Content Agent
+        description: Writes campaign copy in the brand voice.
+      metadata:
+        platform: OpenAI
+        interfaces:
+          a2a:
+            card:
+              name: Content Agent
+              description: Writes campaign copy in the brand voice.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: write-copy
+                  name: Write Copy
+                  description: Write campaign copy.
+                  tags:
+                    - content
+                  examples:
+                    - Write a winter email for VIP customers
+              supportedInterfaces:
+                - url: https://www.a2d-ai.com/api/platform/5261ec66-5cdc-4b03-84ff-129004f4c483/a2a
+                  protocolBinding: JSONRPC
+                  protocolVersion: "1.0"
+    octo_cs2g_compliance_agent:
+      info:
+        label: Marketing Compliance Agent
+        description: Reviews copy for legal and consent rules.
+      metadata:
+        platform: Anthropic
+        interfaces:
+          a2a_v03:
+            card:
+              name: Marketing Compliance Agent
+              description: Reviews copy for legal and consent rules.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: review-copy
+                  name: Review Copy
+                  description: Approve or reject copy.
+                  tags:
+                    - compliance
+                  examples:
+                    - Review the winter email
+              url: https://www.a2d-ai.com/api/platform/206e0016-f88e-44e4-9a9d-094591cc5284/a2a
+              protocolVersion: 0.3.0
+  mcps:
+    octo_cs2g_segments_mcp:
+      info:
+        label: Audience Segments MCP
+        description: Audience segments.
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: get_segment
+            description: Get a segment.
+            inputSchema:
+              type: object
+              properties:
+                segment_id:
+                  type: string
+                  description: Segment id
+              required:
+                - segment_id
+    octo_cs2g_brand_assets_mcp:
+      info:
+        label: Brand Assets MCP
+        description: Approved images and templates.
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: find_assets
+            description: Find brand assets.
+            inputSchema:
+              type: object
+              properties:
+                theme:
+                  type: string
+                  description: Theme
+              required:
+                - theme
+    octo_cs2g_email_mcp:
+      info:
+        label: Email MCP
+        description: Email sending.
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: schedule_email
+            description: Schedule an email campaign.
+            inputSchema:
+              type: object
+              properties:
+                segment_id:
+                  type: string
+                  description: Segment id
+                subject:
+                  type: string
+                  description: Subject
+              required:
+                - segment_id
+                - subject
+    octo_cs2g_analytics_mcp:
+      info:
+        label: Analytics MCP
+        description: Campaign forecasts.
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: forecast
+            description: Forecast campaign results.
+            inputSchema:
+              type: object
+              properties:
+                segment_id:
+                  type: string
+                  description: Segment id
+                channel:
+                  type: string
+                  description: email or social
+              required:
+                - segment_id
+  llms:
+    octo_cs2g_openai:
+      info:
+        label: OpenAI
+      metadata:
+        platform: OpenAI
+        models:
+          - gpt-5-mini
+context:
+  connections:
+    content_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_cs2g_content_agent
+      url: ${contentAgent.url}
+      policies:
+        inbound:
+          - ref:
+              name: a2a_v1_pii
+    compliance_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_cs2g_compliance_agent
+      url: ${complianceAgent.url}
+      policies:
+        inbound:
+          - policy:
+              ref:
+                name: header-injection
+                namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+              configuration:
+                inboundHeaders:
+                  - key: x-correlation-source
+                    value: octo_cs2g_campaign_broker
+    segments_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_cs2g_segments_mcp
+      url: ${segmentsMcp.url}
+      policies:
+        inbound:
+          - ref:
+              name: mcp_pii
+          - ref:
+              name: mcp_schema
+    brand_assets_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_cs2g_brand_assets_mcp
+      url: ${brandAssetsMcp.url}
+      policies:
+        inbound:
+          - ref:
+              name: mcp_pii
+          - policy:
+              ref:
+                name: header-injection
+                namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+              configuration:
+                inboundHeaders:
+                  - key: x-octoloom-source
+                    value: campaign-studio-governed-v2
+    email_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_cs2g_email_mcp
+      url: ${emailMcp.url}
+      policies:
+        inbound:
+          - ref:
+              name: mcp_pii
+          - ref:
+              name: mcp_schema
+    analytics_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_cs2g_analytics_mcp
+      url: ${analyticsMcp.url}
+      policies:
+        inbound:
+          - ref:
+              name: mcp_pii
+          - policy:
+              ref:
+                name: header-injection
+                namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+              configuration:
+                inboundHeaders:
+                  - key: x-octoloom-source
+                    value: campaign-studio-governed-v2
+    openai_connection:
+      kind: llm
+      ref:
+        name: octo_cs2g_openai
+      url: https://api.openai.com/v1
+      authentication:
+        kind: apiKey
+        apiKey: ${openai.apiKey}
+  policies:
+    a2a_v1_pii:
+      ref:
+        name: a2a-v1-pii-detector
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+      configuration:
+        entities:
+          - Email
+          - US SSN
+          - Credit Card
+        action: Log
+    mcp_pii:
+      ref:
+        name: mcp-pii-detector
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+      configuration:
+        entities:
+          - Email
+          - US SSN
+          - Credit Card
+          - Phone Number
+        action: Log and mask
+    mcp_schema:
+      ref:
+        name: mcp-schema-validation
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+      configuration:
+        validateToolSchema: true
+    rate_limit:
+      ref:
+        name: rate-limiting
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+      configuration:
+        rateLimits:
+          - maximumRequests: 30
+            timePeriodInMilliseconds: 60000
+        exposeHeaders: true
+brokers:
+  octo_cs2g_campaign_broker:
+    kind: AgentScript
+    implementation: ./brokers/campaign-broker.agent
+    interfaces:
+      a2a:
+        card:
+          name: Campaign Broker
+          description: "A tool-heavy deterministic flow: two agents and four marketing tool servers build and launch a campaign."
+          version: 1.0.0
+          capabilities:
+            streaming: true
+            pushNotifications: false
+          defaultInputModes:
+            - text/plain
+          defaultOutputModes:
+            - text/plain
+          skills:
+            - id: launch-campaign
+              name: Launch Campaign
+              description: Plan, check and launch a campaign.
+              tags:
+                - marketing
+              examples:
+                - Launch a winter email campaign for segment SEG-VIP
+                - Plan a social post about our new eco line for SEG-ECO
+        policies:
+          inbound:
+            - ref:
+                name: rate_limit

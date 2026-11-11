@@ -1,0 +1,340 @@
+schemaVersion: 1.0.0
+label: Employee Onboarding (governed)
+brokers:
+  octo_eo1g_onboarding-broker:
+    card:
+      protocolVersion: 0.3.0
+      name: octo_eo1g_onboarding-broker
+      description: HR, IT and facilities agents plus directory and learning tools prepare a new hire for day one.
+      url: ${ingressgw.url}/octo_eo1g_onboarding-broker
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+        stateTransitionHistory: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: onboard-new-hire
+          name: Onboard a New Hire
+          description: Prepare accounts, equipment, workspace and training for a new employee.
+          tags:
+            - hr
+            - onboarding
+          examples:
+            - Onboard employee E-1001 who starts Monday as a Sales Engineer
+            - What is still open for the onboarding of E-1002?
+    spec:
+      llm:
+        ref:
+          name: octo_eo1g_openai
+        configuration:
+          model: gpt-5-mini
+      instructions:
+        - You coordinate employee onboarding for new hires.
+        - Always look up the employee in the identity directory first, using the employee id from the request (for example E-1001).
+        - Use the HR Records agent for contracts and personal data, the IT Provisioning agent for laptops and accounts, and the Facilities agent for desks and badges.
+        - Assign role-based training through the learning tools once accounts exist.
+        - Finish with a short checklist of what was done and what is still open.
+      links:
+        - agent:
+            ref:
+              name: octo_eo1g_hr-records-agent
+        - agent:
+            ref:
+              name: octo_eo1g_it-provisioning-agent
+        - agent:
+            ref:
+              name: octo_eo1g_facilities-agent
+      tools:
+        - mcp:
+            ref:
+              name: octo_eo1g_identity-directory-mcp
+            allowed:
+              - lookup_employee
+              - create_account
+        - mcp:
+            ref:
+              name: octo_eo1g_learning-mcp
+            allowed:
+              - list_courses
+              - assign_training
+      maxNumberOfLoops: 25
+      maxConsecutiveErrors: 3
+      taskTimeoutSecs: 90
+      policies:
+        - ref:
+            name: rate-limiting
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            rateLimits:
+              - maximumRequests: 60
+                timePeriodInMilliseconds: 60000
+            exposeHeaders: true
+llmProviders:
+  octo_eo1g_openai:
+    label: OpenAI
+    description: OpenAI LLM provider
+    metadata:
+      platform: OpenAI
+      models:
+        - gpt-5-mini
+connections:
+  openai-connection:
+    kind: llm
+    ref:
+      name: octo_eo1g_openai
+    spec:
+      url: https://api.openai.com/v1/
+      configuration:
+        apiKey: ${openai.apiKey}
+        timeout: 600000
+  identity-directory-mcp-connection:
+    kind: mcp
+    ref:
+      name: octo_eo1g_identity-directory-mcp
+    spec:
+      url: ${identityDirectoryMcp.url}
+      policies:
+        - ref:
+            name: mcp-pii-detector
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            entities:
+              - Email
+              - US SSN
+              - Credit Card
+              - Phone Number
+            action: Log and mask
+  learning-mcp-connection:
+    kind: mcp
+    ref:
+      name: octo_eo1g_learning-mcp
+    spec:
+      url: ${learningMcp.url}
+      policies:
+        - ref:
+            name: mcp-schema-validation
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            validateToolSchema: true
+        - ref:
+            name: header-injection
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            inboundHeaders:
+              - key: x-octoloom-source
+                value: employee-onboarding-governed-v1
+  hr-records-agent-connection:
+    kind: agent
+    ref:
+      name: octo_eo1g_hr-records-agent
+    spec:
+      url: ${hrRecordsAgent.url}
+      policies:
+        - ref:
+            name: a-two-a-pii-detector
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            entities:
+              - Email
+              - US SSN
+              - Credit Card
+            action: Log
+  it-provisioning-agent-connection:
+    kind: agent
+    ref:
+      name: octo_eo1g_it-provisioning-agent
+    spec:
+      url: ${itProvisioningAgent.url}
+      policies:
+        - ref:
+            name: header-injection
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            inboundHeaders:
+              - key: x-correlation-source
+                value: octo_eo1g_onboarding-broker
+        - ref:
+            name: a-two-a-prompt-decorator
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            textDecorators:
+              - text: "#['Answer concisely and never include personal data.']"
+  facilities-agent-connection:
+    kind: agent
+    ref:
+      name: octo_eo1g_facilities-agent
+    spec:
+      url: ${facilitiesAgent.url}
+      policies:
+        - ref:
+            name: a-two-a-pii-detector
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            entities:
+              - Email
+              - US SSN
+              - Credit Card
+            action: Log
+mcpServers:
+  octo_eo1g_identity-directory-mcp:
+    label: Identity Directory MCP
+    description: "Employee directory: look up new hires and create system accounts."
+    metadata:
+      transport:
+        kind: streamableHttp
+        path: /mcp
+      tools:
+        - name: lookup_employee
+          description: Look up a new hire by employee id.
+          inputSchema:
+            type: object
+            properties:
+              employee_id:
+                type: string
+                description: Employee id, e.g. E-1001
+            required:
+              - employee_id
+        - name: create_account
+          description: Create an account for an employee in a target system.
+          inputSchema:
+            type: object
+            properties:
+              employee_id:
+                type: string
+                description: Employee id
+              system:
+                type: string
+                description: Target system, e.g. crm, erp, wiki
+            required:
+              - employee_id
+              - system
+  octo_eo1g_learning-mcp:
+    label: Learning MCP
+    description: "Learning platform: role curricula and training assignments."
+    metadata:
+      transport:
+        kind: streamableHttp
+        path: /mcp
+      tools:
+        - name: list_courses
+          description: List the mandatory courses for a role.
+          inputSchema:
+            type: object
+            properties:
+              role:
+                type: string
+                description: Job role
+            required:
+              - role
+        - name: assign_training
+          description: Assign the role curriculum to an employee.
+          inputSchema:
+            type: object
+            properties:
+              employee_id:
+                type: string
+                description: Employee id
+              role:
+                type: string
+                description: Job role
+            required:
+              - employee_id
+              - role
+agents:
+  octo_eo1g_hr-records-agent:
+    label: HR Records Agent
+    description: Maintains employee records, contracts and personal data for new hires.
+    metadata:
+      platform: AgentForce
+      protocol: a2a
+    card:
+      name: HR Records Agent
+      description: Maintains employee records, contracts and personal data for new hires.
+      url: ${hrRecordsAgent.url}
+      protocolVersion: 0.3.0
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: manage-employee-record
+          name: Manage Employee Record
+          description: Create and update the HR record and employment contract of a new hire.
+          tags:
+            - hr
+          examples:
+            - Create the HR record for E-1001
+            - Send the contract to E-1002
+  octo_eo1g_it-provisioning-agent:
+    label: IT Provisioning Agent
+    description: Orders laptops and provisions email, SSO and collaboration accounts.
+    metadata:
+      platform: Azure
+      protocol: a2a
+    card:
+      name: IT Provisioning Agent
+      description: Orders laptops and provisions email, SSO and collaboration accounts.
+      url: ${itProvisioningAgent.url}
+      protocolVersion: 0.3.0
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: provision-it
+          name: Provision IT
+          description: Order equipment and create the accounts a role needs.
+          tags:
+            - it
+            - provisioning
+          examples:
+            - Order a laptop for E-1001
+            - Create email and SSO accounts for E-1001
+  octo_eo1g_facilities-agent:
+    label: Facilities Agent
+    description: Assigns desks, parking and building badges.
+    metadata:
+      platform: MuleSoft
+      protocol: a2a
+    card:
+      name: Facilities Agent
+      description: Assigns desks, parking and building badges.
+      url: ${facilitiesAgent.url}
+      protocolVersion: 0.3.0
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: assign-workspace
+          name: Assign Workspace
+          description: Book a desk and issue a building badge for a new hire.
+          tags:
+            - facilities
+          examples:
+            - Assign a desk for E-1001 in Lausanne
+            - Issue a badge for E-1002

@@ -1,0 +1,490 @@
+{
+  "schema": 1,
+  "templates": [
+    {
+      "id": "v1-employee-onboarding",
+      "version": "v1",
+      "category": "usecase",
+      "title": "Employee Onboarding",
+      "summary": "HR, IT and facilities agents plus directory and learning tools prepare a new hire for day one.",
+      "agents": 3,
+      "mcps": 2,
+      "protocols": [
+        "0.3.0"
+      ],
+      "policies": [],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "README.md"
+      ],
+      "assetId": "employee-onboarding-v1",
+      "prefix": "octo_eo1"
+    },
+    {
+      "id": "v1-employee-onboarding-governed",
+      "version": "v1",
+      "category": "technical",
+      "title": "Employee Onboarding: governed",
+      "summary": "HR, IT and facilities agents plus directory and learning tools prepare a new hire for day one. Adds built-in policies: rate-limiting, mcp-pii-detector, mcp-schema-validation, header-injection, a-two-a-pii-detector, a-two-a-prompt-decorator.",
+      "agents": 3,
+      "mcps": 2,
+      "protocols": [
+        "0.3.0"
+      ],
+      "policies": [
+        "rate-limiting",
+        "mcp-pii-detector",
+        "mcp-schema-validation",
+        "header-injection",
+        "a-two-a-pii-detector",
+        "a-two-a-prompt-decorator"
+      ],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "README.md"
+      ],
+      "assetId": "employee-onboarding-governed-v1",
+      "prefix": "octo_eo1g"
+    },
+    {
+      "id": "v1-customer-service",
+      "version": "v1",
+      "category": "usecase",
+      "title": "Customer Service Broker",
+      "summary": "One front door for orders, returns, billing and loyalty questions, backed by a CRM tool server.",
+      "agents": 4,
+      "mcps": 1,
+      "protocols": [
+        "0.3.0"
+      ],
+      "policies": [],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "README.md"
+      ],
+      "assetId": "customer-service-v1",
+      "prefix": "octo_cs1"
+    },
+    {
+      "id": "v1-customer-service-governed",
+      "version": "v1",
+      "category": "technical",
+      "title": "Customer Service Broker: governed",
+      "summary": "One front door for orders, returns, billing and loyalty questions, backed by a CRM tool server. Adds built-in policies: rate-limiting, mcp-pii-detector, a-two-a-pii-detector, header-injection, a-two-a-prompt-decorator.",
+      "agents": 4,
+      "mcps": 1,
+      "protocols": [
+        "0.3.0"
+      ],
+      "policies": [
+        "rate-limiting",
+        "mcp-pii-detector",
+        "a-two-a-pii-detector",
+        "header-injection",
+        "a-two-a-prompt-decorator"
+      ],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "README.md"
+      ],
+      "assetId": "customer-service-governed-v1",
+      "prefix": "octo_cs1g"
+    },
+    {
+      "id": "v1-it-helpdesk",
+      "version": "v1",
+      "category": "usecase",
+      "title": "IT Helpdesk",
+      "summary": "Triage and access agents work with ITSM, monitoring and knowledge-base tools to resolve tickets.",
+      "agents": 3,
+      "mcps": 3,
+      "protocols": [
+        "0.3.0"
+      ],
+      "policies": [],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "README.md"
+      ],
+      "assetId": "it-helpdesk-v1",
+      "prefix": "octo_ih1"
+    },
+    {
+      "id": "v1-it-helpdesk-governed",
+      "version": "v1",
+      "category": "technical",
+      "title": "IT Helpdesk: governed",
+      "summary": "Triage and access agents work with ITSM, monitoring and knowledge-base tools to resolve tickets. Adds built-in policies: rate-limiting, mcp-pii-detector, mcp-schema-validation, header-injection, a-two-a-pii-detector, a-two-a-prompt-decorator.",
+      "agents": 3,
+      "mcps": 3,
+      "protocols": [
+        "0.3.0"
+      ],
+      "policies": [
+        "rate-limiting",
+        "mcp-pii-detector",
+        "mcp-schema-validation",
+        "header-injection",
+        "a-two-a-pii-detector",
+        "a-two-a-prompt-decorator"
+      ],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "README.md"
+      ],
+      "assetId": "it-helpdesk-governed-v1",
+      "prefix": "octo_ih1g"
+    },
+    {
+      "id": "v1-travel-expense",
+      "version": "v1",
+      "category": "usecase",
+      "title": "Travel & Expense",
+      "summary": "Five specialist agents and four travel and finance tool servers plan trips and settle expenses.",
+      "agents": 5,
+      "mcps": 4,
+      "protocols": [
+        "0.3.0"
+      ],
+      "policies": [],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "README.md"
+      ],
+      "assetId": "travel-expense-v1",
+      "prefix": "octo_te1"
+    },
+    {
+      "id": "v1-travel-expense-governed",
+      "version": "v1",
+      "category": "technical",
+      "title": "Travel & Expense: governed",
+      "summary": "Five specialist agents and four travel and finance tool servers plan trips and settle expenses. Adds built-in policies: rate-limiting, mcp-pii-detector, mcp-schema-validation, header-injection, a-two-a-pii-detector, a-two-a-prompt-decorator.",
+      "agents": 5,
+      "mcps": 4,
+      "protocols": [
+        "0.3.0"
+      ],
+      "policies": [
+        "rate-limiting",
+        "mcp-pii-detector",
+        "mcp-schema-validation",
+        "header-injection",
+        "a-two-a-pii-detector",
+        "a-two-a-prompt-decorator"
+      ],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "README.md"
+      ],
+      "assetId": "travel-expense-governed-v1",
+      "prefix": "octo_te1g"
+    },
+    {
+      "id": "v1-procurement",
+      "version": "v1",
+      "category": "usecase",
+      "title": "Procurement Assistant",
+      "summary": "A tool-heavy broker: two agents and five procurement tool servers turn requests into purchase orders.",
+      "agents": 2,
+      "mcps": 5,
+      "protocols": [
+        "0.3.0"
+      ],
+      "policies": [],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "README.md"
+      ],
+      "assetId": "procurement-v1",
+      "prefix": "octo_p1"
+    },
+    {
+      "id": "v1-procurement-governed",
+      "version": "v1",
+      "category": "technical",
+      "title": "Procurement Assistant: governed",
+      "summary": "A tool-heavy broker: two agents and five procurement tool servers turn requests into purchase orders. Adds built-in policies: rate-limiting, mcp-pii-detector, mcp-schema-validation, header-injection, a-two-a-pii-detector, a-two-a-prompt-decorator.",
+      "agents": 2,
+      "mcps": 5,
+      "protocols": [
+        "0.3.0"
+      ],
+      "policies": [
+        "rate-limiting",
+        "mcp-pii-detector",
+        "mcp-schema-validation",
+        "header-injection",
+        "a-two-a-pii-detector",
+        "a-two-a-prompt-decorator"
+      ],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "README.md"
+      ],
+      "assetId": "procurement-governed-v1",
+      "prefix": "octo_p1g"
+    },
+    {
+      "id": "v2-insurance-claims",
+      "version": "v2",
+      "category": "usecase",
+      "title": "Insurance Claims (FNOL to Payout)",
+      "summary": "Classify a claim, check coverage, gate on fraud risk, then settle through adjuster and payment agents.",
+      "agents": 4,
+      "mcps": 2,
+      "protocols": [
+        "1.0",
+        "0.3.0"
+      ],
+      "policies": [],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "brokers/claims-broker.agent",
+        "README.md"
+      ],
+      "assetId": "insurance-claims-v2",
+      "prefix": "octo_ic2"
+    },
+    {
+      "id": "v2-insurance-claims-governed",
+      "version": "v2",
+      "category": "technical",
+      "title": "Insurance Claims (FNOL to Payout): governed",
+      "summary": "Classify a claim, check coverage, gate on fraud risk, then settle through adjuster and payment agents. Adds built-in policies: a2a-v1-pii-detector, header-injection, mcp-pii-detector, mcp-schema-validation, rate-limiting.",
+      "agents": 4,
+      "mcps": 2,
+      "protocols": [
+        "1.0",
+        "0.3.0"
+      ],
+      "policies": [
+        "a2a-v1-pii-detector",
+        "header-injection",
+        "mcp-pii-detector",
+        "mcp-schema-validation",
+        "rate-limiting"
+      ],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "brokers/claims-broker.agent",
+        "README.md"
+      ],
+      "assetId": "insurance-claims-governed-v2",
+      "prefix": "octo_ic2g"
+    },
+    {
+      "id": "v2-retail-returns",
+      "version": "v2",
+      "category": "usecase",
+      "title": "Retail Returns",
+      "summary": "The smallest deterministic flow: extract the order, check eligibility, create the RMA and refund.",
+      "agents": 2,
+      "mcps": 1,
+      "protocols": [
+        "1.0",
+        "0.3.0"
+      ],
+      "policies": [],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "brokers/returns-broker.agent",
+        "README.md"
+      ],
+      "assetId": "retail-returns-v2",
+      "prefix": "octo_rr2"
+    },
+    {
+      "id": "v2-retail-returns-governed",
+      "version": "v2",
+      "category": "technical",
+      "title": "Retail Returns: governed",
+      "summary": "The smallest deterministic flow: extract the order, check eligibility, create the RMA and refund. Adds built-in policies: a2a-v1-pii-detector, header-injection, mcp-pii-detector, mcp-schema-validation, rate-limiting.",
+      "agents": 2,
+      "mcps": 1,
+      "protocols": [
+        "1.0",
+        "0.3.0"
+      ],
+      "policies": [
+        "a2a-v1-pii-detector",
+        "header-injection",
+        "mcp-pii-detector",
+        "mcp-schema-validation",
+        "rate-limiting"
+      ],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "brokers/returns-broker.agent",
+        "README.md"
+      ],
+      "assetId": "retail-returns-governed-v2",
+      "prefix": "octo_rr2g"
+    },
+    {
+      "id": "v2-loan-origination",
+      "version": "v2",
+      "category": "usecase",
+      "title": "Loan Origination",
+      "summary": "Five agents (A2A 1.0 and 0.3.0) and three banking tool servers take a loan from application to decision.",
+      "agents": 5,
+      "mcps": 3,
+      "protocols": [
+        "1.0",
+        "0.3.0"
+      ],
+      "policies": [],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "brokers/loan-broker.agent",
+        "README.md"
+      ],
+      "assetId": "loan-origination-v2",
+      "prefix": "octo_lo2"
+    },
+    {
+      "id": "v2-loan-origination-governed",
+      "version": "v2",
+      "category": "technical",
+      "title": "Loan Origination: governed",
+      "summary": "Five agents (A2A 1.0 and 0.3.0) and three banking tool servers take a loan from application to decision. Adds built-in policies: a2a-v1-pii-detector, header-injection, a-two-a-pii-detector, mcp-pii-detector, mcp-schema-validation, rate-limiting.",
+      "agents": 5,
+      "mcps": 3,
+      "protocols": [
+        "1.0",
+        "0.3.0"
+      ],
+      "policies": [
+        "a2a-v1-pii-detector",
+        "header-injection",
+        "a-two-a-pii-detector",
+        "mcp-pii-detector",
+        "mcp-schema-validation",
+        "rate-limiting"
+      ],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "brokers/loan-broker.agent",
+        "README.md"
+      ],
+      "assetId": "loan-origination-governed-v2",
+      "prefix": "octo_lo2g"
+    },
+    {
+      "id": "v2-field-service",
+      "version": "v2",
+      "category": "usecase",
+      "title": "Field Service Dispatch",
+      "summary": "Diagnose an equipment fault, check parts and weather, and dispatch or resolve remotely.",
+      "agents": 3,
+      "mcps": 4,
+      "protocols": [
+        "1.0",
+        "0.3.0"
+      ],
+      "policies": [],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "brokers/field-service-broker.agent",
+        "README.md"
+      ],
+      "assetId": "field-service-v2",
+      "prefix": "octo_fs2"
+    },
+    {
+      "id": "v2-field-service-governed",
+      "version": "v2",
+      "category": "technical",
+      "title": "Field Service Dispatch: governed",
+      "summary": "Diagnose an equipment fault, check parts and weather, and dispatch or resolve remotely. Adds built-in policies: a2a-v1-pii-detector, header-injection, mcp-pii-detector, mcp-schema-validation, rate-limiting.",
+      "agents": 3,
+      "mcps": 4,
+      "protocols": [
+        "1.0",
+        "0.3.0"
+      ],
+      "policies": [
+        "a2a-v1-pii-detector",
+        "header-injection",
+        "mcp-pii-detector",
+        "mcp-schema-validation",
+        "rate-limiting"
+      ],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "brokers/field-service-broker.agent",
+        "README.md"
+      ],
+      "assetId": "field-service-governed-v2",
+      "prefix": "octo_fs2g"
+    },
+    {
+      "id": "v2-campaign-studio",
+      "version": "v2",
+      "category": "usecase",
+      "title": "Marketing Campaign Studio",
+      "summary": "A tool-heavy deterministic flow: two agents and four marketing tool servers build and launch a campaign.",
+      "agents": 2,
+      "mcps": 4,
+      "protocols": [
+        "1.0",
+        "0.3.0"
+      ],
+      "policies": [],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "brokers/campaign-broker.agent",
+        "README.md"
+      ],
+      "assetId": "campaign-studio-v2",
+      "prefix": "octo_cs2"
+    },
+    {
+      "id": "v2-campaign-studio-governed",
+      "version": "v2",
+      "category": "technical",
+      "title": "Marketing Campaign Studio: governed",
+      "summary": "A tool-heavy deterministic flow: two agents and four marketing tool servers build and launch a campaign. Adds built-in policies: a2a-v1-pii-detector, header-injection, mcp-pii-detector, mcp-schema-validation, rate-limiting.",
+      "agents": 2,
+      "mcps": 4,
+      "protocols": [
+        "1.0",
+        "0.3.0"
+      ],
+      "policies": [
+        "a2a-v1-pii-detector",
+        "header-injection",
+        "mcp-pii-detector",
+        "mcp-schema-validation",
+        "rate-limiting"
+      ],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "brokers/campaign-broker.agent",
+        "README.md"
+      ],
+      "assetId": "campaign-studio-governed-v2",
+      "prefix": "octo_cs2g"
+    }
+  ]
+}

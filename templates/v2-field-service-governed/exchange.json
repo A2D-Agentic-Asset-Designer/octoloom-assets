@@ -1,0 +1,110 @@
+{
+  "main": "agent-network.yaml",
+  "name": "field-service-governed-v2",
+  "classifier": "agentic-network",
+  "descriptorVersion": "1.0.0",
+  "apiVersion": "v1",
+  "tags": [
+    "octoloom-example"
+  ],
+  "metadata": {
+    "variables": {
+      "openai": {
+        "apiKey": {
+          "description": "OpenAI API key (secret, injected at deploy time)",
+          "default": "",
+          "secret": true
+        }
+      },
+      "dispatchAgent": {
+        "url": {
+          "description": "Dispatch Agent (A2D mock, A2A 1.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/69ebd12e-296f-4eed-949f-26296e3c7fe9/a2a",
+          "secret": false
+        }
+      },
+      "partsAgent": {
+        "url": {
+          "description": "Parts Logistics Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/1f49d5bd-b631-498b-b2a6-84de58a41521/a2a",
+          "secret": false
+        }
+      },
+      "customerCommsAgent": {
+        "url": {
+          "description": "Customer Communications Agent (A2D mock, A2A 1.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/f3d6ebd7-0b13-43c2-b2ef-f55ac045c18a/a2a",
+          "secret": false
+        }
+      },
+      "assetRegistryMcp": {
+        "url": {
+          "description": "Asset Registry MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/e63366bc-fc42-4a5f-82c6-960245f373d8/",
+          "secret": false
+        }
+      },
+      "diagnosticsMcp": {
+        "url": {
+          "description": "Diagnostics MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/9c1cb10f-5950-428c-88aa-d2b0f52f508e/",
+          "secret": false
+        }
+      },
+      "inventoryMcp": {
+        "url": {
+          "description": "Parts Inventory MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/646e87d9-595d-4194-8ffd-4eeb958fc2f5/",
+          "secret": false
+        }
+      },
+      "weatherMcp": {
+        "url": {
+          "description": "Weather MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/1839bfc8-fb85-4256-9195-26c193243b7d/",
+          "secret": false
+        }
+      }
+    }
+  },
+  "dependencies": [
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "a2a-v1-pii-detector",
+      "version": "1.0.0"
+    },
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "header-injection",
+      "version": "1.3.3"
+    },
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "mcp-pii-detector",
+      "version": "1.0.1"
+    },
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "mcp-schema-validation",
+      "version": "1.3.0"
+    },
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "rate-limiting",
+      "version": "1.5.1"
+    }
+  ],
+  "groupId": "${organizationId}",
+  "assetId": "field-service-governed-v2",
+  "version": "1.0.0"
+}

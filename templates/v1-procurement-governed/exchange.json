@@ -1,0 +1,124 @@
+{
+  "main": "agent-network.yaml",
+  "name": "procurement-governed-v1",
+  "classifier": "agent-network",
+  "descriptorVersion": "1.0.0",
+  "apiVersion": "v1",
+  "tags": [
+    "octoloom-example"
+  ],
+  "metadata": {
+    "variables": {
+      "ingressgw": {
+        "url": {
+          "description": "Ingress gateway base URL (the broker is served under it)",
+          "default": "",
+          "secret": false
+        }
+      },
+      "openai": {
+        "apiKey": {
+          "description": "OpenAI API key (secret, injected at deploy time)",
+          "default": "",
+          "secret": true
+        }
+      },
+      "catalogMcp": {
+        "url": {
+          "description": "Catalog MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/fc34bc2e-353d-47e5-bd83-92e6bf54fc62/",
+          "secret": false
+        }
+      },
+      "budgetMcp": {
+        "url": {
+          "description": "Budget MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/f4b4d8b6-3665-461b-bdc7-ddad0844cd4a/",
+          "secret": false
+        }
+      },
+      "supplierRegistryMcp": {
+        "url": {
+          "description": "Supplier Registry MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/4ce2b160-071c-4dc2-92c6-8b25b6d6bbd4/",
+          "secret": false
+        }
+      },
+      "contractsMcp": {
+        "url": {
+          "description": "Contracts MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/622d4561-4016-44f6-b158-2f642bbb3fe8/",
+          "secret": false
+        }
+      },
+      "purchaseOrdersMcp": {
+        "url": {
+          "description": "Purchase Orders MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/701ff77b-9e79-4dda-84bb-867e3aa7ad1b/",
+          "secret": false
+        }
+      },
+      "supplierRiskAgent": {
+        "url": {
+          "description": "Supplier Risk Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/61c4b202-4364-402c-bc08-6a6c0c5c719c/a2a",
+          "secret": false
+        }
+      },
+      "sourcingAgent": {
+        "url": {
+          "description": "Sourcing Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/6c82f3d9-b7fe-460e-82b8-768e047ba83d/a2a",
+          "secret": false
+        }
+      }
+    }
+  },
+  "dependencies": [
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "rate-limiting",
+      "version": "1.5.1"
+    },
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "mcp-pii-detector",
+      "version": "1.0.1"
+    },
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "mcp-schema-validation",
+      "version": "1.3.0"
+    },
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "header-injection",
+      "version": "1.3.3"
+    },
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "a-two-a-pii-detector",
+      "version": "1.0.2"
+    },
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "a-two-a-prompt-decorator",
+      "version": "1.0.2"
+    }
+  ],
+  "groupId": "${organizationId}",
+  "assetId": "procurement-governed-v1",
+  "version": "1.0.0"
+}

@@ -1,0 +1,169 @@
+# @dialect: AGENTFABRIC=1.0
+# Insurance Claims (FNOL to Payout): Classify a claim, check coverage, gate on fraud risk, then settle through adjuster and payment agents.
+# Upstreams are A2D mocks; see README.md for test prompts.
+
+system:
+  instructions: "You are a claims handler. Every claim is checked for coverage and fraud before any money moves."
+
+config:
+  agent_name: "claims-broker"
+  default_llm: @llm.default
+
+llm:
+  default:
+    target: "llm://openai_connection"
+    kind: "OpenAI"
+    model: "gpt-5-mini"
+
+actions:
+  fnol_agent:
+    target: "a2a://fnol_agent_connection"
+    kind: "a2a:send_message"
+  fraud_agent:
+    target: "a2a://fraud_agent_connection"
+    kind: "a2a:send_message"
+  adjuster_agent:
+    target: "a2a://adjuster_agent_connection"
+    kind: "a2a:send_message"
+  payments_agent:
+    target: "a2a://payments_agent_connection"
+    kind: "a2a:send_message"
+  check_coverage:
+    target: "mcp://policy_admin_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "check_coverage"
+  create_claim:
+    target: "mcp://claims_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "create_claim"
+  refer_to_siu:
+    target: "mcp://claims_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "refer_to_siu"
+    inputs:
+      policy_id: string
+      reason: string
+
+trigger claimsBrokerTrigger:
+  kind: "a2a"
+  target: "brokers://octo_ic2_claims_broker/a2a"
+  on_message: ->
+    transition to @generator.classifyClaim
+
+generator classifyClaim:
+  description: "Classifies the loss and extracts the policy id."
+  label: "Classify Claim"
+  system:
+    instructions: |
+      Extract the policy id (for example POL-5001), the loss type and a one-line summary.
+      Loss type is "motor" for vehicles and "property" for homes and buildings.
+  prompt: ->
+    | {!@request.payload.message.parts[0].text}
+  outputs:
+    properties:
+      policy_id:
+        type: "string"
+        description: "Policy id, e.g. POL-5001"
+      loss_type:
+        type: "string"
+        description: "Type of loss"
+        enum:
+          - "motor"
+          - "property"
+      summary:
+        type: "string"
+        description: "One-line loss summary"
+  on_exit: ->
+    transition to @orchestrator.assessClaim
+
+# Coordinates several agents and tools; the LLM decides the order.
+orchestrator assessClaim:
+  description: "Records the FNOL, checks coverage and screens for fraud."
+  label: "Assess Claim"
+  system:
+    instructions: |
+      1. Record the first notice of loss with the FNOL agent.
+      2. Check coverage for the policy and loss type.
+      3. Ask the Fraud Screening agent for a risk level.
+      Set covered to "yes" or "no" from the coverage tool and fraud_risk to "high" or "low" from the fraud agent.
+  reasoning:
+    instructions: ->
+      | Policy {!@generator.classifyClaim.output.policy_id}, {!@generator.classifyClaim.output.loss_type}: {!@request.payload.message.parts[0].text}
+    actions:
+      record_fnol: @actions.fnol_agent
+      coverage: @actions.check_coverage
+      fraud: @actions.fraud_agent
+    max_number_of_loops: 6
+    outputs:
+      properties:
+        covered:
+          type: "string"
+          description: "Coverage result"
+          enum:
+            - "yes"
+            - "no"
+        fraud_risk:
+          type: "string"
+          description: "Fraud risk level"
+          enum:
+            - "high"
+            - "low"
+        detail:
+          type: "string"
+          description: "What was found"
+  on_exit: ->
+    transition to @router.claimRouter
+
+router claimRouter:
+  description: "Not covered: stop. High fraud risk: refer to SIU. Otherwise settle."
+  routes:
+    - target: @echo.notCovered
+      when: @orchestrator.assessClaim.output.covered == "no"
+      label: "Not covered"
+    - target: @executor.referToSiu
+      when: @orchestrator.assessClaim.output.fraud_risk == "high"
+      label: "High fraud risk"
+  otherwise:
+    target: @orchestrator.settleClaim
+
+echo notCovered:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Claim not covered for policy " + @generator.classifyClaim.output.policy_id + ": " + @orchestrator.assessClaim.output.detail)]})
+
+executor referToSiu:
+  description: "Refers the claim to the special investigations unit."
+  do: ->
+    run @actions.refer_to_siu
+      with policy_id = @generator.classifyClaim.output.policy_id
+      with reason = "High fraud risk score"
+  on_exit: ->
+    transition to @echo.referred
+
+echo referred:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Claim for policy " + @generator.classifyClaim.output.policy_id + " was referred to special investigations. A specialist will contact you.")]})
+
+orchestrator settleClaim:
+  description: "Creates the claim, gets a settlement and pays it."
+  label: "Settle Claim"
+  system:
+    instructions: |
+      Create the claim record, ask the adjuster for a settlement proposal, then pay it with the payments agent.
+      Return a short summary with the claim id, settlement amount and payment id.
+  reasoning:
+    instructions: ->
+      | Policy {!@generator.classifyClaim.output.policy_id}, {!@generator.classifyClaim.output.loss_type}: {!@generator.classifyClaim.output.summary}
+    actions:
+      create_claim: @actions.create_claim
+      adjust: @actions.adjuster_agent
+      pay: @actions.payments_agent
+    max_number_of_loops: 8
+  on_exit: ->
+    transition to @echo.settled
+
+echo settled:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart(@orchestrator.settleClaim.output)]})

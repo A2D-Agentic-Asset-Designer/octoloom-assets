@@ -1,0 +1,515 @@
+schemaVersion: 1.0.0
+label: Travel & Expense (governed)
+brokers:
+  octo_te1g_travel-expense-broker:
+    card:
+      protocolVersion: 0.3.0
+      name: octo_te1g_travel-expense-broker
+      description: Five specialist agents and four travel and finance tool servers plan trips and settle expenses.
+      url: ${ingressgw.url}/octo_te1g_travel-expense-broker
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+        stateTransitionHistory: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: plan-trip
+          name: Plan Business Trip
+          description: Plan and book a policy-compliant business trip.
+          tags:
+            - travel
+          examples:
+            - Book a trip from Zurich to London for 2026-12-02 to 2026-12-04
+            - Do I need a visa for India?
+        - id: settle-expenses
+          name: Settle Expenses
+          description: Audit and reimburse travel expenses.
+          tags:
+            - expense
+          examples:
+            - Submit my hotel bill of 420 GBP for reimbursement
+    spec:
+      llm:
+        ref:
+          name: octo_te1g_openai
+        configuration:
+          model: gpt-5-mini
+      instructions:
+        - You plan business trips and settle travel expenses.
+        - Check the travel policy with the Policy Advisor agent before booking anything.
+        - Search flights and hotels with the tools, then book through the Travel Booking agent.
+        - For trips abroad ask the Visa agent whether a visa is needed.
+        - "Expenses: convert amounts with convert_currency, audit them with the Expense Audit agent and pay out through the Reimbursement agent."
+      links:
+        - agent:
+            ref:
+              name: octo_te1g_travel-booking-agent
+        - agent:
+            ref:
+              name: octo_te1g_policy-advisor-agent
+        - agent:
+            ref:
+              name: octo_te1g_visa-agent
+        - agent:
+            ref:
+              name: octo_te1g_expense-audit-agent
+        - agent:
+            ref:
+              name: octo_te1g_reimbursement-agent
+      tools:
+        - mcp:
+            ref:
+              name: octo_te1g_flights-mcp
+            allowed:
+              - search_flights
+        - mcp:
+            ref:
+              name: octo_te1g_hotels-mcp
+            allowed:
+              - search_hotels
+        - mcp:
+            ref:
+              name: octo_te1g_expense-mcp
+            allowed:
+              - create_expense_report
+        - mcp:
+            ref:
+              name: octo_te1g_currency-mcp
+            allowed:
+              - convert_currency
+      maxNumberOfLoops: 25
+      maxConsecutiveErrors: 3
+      taskTimeoutSecs: 90
+      policies:
+        - ref:
+            name: rate-limiting
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            rateLimits:
+              - maximumRequests: 60
+                timePeriodInMilliseconds: 60000
+            exposeHeaders: true
+llmProviders:
+  octo_te1g_openai:
+    label: OpenAI
+    description: OpenAI LLM provider
+    metadata:
+      platform: OpenAI
+      models:
+        - gpt-5-mini
+connections:
+  openai-connection:
+    kind: llm
+    ref:
+      name: octo_te1g_openai
+    spec:
+      url: https://api.openai.com/v1/
+      configuration:
+        apiKey: ${openai.apiKey}
+        timeout: 600000
+  flights-mcp-connection:
+    kind: mcp
+    ref:
+      name: octo_te1g_flights-mcp
+    spec:
+      url: ${flightsMcp.url}
+      policies:
+        - ref:
+            name: mcp-pii-detector
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            entities:
+              - Email
+              - US SSN
+              - Credit Card
+              - Phone Number
+            action: Log and mask
+  hotels-mcp-connection:
+    kind: mcp
+    ref:
+      name: octo_te1g_hotels-mcp
+    spec:
+      url: ${hotelsMcp.url}
+      policies:
+        - ref:
+            name: mcp-schema-validation
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            validateToolSchema: true
+        - ref:
+            name: header-injection
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            inboundHeaders:
+              - key: x-octoloom-source
+                value: travel-expense-governed-v1
+  expense-mcp-connection:
+    kind: mcp
+    ref:
+      name: octo_te1g_expense-mcp
+    spec:
+      url: ${expenseMcp.url}
+      policies:
+        - ref:
+            name: mcp-pii-detector
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            entities:
+              - Email
+              - US SSN
+              - Credit Card
+              - Phone Number
+            action: Log and mask
+  currency-mcp-connection:
+    kind: mcp
+    ref:
+      name: octo_te1g_currency-mcp
+    spec:
+      url: ${currencyMcp.url}
+      policies:
+        - ref:
+            name: mcp-schema-validation
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            validateToolSchema: true
+        - ref:
+            name: header-injection
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            inboundHeaders:
+              - key: x-octoloom-source
+                value: travel-expense-governed-v1
+  travel-booking-agent-connection:
+    kind: agent
+    ref:
+      name: octo_te1g_travel-booking-agent
+    spec:
+      url: ${travelBookingAgent.url}
+      policies:
+        - ref:
+            name: a-two-a-pii-detector
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            entities:
+              - Email
+              - US SSN
+              - Credit Card
+            action: Log
+  policy-advisor-agent-connection:
+    kind: agent
+    ref:
+      name: octo_te1g_policy-advisor-agent
+    spec:
+      url: ${policyAdvisorAgent.url}
+      policies:
+        - ref:
+            name: header-injection
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            inboundHeaders:
+              - key: x-correlation-source
+                value: octo_te1g_travel-expense-broker
+        - ref:
+            name: a-two-a-prompt-decorator
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            textDecorators:
+              - text: "#['Answer concisely and never include personal data.']"
+  visa-agent-connection:
+    kind: agent
+    ref:
+      name: octo_te1g_visa-agent
+    spec:
+      url: ${visaAgent.url}
+      policies:
+        - ref:
+            name: a-two-a-pii-detector
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            entities:
+              - Email
+              - US SSN
+              - Credit Card
+            action: Log
+  expense-audit-agent-connection:
+    kind: agent
+    ref:
+      name: octo_te1g_expense-audit-agent
+    spec:
+      url: ${expenseAuditAgent.url}
+      policies:
+        - ref:
+            name: header-injection
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            inboundHeaders:
+              - key: x-correlation-source
+                value: octo_te1g_travel-expense-broker
+        - ref:
+            name: a-two-a-prompt-decorator
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            textDecorators:
+              - text: "#['Answer concisely and never include personal data.']"
+  reimbursement-agent-connection:
+    kind: agent
+    ref:
+      name: octo_te1g_reimbursement-agent
+    spec:
+      url: ${reimbursementAgent.url}
+      policies:
+        - ref:
+            name: a-two-a-pii-detector
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            entities:
+              - Email
+              - US SSN
+              - Credit Card
+            action: Log
+mcpServers:
+  octo_te1g_flights-mcp:
+    label: Flights MCP
+    description: Flight search.
+    metadata:
+      transport:
+        kind: streamableHttp
+        path: /mcp
+      tools:
+        - name: search_flights
+          description: Search flights.
+          inputSchema:
+            type: object
+            properties:
+              origin:
+                type: string
+                description: IATA code
+              destination:
+                type: string
+                description: IATA code
+              date:
+                type: string
+                description: YYYY-MM-DD
+            required:
+              - origin
+              - destination
+  octo_te1g_hotels-mcp:
+    label: Hotels MCP
+    description: Hotel search.
+    metadata:
+      transport:
+        kind: streamableHttp
+        path: /mcp
+      tools:
+        - name: search_hotels
+          description: Search hotels in a city.
+          inputSchema:
+            type: object
+            properties:
+              city:
+                type: string
+                description: City
+              nights:
+                type: number
+                description: Nights
+            required:
+              - city
+  octo_te1g_expense-mcp:
+    label: Expense MCP
+    description: Expense reports.
+    metadata:
+      transport:
+        kind: streamableHttp
+        path: /mcp
+      tools:
+        - name: create_expense_report
+          description: Create an expense report line.
+          inputSchema:
+            type: object
+            properties:
+              description:
+                type: string
+                description: What was paid
+              amount:
+                type: number
+                description: Amount
+              currency:
+                type: string
+                description: ISO currency
+            required:
+              - description
+              - amount
+  octo_te1g_currency-mcp:
+    label: Currency MCP
+    description: Currency conversion.
+    metadata:
+      transport:
+        kind: streamableHttp
+        path: /mcp
+      tools:
+        - name: convert_currency
+          description: Convert an amount to CHF.
+          inputSchema:
+            type: object
+            properties:
+              amount:
+                type: number
+                description: Amount
+              from:
+                type: string
+                description: ISO currency
+            required:
+              - amount
+              - from
+agents:
+  octo_te1g_travel-booking-agent:
+    label: Travel Booking Agent
+    description: Books flights, hotels and rail.
+    metadata:
+      platform: MuleSoft
+      protocol: a2a
+    card:
+      name: Travel Booking Agent
+      description: Books flights, hotels and rail.
+      url: ${travelBookingAgent.url}
+      protocolVersion: 0.3.0
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: book-travel
+          name: Book Travel
+          description: Book a flight or hotel.
+          tags:
+            - booking
+          examples:
+            - Book flight LX318
+  octo_te1g_policy-advisor-agent:
+    label: Policy Advisor Agent
+    description: Explains the corporate travel policy.
+    metadata:
+      platform: AgentForce
+      protocol: a2a
+    card:
+      name: Policy Advisor Agent
+      description: Explains the corporate travel policy.
+      url: ${policyAdvisorAgent.url}
+      protocolVersion: 0.3.0
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: travel-policy
+          name: Travel Policy
+          description: Check a trip against policy.
+          tags:
+            - policy
+          examples:
+            - Can I fly business class to London?
+  octo_te1g_visa-agent:
+    label: Visa Agent
+    description: Visa and entry requirements.
+    metadata:
+      platform: Bedrock
+      protocol: a2a
+    card:
+      name: Visa Agent
+      description: Visa and entry requirements.
+      url: ${visaAgent.url}
+      protocolVersion: 0.3.0
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: visa-check
+          name: Visa Check
+          description: Check visa requirements.
+          tags:
+            - visa
+          examples:
+            - Do I need a visa for India?
+  octo_te1g_expense-audit-agent:
+    label: Expense Audit Agent
+    description: Audits expenses against policy.
+    metadata:
+      platform: OpenAI
+      protocol: a2a
+    card:
+      name: Expense Audit Agent
+      description: Audits expenses against policy.
+      url: ${expenseAuditAgent.url}
+      protocolVersion: 0.3.0
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: audit-expense
+          name: Audit Expense
+          description: Check an expense line against policy.
+          tags:
+            - audit
+          examples:
+            - Audit hotel bill 420 GBP
+  octo_te1g_reimbursement-agent:
+    label: Reimbursement Agent
+    description: Pays out approved expenses.
+    metadata:
+      platform: Snowflake
+      protocol: a2a
+    card:
+      name: Reimbursement Agent
+      description: Pays out approved expenses.
+      url: ${reimbursementAgent.url}
+      protocolVersion: 0.3.0
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: reimburse
+          name: Reimburse
+          description: Pay out an approved expense.
+          tags:
+            - payments
+          examples:
+            - Reimburse 482.30 CHF

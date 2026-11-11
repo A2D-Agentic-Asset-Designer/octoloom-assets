@@ -1,0 +1,387 @@
+schemaVersion: 1.0.0
+label: Procurement Assistant (governed)
+brokers:
+  octo_p1g_procurement-broker:
+    card:
+      protocolVersion: 0.3.0
+      name: octo_p1g_procurement-broker
+      description: "A tool-heavy broker: two agents and five procurement tool servers turn requests into purchase orders."
+      url: ${ingressgw.url}/octo_p1g_procurement-broker
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+        stateTransitionHistory: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: purchase-request
+          name: Purchase Request
+          description: Create a purchase order from a request.
+          tags:
+            - procurement
+          examples:
+            - Order 5 monitors for cost centre CC-410
+            - Is supplier SUP-88 approved?
+    spec:
+      llm:
+        ref:
+          name: octo_p1g_openai
+        configuration:
+          model: gpt-5-mini
+      instructions:
+        - You turn purchase requests into compliant purchase orders.
+        - Find the item in the catalog, check the cost-centre budget and look up the supplier.
+        - Ask the Supplier Risk agent to assess any supplier that is not yet approved.
+        - Use an existing framework contract when one exists; create the purchase order only when the budget is sufficient.
+        - Ask the Sourcing agent for alternatives when an item is unavailable or over budget.
+      links:
+        - agent:
+            ref:
+              name: octo_p1g_supplier-risk-agent
+        - agent:
+            ref:
+              name: octo_p1g_sourcing-agent
+      tools:
+        - mcp:
+            ref:
+              name: octo_p1g_catalog-mcp
+            allowed:
+              - search_catalog
+        - mcp:
+            ref:
+              name: octo_p1g_budget-mcp
+            allowed:
+              - check_budget
+        - mcp:
+            ref:
+              name: octo_p1g_supplier-registry-mcp
+            allowed:
+              - get_supplier
+        - mcp:
+            ref:
+              name: octo_p1g_contracts-mcp
+            allowed:
+              - find_contract
+        - mcp:
+            ref:
+              name: octo_p1g_purchase-orders-mcp
+            allowed:
+              - create_purchase_order
+      maxNumberOfLoops: 25
+      maxConsecutiveErrors: 3
+      taskTimeoutSecs: 90
+      policies:
+        - ref:
+            name: rate-limiting
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            rateLimits:
+              - maximumRequests: 60
+                timePeriodInMilliseconds: 60000
+            exposeHeaders: true
+llmProviders:
+  octo_p1g_openai:
+    label: OpenAI
+    description: OpenAI LLM provider
+    metadata:
+      platform: OpenAI
+      models:
+        - gpt-5-mini
+connections:
+  openai-connection:
+    kind: llm
+    ref:
+      name: octo_p1g_openai
+    spec:
+      url: https://api.openai.com/v1/
+      configuration:
+        apiKey: ${openai.apiKey}
+        timeout: 600000
+  catalog-mcp-connection:
+    kind: mcp
+    ref:
+      name: octo_p1g_catalog-mcp
+    spec:
+      url: ${catalogMcp.url}
+      policies:
+        - ref:
+            name: mcp-pii-detector
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            entities:
+              - Email
+              - US SSN
+              - Credit Card
+              - Phone Number
+            action: Log and mask
+  budget-mcp-connection:
+    kind: mcp
+    ref:
+      name: octo_p1g_budget-mcp
+    spec:
+      url: ${budgetMcp.url}
+      policies:
+        - ref:
+            name: mcp-schema-validation
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            validateToolSchema: true
+        - ref:
+            name: header-injection
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            inboundHeaders:
+              - key: x-octoloom-source
+                value: procurement-governed-v1
+  supplier-registry-mcp-connection:
+    kind: mcp
+    ref:
+      name: octo_p1g_supplier-registry-mcp
+    spec:
+      url: ${supplierRegistryMcp.url}
+      policies:
+        - ref:
+            name: mcp-pii-detector
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            entities:
+              - Email
+              - US SSN
+              - Credit Card
+              - Phone Number
+            action: Log and mask
+  contracts-mcp-connection:
+    kind: mcp
+    ref:
+      name: octo_p1g_contracts-mcp
+    spec:
+      url: ${contractsMcp.url}
+      policies:
+        - ref:
+            name: mcp-schema-validation
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            validateToolSchema: true
+        - ref:
+            name: header-injection
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            inboundHeaders:
+              - key: x-octoloom-source
+                value: procurement-governed-v1
+  purchase-orders-mcp-connection:
+    kind: mcp
+    ref:
+      name: octo_p1g_purchase-orders-mcp
+    spec:
+      url: ${purchaseOrdersMcp.url}
+      policies:
+        - ref:
+            name: mcp-pii-detector
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            entities:
+              - Email
+              - US SSN
+              - Credit Card
+              - Phone Number
+            action: Log and mask
+  supplier-risk-agent-connection:
+    kind: agent
+    ref:
+      name: octo_p1g_supplier-risk-agent
+    spec:
+      url: ${supplierRiskAgent.url}
+      policies:
+        - ref:
+            name: a-two-a-pii-detector
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            entities:
+              - Email
+              - US SSN
+              - Credit Card
+            action: Log
+  sourcing-agent-connection:
+    kind: agent
+    ref:
+      name: octo_p1g_sourcing-agent
+    spec:
+      url: ${sourcingAgent.url}
+      policies:
+        - ref:
+            name: header-injection
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            inboundHeaders:
+              - key: x-correlation-source
+                value: octo_p1g_procurement-broker
+        - ref:
+            name: a-two-a-prompt-decorator
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            textDecorators:
+              - text: "#['Answer concisely and never include personal data.']"
+mcpServers:
+  octo_p1g_catalog-mcp:
+    label: Catalog MCP
+    description: Product catalog.
+    metadata:
+      transport:
+        kind: streamableHttp
+        path: /mcp
+      tools:
+        - name: search_catalog
+          description: Search the catalog.
+          inputSchema:
+            type: object
+            properties:
+              query:
+                type: string
+                description: Item description
+            required:
+              - query
+  octo_p1g_budget-mcp:
+    label: Budget MCP
+    description: Cost-centre budgets.
+    metadata:
+      transport:
+        kind: streamableHttp
+        path: /mcp
+      tools:
+        - name: check_budget
+          description: Remaining budget of a cost centre.
+          inputSchema:
+            type: object
+            properties:
+              cost_center:
+                type: string
+                description: Cost centre id
+            required:
+              - cost_center
+  octo_p1g_supplier-registry-mcp:
+    label: Supplier Registry MCP
+    description: Approved suppliers.
+    metadata:
+      transport:
+        kind: streamableHttp
+        path: /mcp
+      tools:
+        - name: get_supplier
+          description: Get a supplier.
+          inputSchema:
+            type: object
+            properties:
+              supplier_id:
+                type: string
+                description: Supplier id
+            required:
+              - supplier_id
+  octo_p1g_contracts-mcp:
+    label: Contracts MCP
+    description: Framework contracts.
+    metadata:
+      transport:
+        kind: streamableHttp
+        path: /mcp
+      tools:
+        - name: find_contract
+          description: Find a framework contract for a supplier.
+          inputSchema:
+            type: object
+            properties:
+              supplier_id:
+                type: string
+                description: Supplier id
+            required:
+              - supplier_id
+  octo_p1g_purchase-orders-mcp:
+    label: Purchase Orders MCP
+    description: Purchase orders.
+    metadata:
+      transport:
+        kind: streamableHttp
+        path: /mcp
+      tools:
+        - name: create_purchase_order
+          description: Create a purchase order.
+          inputSchema:
+            type: object
+            properties:
+              sku:
+                type: string
+                description: Item SKU
+              quantity:
+                type: number
+                description: Quantity
+              cost_center:
+                type: string
+                description: Cost centre
+            required:
+              - sku
+              - quantity
+              - cost_center
+agents:
+  octo_p1g_supplier-risk-agent:
+    label: Supplier Risk Agent
+    description: Assesses supplier financial, ESG and sanctions risk.
+    metadata:
+      platform: Databricks
+      protocol: a2a
+    card:
+      name: Supplier Risk Agent
+      description: Assesses supplier financial, ESG and sanctions risk.
+      url: ${supplierRiskAgent.url}
+      protocolVersion: 0.3.0
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: assess-supplier
+          name: Assess Supplier
+          description: Score a supplier risk.
+          tags:
+            - risk
+          examples:
+            - Assess supplier SUP-88
+  octo_p1g_sourcing-agent:
+    label: Sourcing Agent
+    description: Finds alternative items and suppliers.
+    metadata:
+      platform: LangChain
+      protocol: a2a
+    card:
+      name: Sourcing Agent
+      description: Finds alternative items and suppliers.
+      url: ${sourcingAgent.url}
+      protocolVersion: 0.3.0
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: find-alternatives
+          name: Find Alternatives
+          description: Suggest alternative items or suppliers.
+          tags:
+            - sourcing
+          examples:
+            - Alternatives for a 27" monitor
