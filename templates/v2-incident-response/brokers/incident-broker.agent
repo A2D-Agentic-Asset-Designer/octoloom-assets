@@ -1,0 +1,186 @@
+# @dialect: AGENTFABRIC=1.0
+# IT Incident Response: Alerts are classified; P1s become a major incident with on-call page and status page, others go to the network, database or application specialist.
+# Upstreams are A2D mocks; see README.md for test prompts.
+
+system:
+  instructions: "You are the incident commander. Classify first, then act. Customer communication only for P1."
+
+config:
+  agent_name: "incident-broker"
+  default_llm: @llm.default
+
+llm:
+  default:
+    target: "llm://openai_connection"
+    kind: "OpenAI"
+    model: "gpt-5-mini"
+
+actions:
+  get_service_health:
+    target: "mcp://monitoring_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "get_service_health"
+  create_incident:
+    target: "mcp://itsm_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "create_incident"
+    inputs:
+      service: string
+      priority: string
+  page_oncall:
+    target: "mcp://itsm_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "page_oncall"
+  triage_agent:
+    target: "a2a://triage_agent_connection"
+    kind: "a2a:send_message"
+  network_agent:
+    target: "a2a://network_agent_connection"
+    kind: "a2a:send_message"
+  database_agent:
+    target: "a2a://database_agent_connection"
+    kind: "a2a:send_message"
+  app_support_agent:
+    target: "a2a://app_support_agent_connection"
+    kind: "a2a:send_message"
+  status_page_agent:
+    target: "a2a://status_page_agent_connection"
+    kind: "a2a:send_message"
+
+trigger incidentBrokerTrigger:
+  kind: "a2a"
+  target: "brokers://octo_ir2_incident_broker/a2a"
+  on_message: ->
+    transition to @generator.classifyIncident
+
+generator classifyIncident:
+  description: "Classifies the incident: service, priority and area."
+  label: "Classify Incident"
+  system:
+    instructions: |
+      Extract the affected service (for example checkout-api, orders-db, vpn-zurich).
+      Priority is "p1" when all users or revenue are affected, "p2" when one team or region is affected, else "p3".
+      Area is "network" for VPN, DNS or connectivity, "database" for databases and replication, otherwise "application".
+  prompt: ->
+    | {!@request.payload.message.parts[0].text}
+  outputs:
+    properties:
+      service:
+        type: "string"
+        description: "Affected service"
+      priority:
+        type: "string"
+        description: "Incident priority"
+        enum:
+          - "p1"
+          - "p2"
+          - "p3"
+      area:
+        type: "string"
+        description: "Technical area"
+        enum:
+          - "network"
+          - "database"
+          - "application"
+  on_exit: ->
+    transition to @executor.openTicket
+
+executor openTicket:
+  description: "Every incident gets a ticket first (no LLM)."
+  do: ->
+    run @actions.create_incident
+      with service = @generator.classifyIncident.output.service
+      with priority = @generator.classifyIncident.output.priority
+  on_exit: ->
+    transition to @router.priorityRouter
+
+router priorityRouter:
+  description: "P1 is a major incident; the rest go to the specialist of the area."
+  routes:
+    - target: @orchestrator.majorIncident
+      when: @generator.classifyIncident.output.priority == "p1"
+      label: "P1"
+    - target: @subagent.network
+      when: @generator.classifyIncident.output.area == "network"
+      label: "Network"
+    - target: @subagent.database
+      when: @generator.classifyIncident.output.area == "database"
+      label: "Database"
+  otherwise:
+    target: @subagent.application
+
+orchestrator majorIncident:
+  description: "Pages on-call, triages, fixes and posts a status update."
+  label: "Major Incident"
+  system:
+    instructions: |
+      Page the on-call engineer, check the service health, ask the triage agent for the cause,
+      ask application support to fix it, then have the status page agent post an update. Summarise the timeline.
+  reasoning:
+    instructions: ->
+      | P1 on {!@generator.classifyIncident.output.service}. Report: {!@request.payload.message.parts[0].text}
+    actions:
+      page: @actions.page_oncall
+      health: @actions.get_service_health
+      triage: @actions.triage_agent
+      fix: @actions.app_support_agent
+      status: @actions.status_page_agent
+    max_number_of_loops: 8
+  on_exit: ->
+    transition to @echo.majorDone
+
+subagent network:
+  description: "Network specialist."
+  label: "Network"
+  reasoning:
+    instructions: ->
+      | Diagnose {!@generator.classifyIncident.output.service}: {!@request.payload.message.parts[0].text}
+    actions:
+      health: @actions.get_service_health
+      diagnose: @actions.network_agent
+  on_exit: ->
+    transition to @echo.specialistDone
+
+subagent database:
+  description: "Database specialist."
+  label: "Database"
+  reasoning:
+    instructions: ->
+      | Diagnose {!@generator.classifyIncident.output.service}: {!@request.payload.message.parts[0].text}
+    actions:
+      health: @actions.get_service_health
+      diagnose: @actions.database_agent
+  on_exit: ->
+    transition to @echo.dbDone
+
+subagent application:
+  description: "Application specialist."
+  label: "Application"
+  reasoning:
+    instructions: ->
+      | Diagnose {!@generator.classifyIncident.output.service}: {!@request.payload.message.parts[0].text}
+    actions:
+      health: @actions.get_service_health
+      diagnose: @actions.app_support_agent
+  on_exit: ->
+    transition to @echo.appDone
+
+echo majorDone:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Major incident on " + @generator.classifyIncident.output.service + ". " + @orchestrator.majorIncident.output)]})
+
+echo specialistDone:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart(@generator.classifyIncident.output.service + " (" + @generator.classifyIncident.output.priority + "): " + @subagent.network.output)]})
+
+echo dbDone:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart(@generator.classifyIncident.output.service + " (" + @generator.classifyIncident.output.priority + "): " + @subagent.database.output)]})
+
+echo appDone:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart(@generator.classifyIncident.output.service + " (" + @generator.classifyIncident.output.priority + "): " + @subagent.application.output)]})

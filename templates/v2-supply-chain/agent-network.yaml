@@ -1,0 +1,281 @@
+agentNetwork: 2.0.0
+info:
+  label: Supply Chain Disruption
+  version: v1
+  description: A late or short shipment is assessed against stock; severe delays are rerouted and customers told, other cases get a mitigation plan.
+registry:
+  agents:
+    octo_sc2_supplier_risk_agent:
+      info:
+        label: Supplier Risk Agent
+        description: Rates supplier reliability and alternatives.
+      metadata:
+        platform: Snowflake
+        interfaces:
+          a2a:
+            card:
+              name: Supplier Risk Agent
+              description: Rates supplier reliability and alternatives.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: supplier-risk
+                  name: Supplier Risk
+                  description: Rate a supplier and suggest alternatives.
+                  tags:
+                    - risk
+                  examples:
+                    - How risky is supplier SUP-12?
+              supportedInterfaces:
+                - url: https://www.a2d-ai.com/api/platform/a0a7350b-dbd8-42de-ad71-bff62486e0f9/a2a
+                  protocolBinding: JSONRPC
+                  protocolVersion: "1.0"
+    octo_sc2_logistics_agent:
+      info:
+        label: Logistics Agent
+        description: Plans transport alternatives.
+      metadata:
+        platform: MuleSoft
+        interfaces:
+          a2a_v03:
+            card:
+              name: Logistics Agent
+              description: Plans transport alternatives.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: plan-transport
+                  name: Plan Transport
+                  description: Propose a faster transport option.
+                  tags:
+                    - logistics
+                  examples:
+                    - Speed up SHP-4401
+              url: https://www.a2d-ai.com/api/platform/98d5b94b-db87-4ebc-9b1c-e6259e810fec/a2a
+              protocolVersion: 0.3.0
+    octo_sc2_buyer_agent:
+      info:
+        label: Procurement Buyer Agent
+        description: Places expedite and alternative purchase orders.
+      metadata:
+        platform: AgentForce
+        interfaces:
+          a2a:
+            card:
+              name: Procurement Buyer Agent
+              description: Places expedite and alternative purchase orders.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: expedite-po
+                  name: Expedite PO
+                  description: Place an expedite or alternative order.
+                  tags:
+                    - procurement
+                  examples:
+                    - Order SKU-912 from SUP-31
+              supportedInterfaces:
+                - url: https://www.a2d-ai.com/api/platform/a2cf5661-5b77-415b-a071-41c19de7c31b/a2a
+                  protocolBinding: JSONRPC
+                  protocolVersion: "1.0"
+    octo_sc2_customer_comms_agent:
+      info:
+        label: Customer Communications Agent
+        description: Informs affected customers about new delivery dates.
+      metadata:
+        platform: Vertex
+        interfaces:
+          a2a_v03:
+            card:
+              name: Customer Communications Agent
+              description: Informs affected customers about new delivery dates.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: notify-customers
+                  name: Notify Customers
+                  description: Tell affected customers the new date.
+                  tags:
+                    - comms
+                  examples:
+                    - Inform customers of SHP-4401
+              url: https://www.a2d-ai.com/api/platform/9dcf701b-2dd0-4b19-a1d8-18435a4eac49/a2a
+              protocolVersion: 0.3.0
+  mcps:
+    octo_sc2_shipments_mcp:
+      info:
+        label: Shipments MCP
+        description: Shipment tracking and rerouting.
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: get_shipment
+            description: Get the status of a shipment.
+            inputSchema:
+              type: object
+              properties:
+                shipment_id:
+                  type: string
+                  description: Shipment id, e.g. SHP-4401
+              required:
+                - shipment_id
+          - name: reroute_shipment
+            description: Switch a shipment to a faster mode.
+            inputSchema:
+              type: object
+              properties:
+                shipment_id:
+                  type: string
+                  description: Shipment id
+              required:
+                - shipment_id
+    octo_sc2_inventory_mcp:
+      info:
+        label: Inventory MCP
+        description: Stock levels per SKU.
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: get_stock
+            description: Get stock and days of cover for a SKU.
+            inputSchema:
+              type: object
+              properties:
+                sku:
+                  type: string
+                  description: SKU, e.g. SKU-778
+              required:
+                - sku
+    octo_sc2_supplier_mcp:
+      info:
+        label: Supplier MCP
+        description: Approved supplier catalogue.
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: find_alternative_supplier
+            description: Find approved alternative suppliers for a SKU.
+            inputSchema:
+              type: object
+              properties:
+                sku:
+                  type: string
+                  description: SKU
+              required:
+                - sku
+  llms:
+    octo_sc2_openai:
+      info:
+        label: OpenAI
+      metadata:
+        platform: OpenAI
+        models:
+          - gpt-5-mini
+context:
+  connections:
+    supplier_risk_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_sc2_supplier_risk_agent
+      url: ${supplierRiskAgent.url}
+    logistics_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_sc2_logistics_agent
+      url: ${logisticsAgent.url}
+    buyer_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_sc2_buyer_agent
+      url: ${buyerAgent.url}
+    customer_comms_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_sc2_customer_comms_agent
+      url: ${customerCommsAgent.url}
+    shipments_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_sc2_shipments_mcp
+      url: ${shipmentsMcp.url}
+    inventory_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_sc2_inventory_mcp
+      url: ${inventoryMcp.url}
+    supplier_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_sc2_supplier_mcp
+      url: ${supplierMcp.url}
+    openai_connection:
+      kind: llm
+      ref:
+        name: octo_sc2_openai
+      url: https://api.openai.com/v1
+      authentication:
+        kind: apiKey
+        apiKey: ${openai.apiKey}
+brokers:
+  octo_sc2_disruption_broker:
+    kind: AgentScript
+    implementation: ./brokers/disruption-broker.agent
+    interfaces:
+      a2a:
+        card:
+          name: Disruption Broker
+          description: A late or short shipment is assessed against stock; severe delays are rerouted and customers told, other cases get a mitigation plan.
+          version: 1.0.0
+          capabilities:
+            streaming: true
+            pushNotifications: false
+          defaultInputModes:
+            - text/plain
+          defaultOutputModes:
+            - text/plain
+          skills:
+            - id: handle-disruption
+              name: Handle Disruption
+              description: Assess and mitigate a supply disruption.
+              tags:
+                - supply-chain
+              examples:
+                - Shipment SHP-4401 with SKU-778 is delayed 9 days at the port
+                - Supplier reports a shortage of SKU-912 for shipment SHP-4402

@@ -456,4 +456,318 @@ ${echo('scheduled', '"Email campaign scheduled for " + @generator.brief.output.s
 ${echo('socialReady', '"Social post approved and ready to publish: " + @orchestrator.createCampaign.output.summary')}
 ${echo('rejected', '"Campaign not approved: " + @orchestrator.createCampaign.output.summary')}`,
   },
+  'v2-supply-chain': {
+    system: 'You are the supply chain control tower. Decide from shipment and stock data, never from guesses.',
+    actions: { get_shipment: { mcp: 'shipments_mcp', tool: 'get_shipment' }, reroute_shipment: { mcp: 'shipments_mcp', tool: 'reroute_shipment', inputs: { shipment_id: 'string' } }, get_stock: { mcp: 'inventory_mcp', tool: 'get_stock' }, find_alternative_supplier: { mcp: 'supplier_mcp', tool: 'find_alternative_supplier' }, supplier_risk_agent: { a2a: 'supplier_risk_agent' }, logistics_agent: { a2a: 'logistics_agent' }, buyer_agent: { a2a: 'buyer_agent' }, customer_comms_agent: { a2a: 'customer_comms_agent' } },
+    start: '@generator.extractDisruption',
+    body: `generator extractDisruption:
+  description: "Extracts the shipment id and the kind of disruption."
+  label: "Extract Disruption"
+  system:
+    instructions: |
+      Extract the shipment id (for example SHP-4401) and classify the disruption.
+      Kind is "delay" for late shipments and "shortage" when the supplier cannot deliver the quantity.
+  prompt: ->
+    | ${MSG}
+  outputs:
+    properties:
+${strProp('shipment_id', 'Shipment id, e.g. SHP-4401')}
+${enumProp('kind', 'Kind of disruption', ['delay', 'shortage'])}
+  on_exit: ->
+    transition to @subagent.assessImpact
+
+subagent assessImpact:
+  description: "Reads the shipment and the stock cover of its SKU and rates the impact."
+  label: "Assess Impact"
+  system:
+    instructions: |
+      Get the shipment, then the stock of its SKU.
+      Severity is "severe" when the delay in days is larger than the days of cover, otherwise "manageable".
+  reasoning:
+    instructions: ->
+      | Shipment {!@generator.extractDisruption.output.shipment_id}, kind {!@generator.extractDisruption.output.kind}.
+    actions:
+      shipment: @actions.get_shipment
+      stock: @actions.get_stock
+    max_number_of_loops: 4
+    outputs:
+      properties:
+${enumProp('severity', 'Impact on stock', ['severe', 'manageable'], '        ')}
+${strProp('detail', 'SKU, delay and days of cover', '        ')}
+  on_exit: ->
+    transition to @router.mitigationRouter
+
+router mitigationRouter:
+  description: "Severe delays are rerouted, shortages get a new supplier, the rest a plan."
+  routes:
+    - target: @executor.reroute
+      when: @subagent.assessImpact.output.severity == "severe" and @generator.extractDisruption.output.kind == "delay"
+      label: "Severe delay"
+    - target: @orchestrator.resource
+      when: @generator.extractDisruption.output.kind == "shortage"
+      label: "Shortage"
+  otherwise:
+    target: @subagent.mitigationPlan
+
+executor reroute:
+  description: "Switches the shipment to a faster mode (no LLM)."
+  do: ->
+    run @actions.reroute_shipment
+      with shipment_id = @generator.extractDisruption.output.shipment_id
+  on_exit: ->
+    transition to @subagent.informCustomers
+
+subagent informCustomers:
+  description: "Tells the affected customers the new date."
+  label: "Inform Customers"
+  reasoning:
+    instructions: ->
+      | Shipment {!@generator.extractDisruption.output.shipment_id} was rerouted. Impact: {!@subagent.assessImpact.output.detail}. Inform the affected customers.
+    actions:
+      comms: @actions.customer_comms_agent
+  on_exit: ->
+    transition to @echo.rerouted
+
+orchestrator resource:
+  description: "Finds an alternative supplier, checks its risk and places the order."
+  label: "Re-source"
+  system:
+    instructions: |
+      Find approved alternative suppliers for the SKU, ask the supplier risk agent which one to use,
+      then ask the buyer agent to place the order. Summarise supplier, quantity and delivery date.
+  reasoning:
+    instructions: ->
+      | Shortage on shipment {!@generator.extractDisruption.output.shipment_id}: {!@subagent.assessImpact.output.detail}
+    actions:
+      alternatives: @actions.find_alternative_supplier
+      risk: @actions.supplier_risk_agent
+      buy: @actions.buyer_agent
+    max_number_of_loops: 6
+  on_exit: ->
+    transition to @echo.resourced
+
+subagent mitigationPlan:
+  description: "Stock covers the delay: proposes a plan with the logistics agent."
+  label: "Mitigation Plan"
+  reasoning:
+    instructions: ->
+      | Stock covers the disruption of {!@generator.extractDisruption.output.shipment_id}: {!@subagent.assessImpact.output.detail}. Ask logistics for options and propose a plan.
+    actions:
+      logistics: @actions.logistics_agent
+  on_exit: ->
+    transition to @echo.planned
+
+${echo('rerouted', '"Shipment " + @generator.extractDisruption.output.shipment_id + " rerouted. " + @subagent.informCustomers.output')}
+${echo('resourced', '"Shortage handled: " + @orchestrator.resource.output')}
+${echo('planned', '"No stock-out expected. " + @subagent.mitigationPlan.output')}`,
+  },
+
+  'v2-kyc-onboarding': {
+    system: 'You are the onboarding desk of a bank. Never open an account before identity, sanctions and risk checks are done.',
+    actions: { verify_document: { mcp: 'identity_mcp', tool: 'verify_document' }, screen_name: { mcp: 'sanctions_mcp', tool: 'screen_name' }, score_customer: { mcp: 'risk_mcp', tool: 'score_customer' }, open_case: { mcp: 'risk_mcp', tool: 'open_case', inputs: { applicant_id: 'string', reason: 'string' } }, kyc_analyst_agent: { a2a: 'kyc_analyst_agent' }, account_opening_agent: { a2a: 'account_opening_agent' } },
+    start: '@generator.extractApplicant',
+    body: `generator extractApplicant:
+  description: "Extracts the applicant id."
+  label: "Extract Applicant"
+  system:
+    instructions: |
+      Extract the applicant id (for example AP-7001) and the applicant name. Use "UNKNOWN" when no id is given.
+  prompt: ->
+    | ${MSG}
+  outputs:
+    properties:
+${strProp('applicant_id', 'Applicant id, e.g. AP-7001, or UNKNOWN')}
+${strProp('name', 'Applicant name')}
+  on_exit: ->
+    transition to @router.idRouter
+
+router idRouter:
+  description: "Without an applicant id nothing can be checked."
+  routes:
+    - target: @subagent.screening
+      when: @generator.extractApplicant.output.applicant_id != "UNKNOWN"
+      label: "Has id"
+  otherwise:
+    target: @echo.needId
+
+subagent screening:
+  description: "Verifies the document, screens sanctions and scores the risk."
+  label: "Screening"
+  system:
+    instructions: |
+      Call all three checks for the applicant. Band is "high" when the sanctions screen has hits or the score band is high,
+      "low" when the document is verified, there are no hits and the score band is low, otherwise "medium".
+  reasoning:
+    instructions: ->
+      | Applicant {!@generator.extractApplicant.output.applicant_id}.
+    actions:
+      document: @actions.verify_document
+      sanctions: @actions.screen_name
+      score: @actions.score_customer
+    max_number_of_loops: 5
+    outputs:
+      properties:
+${enumProp('band', 'Overall risk band', ['low', 'medium', 'high'], '        ')}
+${strProp('findings', 'Document, sanctions and score results', '        ')}
+  on_exit: ->
+    transition to @router.riskRouter
+
+router riskRouter:
+  description: "Low risk opens the account, high risk opens a compliance case, medium goes to an analyst."
+  routes:
+    - target: @subagent.openAccount
+      when: @subagent.screening.output.band == "low"
+      label: "Low risk"
+    - target: @executor.openCase
+      when: @subagent.screening.output.band == "high"
+      label: "High risk"
+  otherwise:
+    target: @subagent.analystReview
+
+subagent openAccount:
+  description: "Opens the account."
+  label: "Open Account"
+  reasoning:
+    instructions: ->
+      | Open an account for {!@generator.extractApplicant.output.applicant_id} ({!@generator.extractApplicant.output.name}).
+    actions:
+      open: @actions.account_opening_agent
+  on_exit: ->
+    transition to @echo.opened
+
+subagent analystReview:
+  description: "A KYC analyst reviews the medium-risk applicant, then the account is opened if approved."
+  label: "Analyst Review"
+  reasoning:
+    instructions: ->
+      | Medium risk for {!@generator.extractApplicant.output.applicant_id}: {!@subagent.screening.output.findings}. Ask the KYC analyst for a decision; if approved, open the account.
+    actions:
+      review: @actions.kyc_analyst_agent
+      open: @actions.account_opening_agent
+    max_number_of_loops: 4
+  on_exit: ->
+    transition to @echo.reviewed
+
+executor openCase:
+  description: "Opens a compliance case (no LLM, no account)."
+  do: ->
+    run @actions.open_case
+      with applicant_id = @generator.extractApplicant.output.applicant_id
+      with reason = @subagent.screening.output.findings
+  on_exit: ->
+    transition to @echo.caseOpened
+
+${echo('needId', '"Please give the applicant id (for example AP-7001) to start the onboarding."')}
+${echo('opened', '"Onboarding complete for " + @generator.extractApplicant.output.applicant_id + ". " + @subagent.openAccount.output')}
+${echo('reviewed', '"Analyst review for " + @generator.extractApplicant.output.applicant_id + ": " + @subagent.analystReview.output')}
+${echo('caseOpened', '"No account opened for " + @generator.extractApplicant.output.applicant_id + ": a compliance case was opened. " + @subagent.screening.output.findings')}`,
+  },
+
+  'v2-incident-response': {
+    system: 'You are the incident commander. Classify first, then act. Customer communication only for P1.',
+    actions: { get_service_health: { mcp: 'monitoring_mcp', tool: 'get_service_health' }, create_incident: { mcp: 'itsm_mcp', tool: 'create_incident', inputs: { service: 'string', priority: 'string' } }, page_oncall: { mcp: 'itsm_mcp', tool: 'page_oncall' }, triage_agent: { a2a: 'triage_agent' }, network_agent: { a2a: 'network_agent' }, database_agent: { a2a: 'database_agent' }, app_support_agent: { a2a: 'app_support_agent' }, status_page_agent: { a2a: 'status_page_agent' } },
+    start: '@generator.classifyIncident',
+    body: `generator classifyIncident:
+  description: "Classifies the incident: service, priority and area."
+  label: "Classify Incident"
+  system:
+    instructions: |
+      Extract the affected service (for example checkout-api, orders-db, vpn-zurich).
+      Priority is "p1" when all users or revenue are affected, "p2" when one team or region is affected, else "p3".
+      Area is "network" for VPN, DNS or connectivity, "database" for databases and replication, otherwise "application".
+  prompt: ->
+    | ${MSG}
+  outputs:
+    properties:
+${strProp('service', 'Affected service')}
+${enumProp('priority', 'Incident priority', ['p1', 'p2', 'p3'])}
+${enumProp('area', 'Technical area', ['network', 'database', 'application'])}
+  on_exit: ->
+    transition to @executor.openTicket
+
+executor openTicket:
+  description: "Every incident gets a ticket first (no LLM)."
+  do: ->
+    run @actions.create_incident
+      with service = @generator.classifyIncident.output.service
+      with priority = @generator.classifyIncident.output.priority
+  on_exit: ->
+    transition to @router.priorityRouter
+
+router priorityRouter:
+  description: "P1 is a major incident; the rest go to the specialist of the area."
+  routes:
+    - target: @orchestrator.majorIncident
+      when: @generator.classifyIncident.output.priority == "p1"
+      label: "P1"
+    - target: @subagent.network
+      when: @generator.classifyIncident.output.area == "network"
+      label: "Network"
+    - target: @subagent.database
+      when: @generator.classifyIncident.output.area == "database"
+      label: "Database"
+  otherwise:
+    target: @subagent.application
+
+orchestrator majorIncident:
+  description: "Pages on-call, triages, fixes and posts a status update."
+  label: "Major Incident"
+  system:
+    instructions: |
+      Page the on-call engineer, check the service health, ask the triage agent for the cause,
+      ask application support to fix it, then have the status page agent post an update. Summarise the timeline.
+  reasoning:
+    instructions: ->
+      | P1 on {!@generator.classifyIncident.output.service}. Report: ${MSG}
+    actions:
+      page: @actions.page_oncall
+      health: @actions.get_service_health
+      triage: @actions.triage_agent
+      fix: @actions.app_support_agent
+      status: @actions.status_page_agent
+    max_number_of_loops: 8
+  on_exit: ->
+    transition to @echo.majorDone
+
+subagent network:
+  description: "Network specialist."
+  label: "Network"
+  reasoning:
+    instructions: ->
+      | Diagnose {!@generator.classifyIncident.output.service}: ${MSG}
+    actions:
+      health: @actions.get_service_health
+      diagnose: @actions.network_agent
+  on_exit: ->
+    transition to @echo.specialistDone
+
+subagent database:
+  description: "Database specialist."
+  label: "Database"
+  reasoning:
+    instructions: ->
+      | Diagnose {!@generator.classifyIncident.output.service}: ${MSG}
+    actions:
+      health: @actions.get_service_health
+      diagnose: @actions.database_agent
+  on_exit: ->
+    transition to @echo.dbDone
+
+subagent application:
+  description: "Application specialist."
+  label: "Application"
+  reasoning:
+    instructions: ->
+      | Diagnose {!@generator.classifyIncident.output.service}: ${MSG}
+    actions:
+      health: @actions.get_service_health
+      diagnose: @actions.app_support_agent
+  on_exit: ->
+    transition to @echo.appDone
+
+${echo('majorDone', '"Major incident on " + @generator.classifyIncident.output.service + ". " + @orchestrator.majorIncident.output')}
+${echo('specialistDone', '@generator.classifyIncident.output.service + " (" + @generator.classifyIncident.output.priority + "): " + @subagent.network.output')}
+${echo('dbDone', '@generator.classifyIncident.output.service + " (" + @generator.classifyIncident.output.priority + "): " + @subagent.database.output')}
+${echo('appDone', '@generator.classifyIncident.output.service + " (" + @generator.classifyIncident.output.priority + "): " + @subagent.application.output')}`,
+  },
 };

@@ -1,0 +1,60 @@
+{
+  "main": "agent-network.yaml",
+  "name": "hr-leave-v1",
+  "classifier": "agent-network",
+  "descriptorVersion": "1.0.0",
+  "apiVersion": "v1",
+  "tags": [
+    "octoloom-example"
+  ],
+  "metadata": {
+    "variables": {
+      "ingressgw": {
+        "url": {
+          "description": "Ingress gateway base URL (the broker is served under it)",
+          "default": "",
+          "secret": false
+        }
+      },
+      "openai": {
+        "apiKey": {
+          "description": "OpenAI API key (secret, injected at deploy time)",
+          "default": "",
+          "secret": true
+        }
+      },
+      "hrisMcp": {
+        "url": {
+          "description": "HRIS MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/900a88c1-7dc5-4830-9dcb-bfc61c63210b/",
+          "secret": false
+        }
+      },
+      "calendarMcp": {
+        "url": {
+          "description": "Team Calendar MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/eaa685f1-9833-47bd-8297-2f32fab75a25/",
+          "secret": false
+        }
+      },
+      "leavePolicyAgent": {
+        "url": {
+          "description": "Leave Policy Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/3566c4df-ed9a-4eb7-8d3c-ea91d77aa114/a2a",
+          "secret": false
+        }
+      },
+      "payrollAgent": {
+        "url": {
+          "description": "Payroll Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/b7aad5d7-e511-470f-b9b3-69416a9bfec3/a2a",
+          "secret": false
+        }
+      }
+    }
+  },
+  "dependencies": [],
+  "groupId": "${organizationId}",
+  "assetId": "hr-leave-v1",
+  "version": "1.0.0"
+}

@@ -1,0 +1,284 @@
+schemaVersion: 1.0.0
+label: HR Leave Requests (governed)
+brokers:
+  octo_hl1g_leave-broker:
+    card:
+      protocolVersion: 0.3.0
+      name: octo_hl1g_leave-broker
+      description: Employees ask for time off; the broker checks balance, policy and team calendar before submitting the request.
+      url: ${ingressgw.url}/octo_hl1g_leave-broker
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+        stateTransitionHistory: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: request-leave
+          name: Request Leave
+          description: Check and submit a time-off request.
+          tags:
+            - hr
+            - leave
+          examples:
+            - E-3001 wants vacation from 2026-12-21 to 2026-12-31
+            - Can E-3002 take 3 days of unpaid leave next week?
+    spec:
+      llm:
+        ref:
+          name: octo_hl1g_openai
+        configuration:
+          model: gpt-5-mini
+      instructions:
+        - You help employees request time off.
+        - Look up the leave balance with get_leave_balance using the employee id from the request (for example E-3001).
+        - Ask the Leave Policy agent whether the request follows the policy (notice period, blackout dates, maximum length).
+        - Check the team calendar with check_team_calendar; warn when more than one team member is already away.
+        - Submit the request with submit_leave_request only when the balance is enough and the policy agent agrees.
+        - Ask the Payroll agent about pay impact only for unpaid leave. Finish with the request id and its status.
+      links:
+        - agent:
+            ref:
+              name: octo_hl1g_leave-policy-agent
+        - agent:
+            ref:
+              name: octo_hl1g_payroll-agent
+      tools:
+        - mcp:
+            ref:
+              name: octo_hl1g_hris-mcp
+            allowed:
+              - get_leave_balance
+              - submit_leave_request
+        - mcp:
+            ref:
+              name: octo_hl1g_calendar-mcp
+            allowed:
+              - check_team_calendar
+      maxNumberOfLoops: 25
+      maxConsecutiveErrors: 3
+      taskTimeoutSecs: 90
+      policies:
+        - ref:
+            name: rate-limiting
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            rateLimits:
+              - maximumRequests: 60
+                timePeriodInMilliseconds: 60000
+            exposeHeaders: true
+llmProviders:
+  octo_hl1g_openai:
+    label: OpenAI
+    description: OpenAI LLM provider
+    metadata:
+      platform: OpenAI
+      models:
+        - gpt-5-mini
+connections:
+  openai-connection:
+    kind: llm
+    ref:
+      name: octo_hl1g_openai
+    spec:
+      url: https://api.openai.com/v1/
+      configuration:
+        apiKey: ${openai.apiKey}
+        timeout: 600000
+  hris-mcp-connection:
+    kind: mcp
+    ref:
+      name: octo_hl1g_hris-mcp
+    spec:
+      url: ${hrisMcp.url}
+      policies:
+        - ref:
+            name: mcp-pii-detector
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            entities:
+              - Email
+              - US SSN
+              - Credit Card
+              - Phone Number
+            action: Log and mask
+  calendar-mcp-connection:
+    kind: mcp
+    ref:
+      name: octo_hl1g_calendar-mcp
+    spec:
+      url: ${calendarMcp.url}
+      policies:
+        - ref:
+            name: mcp-schema-validation
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            validateToolSchema: true
+        - ref:
+            name: header-injection
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            inboundHeaders:
+              - key: x-octoloom-source
+                value: hr-leave-governed-v1
+  leave-policy-agent-connection:
+    kind: agent
+    ref:
+      name: octo_hl1g_leave-policy-agent
+    spec:
+      url: ${leavePolicyAgent.url}
+      policies:
+        - ref:
+            name: a-two-a-pii-detector
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            entities:
+              - Email
+              - US SSN
+              - Credit Card
+            action: Log
+  payroll-agent-connection:
+    kind: agent
+    ref:
+      name: octo_hl1g_payroll-agent
+    spec:
+      url: ${payrollAgent.url}
+      policies:
+        - ref:
+            name: header-injection
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            inboundHeaders:
+              - key: x-correlation-source
+                value: octo_hl1g_leave-broker
+        - ref:
+            name: a-two-a-prompt-decorator
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            textDecorators:
+              - text: "#['Answer concisely and never include personal data.']"
+mcpServers:
+  octo_hl1g_hris-mcp:
+    label: HRIS MCP
+    description: "HR information system: leave balances and requests."
+    metadata:
+      transport:
+        kind: streamableHttp
+        path: /mcp
+      tools:
+        - name: get_leave_balance
+          description: Get the remaining leave days of an employee.
+          inputSchema:
+            type: object
+            properties:
+              employee_id:
+                type: string
+                description: Employee id, e.g. E-3001
+            required:
+              - employee_id
+        - name: submit_leave_request
+          description: Submit a leave request for manager approval.
+          inputSchema:
+            type: object
+            properties:
+              employee_id:
+                type: string
+                description: Employee id
+              start_date:
+                type: string
+                description: First day, YYYY-MM-DD
+              end_date:
+                type: string
+                description: Last day, YYYY-MM-DD
+              kind:
+                type: string
+                description: vacation or unpaid
+            required:
+              - employee_id
+              - start_date
+              - end_date
+  octo_hl1g_calendar-mcp:
+    label: Team Calendar MCP
+    description: Team absence calendar.
+    metadata:
+      transport:
+        kind: streamableHttp
+        path: /mcp
+      tools:
+        - name: check_team_calendar
+          description: List team members who are away in a period.
+          inputSchema:
+            type: object
+            properties:
+              manager_id:
+                type: string
+                description: Manager id of the team
+              start_date:
+                type: string
+                description: YYYY-MM-DD
+            required:
+              - manager_id
+agents:
+  octo_hl1g_leave-policy-agent:
+    label: Leave Policy Agent
+    description: "Knows the leave policy: notice periods, blackout dates and limits."
+    metadata:
+      platform: AgentForce
+      protocol: a2a
+    card:
+      name: Leave Policy Agent
+      description: "Knows the leave policy: notice periods, blackout dates and limits."
+      url: ${leavePolicyAgent.url}
+      protocolVersion: 0.3.0
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: check-leave-policy
+          name: Check Leave Policy
+          description: Say whether a leave request follows the policy.
+          tags:
+            - policy
+          examples:
+            - Is 10 days of vacation in December allowed?
+  octo_hl1g_payroll-agent:
+    label: Payroll Agent
+    description: Explains the pay impact of unpaid leave.
+    metadata:
+      platform: Azure
+      protocol: a2a
+    card:
+      name: Payroll Agent
+      description: Explains the pay impact of unpaid leave.
+      url: ${payrollAgent.url}
+      protocolVersion: 0.3.0
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: pay-impact
+          name: Pay Impact
+          description: Calculate the salary deduction for unpaid leave.
+          tags:
+            - payroll
+          examples:
+            - What does 3 days of unpaid leave cost E-3002?

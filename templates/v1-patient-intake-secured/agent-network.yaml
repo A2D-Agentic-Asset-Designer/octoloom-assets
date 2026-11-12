@@ -1,0 +1,262 @@
+schemaVersion: 1.0.0
+label: Patient Intake (demo data) (secured)
+brokers:
+  octo_pi1s_intake-broker:
+    card:
+      protocolVersion: 0.3.0
+      name: octo_pi1s_intake-broker
+      description: "A clinic front desk: triage questions, insurance check and appointment booking from one conversation. Fictional patients only."
+      url: ${ingressgw.url}/octo_pi1s_intake-broker
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+        stateTransitionHistory: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: patient-intake
+          name: Patient Intake
+          description: Triage, verify insurance and book an appointment.
+          tags:
+            - clinic
+            - intake
+          examples:
+            - P-5001 has had a sore throat and fever for 3 days
+            - Book a check-up for P-5002, insurance HealthPlus
+    spec:
+      llm:
+        ref:
+          name: octo_pi1s_openai
+        configuration:
+          model: gpt-5-mini
+      instructions:
+        - You are the front desk of a fictional outpatient clinic. All data is demo data; never give medical advice.
+        - Find the patient record with lookup_patient using the patient id from the request (for example P-5001).
+        - Ask the Triage Nurse agent for the urgency of the symptoms. If the urgency is emergency, tell the user to call the emergency number and stop.
+        - Ask the Insurance Verification agent whether the visit is covered.
+        - Ask the Scheduling agent for the first slot that matches the urgency, then save the intake with record_intake.
+        - Finish with the appointment, the coverage and what the patient should bring.
+      links:
+        - agent:
+            ref:
+              name: octo_pi1s_triage-nurse-agent
+        - agent:
+            ref:
+              name: octo_pi1s_scheduling-agent
+        - agent:
+            ref:
+              name: octo_pi1s_insurance-verification-agent
+      tools:
+        - mcp:
+            ref:
+              name: octo_pi1s_ehr-mcp
+            allowed:
+              - lookup_patient
+              - record_intake
+      maxNumberOfLoops: 25
+      maxConsecutiveErrors: 3
+      taskTimeoutSecs: 90
+      policies:
+        - ref:
+            name: rate-limiting
+            namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+          configuration:
+            rateLimits:
+              - maximumRequests: 60
+                timePeriodInMilliseconds: 60000
+            exposeHeaders: true
+llmProviders:
+  octo_pi1s_openai:
+    label: OpenAI
+    description: OpenAI LLM provider
+    metadata:
+      platform: OpenAI
+      models:
+        - gpt-5-mini
+connections:
+  openai-connection:
+    kind: llm
+    ref:
+      name: octo_pi1s_openai
+    spec:
+      url: ${llmGateway.url}/
+      configuration:
+        apiKey: ${openai.apiKey}
+        timeout: 600000
+  ehr-mcp-connection:
+    kind: mcp
+    ref:
+      name: octo_pi1s_ehr-mcp
+    spec:
+      url: ${ehrMcp.url}
+      authentication:
+        kind: apikey-client-credentials
+        clientId:
+          value: ${ehrMcp.clientId}
+          name: client_id
+        clientSecret:
+          value: ${ehrMcp.clientSecret}
+          name: client_secret
+  triage-nurse-agent-connection:
+    kind: agent
+    ref:
+      name: octo_pi1s_triage-nurse-agent
+    spec:
+      url: ${triageNurseAgent.url}
+      authentication:
+        kind: basic
+        username: ${triageNurseAgent.username}
+        password: ${triageNurseAgent.password}
+  scheduling-agent-connection:
+    kind: agent
+    ref:
+      name: octo_pi1s_scheduling-agent
+    spec:
+      url: ${schedulingAgent.url}
+      authentication:
+        kind: apikey-client-credentials
+        clientId:
+          value: ${schedulingAgent.clientId}
+          name: client_id
+        clientSecret:
+          value: ${schedulingAgent.clientSecret}
+          name: client_secret
+  insurance-verification-agent-connection:
+    kind: agent
+    ref:
+      name: octo_pi1s_insurance-verification-agent
+    spec:
+      url: ${insuranceVerificationAgent.url}
+      authentication:
+        kind: basic
+        username: ${insuranceVerificationAgent.username}
+        password: ${insuranceVerificationAgent.password}
+mcpServers:
+  octo_pi1s_ehr-mcp:
+    label: Clinic Records MCP
+    description: "Fictional clinic record system: patients and intake forms."
+    metadata:
+      transport:
+        kind: streamableHttp
+        path: /mcp
+      tools:
+        - name: lookup_patient
+          description: Look up a patient by id.
+          inputSchema:
+            type: object
+            properties:
+              patient_id:
+                type: string
+                description: Patient id, e.g. P-5001
+            required:
+              - patient_id
+        - name: record_intake
+          description: Save the intake form of a visit.
+          inputSchema:
+            type: object
+            properties:
+              patient_id:
+                type: string
+                description: Patient id
+              reason:
+                type: string
+                description: Reason for the visit
+              urgency:
+                type: string
+                description: routine, soon or urgent
+            required:
+              - patient_id
+              - reason
+agents:
+  octo_pi1s_triage-nurse-agent:
+    label: Triage Nurse Agent
+    description: Rates the urgency of reported symptoms (demo rules only).
+    metadata:
+      platform: Vertex
+      protocol: a2a
+    card:
+      name: Triage Nurse Agent
+      description: Rates the urgency of reported symptoms (demo rules only).
+      url: ${triageNurseAgent.url}
+      protocolVersion: 0.3.0
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: rate-urgency
+          name: Rate Urgency
+          description: Rate symptoms as routine, soon, urgent or emergency.
+          tags:
+            - triage
+          examples:
+            - Sore throat and fever for 3 days
+  octo_pi1s_scheduling-agent:
+    label: Scheduling Agent
+    description: Books clinic appointments by urgency.
+    metadata:
+      platform: MuleSoft
+      protocol: a2a
+    card:
+      name: Scheduling Agent
+      description: Books clinic appointments by urgency.
+      url: ${schedulingAgent.url}
+      protocolVersion: 0.3.0
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: book-appointment
+          name: Book Appointment
+          description: Find and book the first matching slot.
+          tags:
+            - scheduling
+          examples:
+            - Book a slot within 24 hours for P-5001
+  octo_pi1s_insurance-verification-agent:
+    label: Insurance Verification Agent
+    description: Checks whether a visit is covered by the patient insurance.
+    metadata:
+      platform: Bedrock
+      protocol: a2a
+    card:
+      name: Insurance Verification Agent
+      description: Checks whether a visit is covered by the patient insurance.
+      url: ${insuranceVerificationAgent.url}
+      protocolVersion: 0.3.0
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: verify-coverage
+          name: Verify Coverage
+          description: Check coverage and co-pay for a visit.
+          tags:
+            - insurance
+          examples:
+            - Is a GP visit covered for HealthPlus?

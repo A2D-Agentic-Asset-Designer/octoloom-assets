@@ -1,0 +1,293 @@
+agentNetwork: 2.0.0
+info:
+  label: KYC / AML Onboarding (governed)
+  version: v1
+  description: New banking customers are screened (document, sanctions, risk score); low risk opens the account, medium goes to an analyst, high opens a compliance case.
+registry:
+  agents:
+    octo_ko2g_kyc_analyst_agent:
+      info:
+        label: KYC Analyst Agent
+        description: Reviews medium-risk applicants and asks for extra documents.
+      metadata:
+        platform: Azure
+        interfaces:
+          a2a:
+            card:
+              name: KYC Analyst Agent
+              description: Reviews medium-risk applicants and asks for extra documents.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: kyc-review
+                  name: KYC Review
+                  description: Review a medium-risk applicant.
+                  tags:
+                    - kyc
+                  examples:
+                    - Review AP-7002
+              supportedInterfaces:
+                - url: https://www.a2d-ai.com/api/platform/9d2f67ee-62ae-4e7a-85aa-86cc134bd34c/a2a
+                  protocolBinding: JSONRPC
+                  protocolVersion: "1.0"
+    octo_ko2g_account_opening_agent:
+      info:
+        label: Account Opening Agent
+        description: Opens the account and sends the welcome pack.
+      metadata:
+        platform: AgentForce
+        interfaces:
+          a2a_v03:
+            card:
+              name: Account Opening Agent
+              description: Opens the account and sends the welcome pack.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: open-account
+                  name: Open Account
+                  description: Open an account for an approved applicant.
+                  tags:
+                    - accounts
+                  examples:
+                    - Open an account for AP-7001
+              url: https://www.a2d-ai.com/api/platform/7c76d68f-65b2-40ba-9139-77c6a4d796e0/a2a
+              protocolVersion: 0.3.0
+  mcps:
+    octo_ko2g_identity_mcp:
+      info:
+        label: Identity Verification MCP
+        description: ID document checks.
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: verify_document
+            description: Verify the identity document of an applicant.
+            inputSchema:
+              type: object
+              properties:
+                applicant_id:
+                  type: string
+                  description: Applicant id, e.g. AP-7001
+              required:
+                - applicant_id
+    octo_ko2g_sanctions_mcp:
+      info:
+        label: Sanctions Screening MCP
+        description: Sanctions and PEP lists (fictional).
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: screen_name
+            description: Screen an applicant against sanctions and PEP lists.
+            inputSchema:
+              type: object
+              properties:
+                applicant_id:
+                  type: string
+                  description: Applicant id
+              required:
+                - applicant_id
+    octo_ko2g_risk_mcp:
+      info:
+        label: Customer Risk MCP
+        description: Risk scoring and compliance cases.
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: score_customer
+            description: Compute the AML risk score of an applicant.
+            inputSchema:
+              type: object
+              properties:
+                applicant_id:
+                  type: string
+                  description: Applicant id
+              required:
+                - applicant_id
+          - name: open_case
+            description: Open a compliance case for a high-risk applicant.
+            inputSchema:
+              type: object
+              properties:
+                applicant_id:
+                  type: string
+                  description: Applicant id
+                reason:
+                  type: string
+                  description: Why the case is opened
+              required:
+                - applicant_id
+                - reason
+  llms:
+    octo_ko2g_openai:
+      info:
+        label: OpenAI
+      metadata:
+        platform: OpenAI
+        models:
+          - gpt-5-mini
+context:
+  connections:
+    kyc_analyst_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_ko2g_kyc_analyst_agent
+      url: ${kycAnalystAgent.url}
+      policies:
+        inbound:
+          - ref:
+              name: a2a_v1_pii
+    account_opening_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_ko2g_account_opening_agent
+      url: ${accountOpeningAgent.url}
+      policies:
+        inbound:
+          - policy:
+              ref:
+                name: header-injection
+                namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+              configuration:
+                inboundHeaders:
+                  - key: x-correlation-source
+                    value: octo_ko2g_kyc_broker
+    identity_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_ko2g_identity_mcp
+      url: ${identityMcp.url}
+      policies:
+        inbound:
+          - ref:
+              name: mcp_pii
+          - ref:
+              name: mcp_schema
+    sanctions_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_ko2g_sanctions_mcp
+      url: ${sanctionsMcp.url}
+      policies:
+        inbound:
+          - ref:
+              name: mcp_pii
+          - policy:
+              ref:
+                name: header-injection
+                namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+              configuration:
+                inboundHeaders:
+                  - key: x-octoloom-source
+                    value: kyc-onboarding-governed-v2
+    risk_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_ko2g_risk_mcp
+      url: ${riskMcp.url}
+      policies:
+        inbound:
+          - ref:
+              name: mcp_pii
+          - ref:
+              name: mcp_schema
+    openai_connection:
+      kind: llm
+      ref:
+        name: octo_ko2g_openai
+      url: https://api.openai.com/v1
+      authentication:
+        kind: apiKey
+        apiKey: ${openai.apiKey}
+  policies:
+    a2a_v1_pii:
+      ref:
+        name: a2a-v1-pii-detector
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+      configuration:
+        entities:
+          - Email
+          - US SSN
+          - Credit Card
+        action: Log
+    mcp_pii:
+      ref:
+        name: mcp-pii-detector
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+      configuration:
+        entities:
+          - Email
+          - US SSN
+          - Credit Card
+          - Phone Number
+        action: Log and mask
+    mcp_schema:
+      ref:
+        name: mcp-schema-validation
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+      configuration:
+        validateToolSchema: true
+    rate_limit:
+      ref:
+        name: rate-limiting
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+      configuration:
+        rateLimits:
+          - maximumRequests: 30
+            timePeriodInMilliseconds: 60000
+        exposeHeaders: true
+brokers:
+  octo_ko2g_kyc_broker:
+    kind: AgentScript
+    implementation: ./brokers/kyc-broker.agent
+    interfaces:
+      a2a:
+        card:
+          name: KYC Onboarding Broker
+          description: New banking customers are screened (document, sanctions, risk score); low risk opens the account, medium goes to an analyst, high opens a compliance case.
+          version: 1.0.0
+          capabilities:
+            streaming: true
+            pushNotifications: false
+          defaultInputModes:
+            - text/plain
+          defaultOutputModes:
+            - text/plain
+          skills:
+            - id: onboard-customer
+              name: Onboard Customer
+              description: Screen and onboard a new customer.
+              tags:
+                - banking
+                - kyc
+              examples:
+                - Onboard applicant AP-7001, Lena Novak, from Austria
+                - Onboard applicant AP-7003, Victor Example, from Panama
+        policies:
+          inbound:
+            - ref:
+                name: rate_limit

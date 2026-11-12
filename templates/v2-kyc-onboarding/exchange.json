@@ -1,0 +1,60 @@
+{
+  "main": "agent-network.yaml",
+  "name": "kyc-onboarding-v2",
+  "classifier": "agentic-network",
+  "descriptorVersion": "1.0.0",
+  "apiVersion": "v1",
+  "tags": [
+    "octoloom-example"
+  ],
+  "metadata": {
+    "variables": {
+      "openai": {
+        "apiKey": {
+          "description": "OpenAI API key (secret, injected at deploy time)",
+          "default": "",
+          "secret": true
+        }
+      },
+      "kycAnalystAgent": {
+        "url": {
+          "description": "KYC Analyst Agent (A2D mock, A2A 1.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/9d2f67ee-62ae-4e7a-85aa-86cc134bd34c/a2a",
+          "secret": false
+        }
+      },
+      "accountOpeningAgent": {
+        "url": {
+          "description": "Account Opening Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/7c76d68f-65b2-40ba-9139-77c6a4d796e0/a2a",
+          "secret": false
+        }
+      },
+      "identityMcp": {
+        "url": {
+          "description": "Identity Verification MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/bc1c60ca-df29-4d9d-b25c-2b839730f8d5/",
+          "secret": false
+        }
+      },
+      "sanctionsMcp": {
+        "url": {
+          "description": "Sanctions Screening MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/b1b3a5b7-5bbc-4764-8194-e6577ab4f52a/",
+          "secret": false
+        }
+      },
+      "riskMcp": {
+        "url": {
+          "description": "Customer Risk MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/08c986b9-6c22-4e6d-9323-67d551582ab5/",
+          "secret": false
+        }
+      }
+    }
+  },
+  "dependencies": [],
+  "groupId": "${organizationId}",
+  "assetId": "kyc-onboarding-v2",
+  "version": "1.0.0"
+}

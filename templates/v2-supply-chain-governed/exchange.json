@@ -1,0 +1,110 @@
+{
+  "main": "agent-network.yaml",
+  "name": "supply-chain-governed-v2",
+  "classifier": "agentic-network",
+  "descriptorVersion": "1.0.0",
+  "apiVersion": "v1",
+  "tags": [
+    "octoloom-example"
+  ],
+  "metadata": {
+    "variables": {
+      "openai": {
+        "apiKey": {
+          "description": "OpenAI API key (secret, injected at deploy time)",
+          "default": "",
+          "secret": true
+        }
+      },
+      "supplierRiskAgent": {
+        "url": {
+          "description": "Supplier Risk Agent (A2D mock, A2A 1.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/a0a7350b-dbd8-42de-ad71-bff62486e0f9/a2a",
+          "secret": false
+        }
+      },
+      "logisticsAgent": {
+        "url": {
+          "description": "Logistics Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/98d5b94b-db87-4ebc-9b1c-e6259e810fec/a2a",
+          "secret": false
+        }
+      },
+      "buyerAgent": {
+        "url": {
+          "description": "Procurement Buyer Agent (A2D mock, A2A 1.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/a2cf5661-5b77-415b-a071-41c19de7c31b/a2a",
+          "secret": false
+        }
+      },
+      "customerCommsAgent": {
+        "url": {
+          "description": "Customer Communications Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/9dcf701b-2dd0-4b19-a1d8-18435a4eac49/a2a",
+          "secret": false
+        }
+      },
+      "shipmentsMcp": {
+        "url": {
+          "description": "Shipments MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/55dce81c-8a2b-44cf-ad5f-26ed16363dfd/",
+          "secret": false
+        }
+      },
+      "inventoryMcp": {
+        "url": {
+          "description": "Inventory MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/e821f794-fba0-438e-aee1-b2391abfeb37/",
+          "secret": false
+        }
+      },
+      "supplierMcp": {
+        "url": {
+          "description": "Supplier MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/df692006-f8d9-46f7-8d6b-08a1cc265dd8/",
+          "secret": false
+        }
+      }
+    }
+  },
+  "dependencies": [
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "a2a-v1-pii-detector",
+      "version": "1.0.0"
+    },
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "header-injection",
+      "version": "1.3.3"
+    },
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "mcp-pii-detector",
+      "version": "1.0.1"
+    },
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "mcp-schema-validation",
+      "version": "1.3.0"
+    },
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "rate-limiting",
+      "version": "1.5.1"
+    }
+  ],
+  "groupId": "${organizationId}",
+  "assetId": "supply-chain-governed-v2",
+  "version": "1.0.0"
+}

@@ -1,0 +1,390 @@
+agentNetwork: 2.0.0
+info:
+  label: IT Incident Response (governed)
+  version: v1
+  description: Alerts are classified; P1s become a major incident with on-call page and status page, others go to the network, database or application specialist.
+registry:
+  agents:
+    octo_ir2g_triage_agent:
+      info:
+        label: Incident Triage Agent
+        description: Correlates alerts and names the likely cause.
+      metadata:
+        platform: AgentForce
+        interfaces:
+          a2a:
+            card:
+              name: Incident Triage Agent
+              description: Correlates alerts and names the likely cause.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: triage
+                  name: Triage
+                  description: Correlate alerts for a service.
+                  tags:
+                    - triage
+                  examples:
+                    - Triage checkout-api
+              supportedInterfaces:
+                - url: https://www.a2d-ai.com/api/platform/56c3a3a9-56e1-4cdc-b9cd-c8868fcc7008/a2a
+                  protocolBinding: JSONRPC
+                  protocolVersion: "1.0"
+    octo_ir2g_network_agent:
+      info:
+        label: Network Operations Agent
+        description: Diagnoses network and VPN issues.
+      metadata:
+        platform: MuleSoft
+        interfaces:
+          a2a_v03:
+            card:
+              name: Network Operations Agent
+              description: Diagnoses network and VPN issues.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: diagnose-network
+                  name: Diagnose Network
+                  description: Diagnose a network problem.
+                  tags:
+                    - network
+                  examples:
+                    - VPN drops in Zurich
+              url: https://www.a2d-ai.com/api/platform/4f5e984b-a170-47d7-a58e-23f6ed5cfa07/a2a
+              protocolVersion: 0.3.0
+    octo_ir2g_database_agent:
+      info:
+        label: Database Operations Agent
+        description: Diagnoses database performance and replication.
+      metadata:
+        platform: Snowflake
+        interfaces:
+          a2a:
+            card:
+              name: Database Operations Agent
+              description: Diagnoses database performance and replication.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: diagnose-db
+                  name: Diagnose Database
+                  description: Diagnose a database problem.
+                  tags:
+                    - database
+                  examples:
+                    - orders-db replication lag
+              supportedInterfaces:
+                - url: https://www.a2d-ai.com/api/platform/d26ed478-0c67-4c5b-8efd-636dcfd27db2/a2a
+                  protocolBinding: JSONRPC
+                  protocolVersion: "1.0"
+    octo_ir2g_app_support_agent:
+      info:
+        label: Application Support Agent
+        description: Diagnoses application errors and rollbacks.
+      metadata:
+        platform: Azure
+        interfaces:
+          a2a_v03:
+            card:
+              name: Application Support Agent
+              description: Diagnoses application errors and rollbacks.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: diagnose-app
+                  name: Diagnose Application
+                  description: Diagnose an application problem.
+                  tags:
+                    - application
+                  examples:
+                    - checkout-api errors
+              url: https://www.a2d-ai.com/api/platform/8272582f-f9b4-42e8-b5f3-cd27c8751e02/a2a
+              protocolVersion: 0.3.0
+    octo_ir2g_status_page_agent:
+      info:
+        label: Status Page Agent
+        description: Publishes customer-facing status updates.
+      metadata:
+        platform: Vertex
+        interfaces:
+          a2a:
+            card:
+              name: Status Page Agent
+              description: Publishes customer-facing status updates.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: status-update
+                  name: Status Update
+                  description: Publish a status page update.
+                  tags:
+                    - status
+                  examples:
+                    - Post an update for checkout-api
+              supportedInterfaces:
+                - url: https://www.a2d-ai.com/api/platform/7ff8f6e8-6ee3-41e0-855c-efbdd7c7c5f2/a2a
+                  protocolBinding: JSONRPC
+                  protocolVersion: "1.0"
+  mcps:
+    octo_ir2g_monitoring_mcp:
+      info:
+        label: Service Health Monitoring MCP
+        description: Alerts and service health.
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: get_service_health
+            description: Get the health of a service.
+            inputSchema:
+              type: object
+              properties:
+                service:
+                  type: string
+                  description: Service name, e.g. checkout-api
+              required:
+                - service
+    octo_ir2g_itsm_mcp:
+      info:
+        label: Incident Ticketing MCP
+        description: Incident tickets and on-call paging.
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: create_incident
+            description: Create an incident ticket.
+            inputSchema:
+              type: object
+              properties:
+                service:
+                  type: string
+                  description: Service name
+                priority:
+                  type: string
+                  description: p1, p2 or p3
+              required:
+                - service
+                - priority
+          - name: page_oncall
+            description: Page the on-call engineer of a service.
+            inputSchema:
+              type: object
+              properties:
+                service:
+                  type: string
+                  description: Service name
+              required:
+                - service
+  llms:
+    octo_ir2g_openai:
+      info:
+        label: OpenAI
+      metadata:
+        platform: OpenAI
+        models:
+          - gpt-5-mini
+context:
+  connections:
+    triage_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_ir2g_triage_agent
+      url: ${triageAgent.url}
+      policies:
+        inbound:
+          - ref:
+              name: a2a_v1_pii
+    network_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_ir2g_network_agent
+      url: ${networkAgent.url}
+      policies:
+        inbound:
+          - policy:
+              ref:
+                name: header-injection
+                namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+              configuration:
+                inboundHeaders:
+                  - key: x-correlation-source
+                    value: octo_ir2g_incident_broker
+    database_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_ir2g_database_agent
+      url: ${databaseAgent.url}
+      policies:
+        inbound:
+          - ref:
+              name: a2a_v1_pii
+    app_support_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_ir2g_app_support_agent
+      url: ${appSupportAgent.url}
+      policies:
+        inbound:
+          - policy:
+              ref:
+                name: header-injection
+                namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+              configuration:
+                inboundHeaders:
+                  - key: x-correlation-source
+                    value: octo_ir2g_incident_broker
+    status_page_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_ir2g_status_page_agent
+      url: ${statusPageAgent.url}
+      policies:
+        inbound:
+          - ref:
+              name: a2a_v1_pii
+    monitoring_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_ir2g_monitoring_mcp
+      url: ${monitoringMcp.url}
+      policies:
+        inbound:
+          - ref:
+              name: mcp_pii
+          - ref:
+              name: mcp_schema
+    itsm_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_ir2g_itsm_mcp
+      url: ${itsmMcp.url}
+      policies:
+        inbound:
+          - ref:
+              name: mcp_pii
+          - policy:
+              ref:
+                name: header-injection
+                namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+              configuration:
+                inboundHeaders:
+                  - key: x-octoloom-source
+                    value: incident-response-governed-v2
+    openai_connection:
+      kind: llm
+      ref:
+        name: octo_ir2g_openai
+      url: https://api.openai.com/v1
+      authentication:
+        kind: apiKey
+        apiKey: ${openai.apiKey}
+  policies:
+    a2a_v1_pii:
+      ref:
+        name: a2a-v1-pii-detector
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+      configuration:
+        entities:
+          - Email
+          - US SSN
+          - Credit Card
+        action: Log
+    mcp_pii:
+      ref:
+        name: mcp-pii-detector
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+      configuration:
+        entities:
+          - Email
+          - US SSN
+          - Credit Card
+          - Phone Number
+        action: Log and mask
+    mcp_schema:
+      ref:
+        name: mcp-schema-validation
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+      configuration:
+        validateToolSchema: true
+    rate_limit:
+      ref:
+        name: rate-limiting
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
+      configuration:
+        rateLimits:
+          - maximumRequests: 30
+            timePeriodInMilliseconds: 60000
+        exposeHeaders: true
+brokers:
+  octo_ir2g_incident_broker:
+    kind: AgentScript
+    implementation: ./brokers/incident-broker.agent
+    interfaces:
+      a2a:
+        card:
+          name: Incident Response Broker
+          description: Alerts are classified; P1s become a major incident with on-call page and status page, others go to the network, database or application specialist.
+          version: 1.0.0
+          capabilities:
+            streaming: true
+            pushNotifications: false
+          defaultInputModes:
+            - text/plain
+          defaultOutputModes:
+            - text/plain
+          skills:
+            - id: handle-incident
+              name: Handle Incident
+              description: Classify and respond to an IT incident.
+              tags:
+                - itops
+                - incident
+              examples:
+                - "P1: checkout-api returns 500 for all users since 10:02"
+                - orders-db replication lag is 40 minutes
+                - VPN in the Zurich office drops every few minutes
+        policies:
+          inbound:
+            - ref:
+                name: rate_limit

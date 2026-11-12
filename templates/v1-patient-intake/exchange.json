@@ -1,0 +1,60 @@
+{
+  "main": "agent-network.yaml",
+  "name": "patient-intake-v1",
+  "classifier": "agent-network",
+  "descriptorVersion": "1.0.0",
+  "apiVersion": "v1",
+  "tags": [
+    "octoloom-example"
+  ],
+  "metadata": {
+    "variables": {
+      "ingressgw": {
+        "url": {
+          "description": "Ingress gateway base URL (the broker is served under it)",
+          "default": "",
+          "secret": false
+        }
+      },
+      "openai": {
+        "apiKey": {
+          "description": "OpenAI API key (secret, injected at deploy time)",
+          "default": "",
+          "secret": true
+        }
+      },
+      "ehrMcp": {
+        "url": {
+          "description": "Clinic Records MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/94c4f7d4-3a72-4b29-a043-284640c540e0/",
+          "secret": false
+        }
+      },
+      "triageNurseAgent": {
+        "url": {
+          "description": "Triage Nurse Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/6334f04d-8eec-4132-8f03-18ff35cac474/a2a",
+          "secret": false
+        }
+      },
+      "schedulingAgent": {
+        "url": {
+          "description": "Scheduling Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/fd68731a-35b6-460c-817b-19a000773bdf/a2a",
+          "secret": false
+        }
+      },
+      "insuranceVerificationAgent": {
+        "url": {
+          "description": "Insurance Verification Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/be8502c1-78b2-4b69-8a27-0b6a13ed4b8b/a2a",
+          "secret": false
+        }
+      }
+    }
+  },
+  "dependencies": [],
+  "groupId": "${organizationId}",
+  "assetId": "patient-intake-v1",
+  "version": "1.0.0"
+}

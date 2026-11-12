@@ -130,5 +130,67 @@
       "email_mcp": "693ad3bf-5696-43cd-b5a1-830aa3d5ab46",
       "analytics_mcp": "9d7ad145-5382-4369-a0c8-14ef0d293ef0"
     }
+  },
+  "v1-hr-leave": {
+    "project": null,
+    "agents": {
+      "leave-policy-agent": "3566c4df-ed9a-4eb7-8d3c-ea91d77aa114",
+      "payroll-agent": "b7aad5d7-e511-470f-b9b3-69416a9bfec3"
+    },
+    "mcps": {
+      "hris-mcp": "900a88c1-7dc5-4830-9dcb-bfc61c63210b",
+      "calendar-mcp": "eaa685f1-9833-47bd-8297-2f32fab75a25"
+    }
+  },
+  "v1-patient-intake": {
+    "project": null,
+    "agents": {
+      "triage-nurse-agent": "6334f04d-8eec-4132-8f03-18ff35cac474",
+      "scheduling-agent": "fd68731a-35b6-460c-817b-19a000773bdf",
+      "insurance-verification-agent": "be8502c1-78b2-4b69-8a27-0b6a13ed4b8b"
+    },
+    "mcps": {
+      "ehr-mcp": "94c4f7d4-3a72-4b29-a043-284640c540e0"
+    }
+  },
+  "v2-supply-chain": {
+    "project": null,
+    "agents": {
+      "supplier_risk_agent": "a0a7350b-dbd8-42de-ad71-bff62486e0f9",
+      "logistics_agent": "98d5b94b-db87-4ebc-9b1c-e6259e810fec",
+      "buyer_agent": "a2cf5661-5b77-415b-a071-41c19de7c31b",
+      "customer_comms_agent": "9dcf701b-2dd0-4b19-a1d8-18435a4eac49"
+    },
+    "mcps": {
+      "shipments_mcp": "55dce81c-8a2b-44cf-ad5f-26ed16363dfd",
+      "inventory_mcp": "e821f794-fba0-438e-aee1-b2391abfeb37",
+      "supplier_mcp": "df692006-f8d9-46f7-8d6b-08a1cc265dd8"
+    }
+  },
+  "v2-kyc-onboarding": {
+    "project": null,
+    "agents": {
+      "kyc_analyst_agent": "9d2f67ee-62ae-4e7a-85aa-86cc134bd34c",
+      "account_opening_agent": "7c76d68f-65b2-40ba-9139-77c6a4d796e0"
+    },
+    "mcps": {
+      "identity_mcp": "bc1c60ca-df29-4d9d-b25c-2b839730f8d5",
+      "sanctions_mcp": "b1b3a5b7-5bbc-4764-8194-e6577ab4f52a",
+      "risk_mcp": "08c986b9-6c22-4e6d-9323-67d551582ab5"
+    }
+  },
+  "v2-incident-response": {
+    "project": null,
+    "agents": {
+      "triage_agent": "56c3a3a9-56e1-4cdc-b9cd-c8868fcc7008",
+      "network_agent": "4f5e984b-a170-47d7-a58e-23f6ed5cfa07",
+      "database_agent": "d26ed478-0c67-4c5b-8efd-636dcfd27db2",
+      "app_support_agent": "8272582f-f9b4-42e8-b5f3-cd27c8751e02",
+      "status_page_agent": "7ff8f6e8-6ee3-41e0-855c-efbdd7c7c5f2"
+    },
+    "mcps": {
+      "monitoring_mcp": "f76580a4-c9cf-4e67-a5f9-96a717075626",
+      "itsm_mcp": "3c7aac35-436f-4c5c-b436-7430d2d254d2"
+    }
   }
 }

@@ -1,0 +1,180 @@
+# @dialect: AGENTFABRIC=1.0
+# Supply Chain Disruption: A late or short shipment is assessed against stock; severe delays are rerouted and customers told, other cases get a mitigation plan.
+# Upstreams are A2D mocks; see README.md for test prompts.
+
+system:
+  instructions: "You are the supply chain control tower. Decide from shipment and stock data, never from guesses."
+
+config:
+  agent_name: "disruption-broker"
+  default_llm: @llm.default
+
+llm:
+  default:
+    target: "llm://openai_connection"
+    kind: "OpenAI"
+    model: "gpt-5-mini"
+
+actions:
+  get_shipment:
+    target: "mcp://shipments_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "get_shipment"
+  reroute_shipment:
+    target: "mcp://shipments_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "reroute_shipment"
+    inputs:
+      shipment_id: string
+  get_stock:
+    target: "mcp://inventory_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "get_stock"
+  find_alternative_supplier:
+    target: "mcp://supplier_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "find_alternative_supplier"
+  supplier_risk_agent:
+    target: "a2a://supplier_risk_agent_connection"
+    kind: "a2a:send_message"
+  logistics_agent:
+    target: "a2a://logistics_agent_connection"
+    kind: "a2a:send_message"
+  buyer_agent:
+    target: "a2a://buyer_agent_connection"
+    kind: "a2a:send_message"
+  customer_comms_agent:
+    target: "a2a://customer_comms_agent_connection"
+    kind: "a2a:send_message"
+
+trigger disruptionBrokerTrigger:
+  kind: "a2a"
+  target: "brokers://octo_sc2g_disruption_broker/a2a"
+  on_message: ->
+    transition to @generator.extractDisruption
+
+generator extractDisruption:
+  description: "Extracts the shipment id and the kind of disruption."
+  label: "Extract Disruption"
+  system:
+    instructions: |
+      Extract the shipment id (for example SHP-4401) and classify the disruption.
+      Kind is "delay" for late shipments and "shortage" when the supplier cannot deliver the quantity.
+  prompt: ->
+    | {!@request.payload.message.parts[0].text}
+  outputs:
+    properties:
+      shipment_id:
+        type: "string"
+        description: "Shipment id, e.g. SHP-4401"
+      kind:
+        type: "string"
+        description: "Kind of disruption"
+        enum:
+          - "delay"
+          - "shortage"
+  on_exit: ->
+    transition to @subagent.assessImpact
+
+subagent assessImpact:
+  description: "Reads the shipment and the stock cover of its SKU and rates the impact."
+  label: "Assess Impact"
+  system:
+    instructions: |
+      Get the shipment, then the stock of its SKU.
+      Severity is "severe" when the delay in days is larger than the days of cover, otherwise "manageable".
+  reasoning:
+    instructions: ->
+      | Shipment {!@generator.extractDisruption.output.shipment_id}, kind {!@generator.extractDisruption.output.kind}.
+    actions:
+      shipment: @actions.get_shipment
+      stock: @actions.get_stock
+    max_number_of_loops: 4
+    outputs:
+      properties:
+        severity:
+          type: "string"
+          description: "Impact on stock"
+          enum:
+            - "severe"
+            - "manageable"
+        detail:
+          type: "string"
+          description: "SKU, delay and days of cover"
+  on_exit: ->
+    transition to @router.mitigationRouter
+
+router mitigationRouter:
+  description: "Severe delays are rerouted, shortages get a new supplier, the rest a plan."
+  routes:
+    - target: @executor.reroute
+      when: @subagent.assessImpact.output.severity == "severe" and @generator.extractDisruption.output.kind == "delay"
+      label: "Severe delay"
+    - target: @orchestrator.resource
+      when: @generator.extractDisruption.output.kind == "shortage"
+      label: "Shortage"
+  otherwise:
+    target: @subagent.mitigationPlan
+
+executor reroute:
+  description: "Switches the shipment to a faster mode (no LLM)."
+  do: ->
+    run @actions.reroute_shipment
+      with shipment_id = @generator.extractDisruption.output.shipment_id
+  on_exit: ->
+    transition to @subagent.informCustomers
+
+subagent informCustomers:
+  description: "Tells the affected customers the new date."
+  label: "Inform Customers"
+  reasoning:
+    instructions: ->
+      | Shipment {!@generator.extractDisruption.output.shipment_id} was rerouted. Impact: {!@subagent.assessImpact.output.detail}. Inform the affected customers.
+    actions:
+      comms: @actions.customer_comms_agent
+  on_exit: ->
+    transition to @echo.rerouted
+
+orchestrator resource:
+  description: "Finds an alternative supplier, checks its risk and places the order."
+  label: "Re-source"
+  system:
+    instructions: |
+      Find approved alternative suppliers for the SKU, ask the supplier risk agent which one to use,
+      then ask the buyer agent to place the order. Summarise supplier, quantity and delivery date.
+  reasoning:
+    instructions: ->
+      | Shortage on shipment {!@generator.extractDisruption.output.shipment_id}: {!@subagent.assessImpact.output.detail}
+    actions:
+      alternatives: @actions.find_alternative_supplier
+      risk: @actions.supplier_risk_agent
+      buy: @actions.buyer_agent
+    max_number_of_loops: 6
+  on_exit: ->
+    transition to @echo.resourced
+
+subagent mitigationPlan:
+  description: "Stock covers the delay: proposes a plan with the logistics agent."
+  label: "Mitigation Plan"
+  reasoning:
+    instructions: ->
+      | Stock covers the disruption of {!@generator.extractDisruption.output.shipment_id}: {!@subagent.assessImpact.output.detail}. Ask logistics for options and propose a plan.
+    actions:
+      logistics: @actions.logistics_agent
+  on_exit: ->
+    transition to @echo.planned
+
+echo rerouted:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Shipment " + @generator.extractDisruption.output.shipment_id + " rerouted. " + @subagent.informCustomers.output)]})
+
+echo resourced:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Shortage handled: " + @orchestrator.resource.output)]})
+
+echo planned:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("No stock-out expected. " + @subagent.mitigationPlan.output)]})

@@ -485,6 +485,368 @@
       ],
       "assetId": "campaign-studio-governed-v2",
       "prefix": "octo_cs2g"
+    },
+    {
+      "id": "v1-hr-leave",
+      "version": "v1",
+      "category": "usecase",
+      "title": "HR Leave Requests",
+      "summary": "Employees ask for time off; the broker checks balance, policy and team calendar before submitting the request.",
+      "agents": 2,
+      "mcps": 2,
+      "protocols": [
+        "0.3.0"
+      ],
+      "policies": [],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "README.md"
+      ],
+      "assetId": "hr-leave-v1",
+      "prefix": "octo_hl1"
+    },
+    {
+      "id": "v1-hr-leave-governed",
+      "version": "v1",
+      "category": "technical",
+      "title": "HR Leave Requests: governed",
+      "summary": "Employees ask for time off; the broker checks balance, policy and team calendar before submitting the request. Adds built-in policies: rate-limiting, mcp-pii-detector, mcp-schema-validation, header-injection, a-two-a-pii-detector, a-two-a-prompt-decorator.",
+      "agents": 2,
+      "mcps": 2,
+      "protocols": [
+        "0.3.0"
+      ],
+      "policies": [
+        "rate-limiting",
+        "mcp-pii-detector",
+        "mcp-schema-validation",
+        "header-injection",
+        "a-two-a-pii-detector",
+        "a-two-a-prompt-decorator"
+      ],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "README.md"
+      ],
+      "assetId": "hr-leave-governed-v1",
+      "prefix": "octo_hl1g"
+    },
+    {
+      "id": "v1-hr-leave-secured",
+      "version": "v1",
+      "category": "technical",
+      "title": "HR Leave Requests: secured",
+      "summary": "Employees ask for time off; the broker checks balance, policy and team calendar before submitting the request. Secured: authenticated connections (Basic, Client ID enforcement) with secret variables, the LLM behind a gateway URL.",
+      "agents": 2,
+      "mcps": 2,
+      "protocols": [
+        "0.3.0"
+      ],
+      "policies": [
+        "rate-limiting"
+      ],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "README.md"
+      ],
+      "assetId": "hr-leave-secured-v1",
+      "prefix": "octo_hl1s"
+    },
+    {
+      "id": "v1-patient-intake",
+      "version": "v1",
+      "category": "usecase",
+      "title": "Patient Intake (demo data)",
+      "summary": "A clinic front desk: triage questions, insurance check and appointment booking from one conversation. Fictional patients only.",
+      "agents": 3,
+      "mcps": 1,
+      "protocols": [
+        "0.3.0"
+      ],
+      "policies": [],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "README.md"
+      ],
+      "assetId": "patient-intake-v1",
+      "prefix": "octo_pi1"
+    },
+    {
+      "id": "v1-patient-intake-governed",
+      "version": "v1",
+      "category": "technical",
+      "title": "Patient Intake (demo data): governed",
+      "summary": "A clinic front desk: triage questions, insurance check and appointment booking from one conversation. Fictional patients only. Adds built-in policies: rate-limiting, mcp-pii-detector, a-two-a-pii-detector, header-injection, a-two-a-prompt-decorator.",
+      "agents": 3,
+      "mcps": 1,
+      "protocols": [
+        "0.3.0"
+      ],
+      "policies": [
+        "rate-limiting",
+        "mcp-pii-detector",
+        "a-two-a-pii-detector",
+        "header-injection",
+        "a-two-a-prompt-decorator"
+      ],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "README.md"
+      ],
+      "assetId": "patient-intake-governed-v1",
+      "prefix": "octo_pi1g"
+    },
+    {
+      "id": "v1-patient-intake-secured",
+      "version": "v1",
+      "category": "technical",
+      "title": "Patient Intake (demo data): secured",
+      "summary": "A clinic front desk: triage questions, insurance check and appointment booking from one conversation. Fictional patients only. Secured: authenticated connections (Basic, Client ID enforcement) with secret variables, the LLM behind a gateway URL.",
+      "agents": 3,
+      "mcps": 1,
+      "protocols": [
+        "0.3.0"
+      ],
+      "policies": [
+        "rate-limiting"
+      ],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "README.md"
+      ],
+      "assetId": "patient-intake-secured-v1",
+      "prefix": "octo_pi1s"
+    },
+    {
+      "id": "v2-supply-chain",
+      "version": "v2",
+      "category": "usecase",
+      "title": "Supply Chain Disruption",
+      "summary": "A late or short shipment is assessed against stock; severe delays are rerouted and customers told, other cases get a mitigation plan.",
+      "agents": 4,
+      "mcps": 3,
+      "protocols": [
+        "1.0",
+        "0.3.0"
+      ],
+      "policies": [],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "brokers/disruption-broker.agent",
+        "README.md"
+      ],
+      "assetId": "supply-chain-v2",
+      "prefix": "octo_sc2"
+    },
+    {
+      "id": "v2-supply-chain-governed",
+      "version": "v2",
+      "category": "technical",
+      "title": "Supply Chain Disruption: governed",
+      "summary": "A late or short shipment is assessed against stock; severe delays are rerouted and customers told, other cases get a mitigation plan. Adds built-in policies: a2a-v1-pii-detector, header-injection, mcp-pii-detector, mcp-schema-validation, rate-limiting.",
+      "agents": 4,
+      "mcps": 3,
+      "protocols": [
+        "1.0",
+        "0.3.0"
+      ],
+      "policies": [
+        "a2a-v1-pii-detector",
+        "header-injection",
+        "mcp-pii-detector",
+        "mcp-schema-validation",
+        "rate-limiting"
+      ],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "brokers/disruption-broker.agent",
+        "README.md"
+      ],
+      "assetId": "supply-chain-governed-v2",
+      "prefix": "octo_sc2g"
+    },
+    {
+      "id": "v2-supply-chain-secured",
+      "version": "v2",
+      "category": "technical",
+      "title": "Supply Chain Disruption: secured",
+      "summary": "A late or short shipment is assessed against stock; severe delays are rerouted and customers told, other cases get a mitigation plan. Secured: authenticated connections (Basic, Client ID enforcement) with secret variables, the LLM behind a gateway URL, outbound message logging.",
+      "agents": 4,
+      "mcps": 3,
+      "protocols": [
+        "1.0",
+        "0.3.0"
+      ],
+      "policies": [
+        "message-logging-outbound",
+        "rate-limiting"
+      ],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "brokers/disruption-broker.agent",
+        "README.md"
+      ],
+      "assetId": "supply-chain-secured-v2",
+      "prefix": "octo_sc2s"
+    },
+    {
+      "id": "v2-kyc-onboarding",
+      "version": "v2",
+      "category": "usecase",
+      "title": "KYC / AML Onboarding",
+      "summary": "New banking customers are screened (document, sanctions, risk score); low risk opens the account, medium goes to an analyst, high opens a compliance case.",
+      "agents": 2,
+      "mcps": 3,
+      "protocols": [
+        "1.0",
+        "0.3.0"
+      ],
+      "policies": [],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "brokers/kyc-broker.agent",
+        "README.md"
+      ],
+      "assetId": "kyc-onboarding-v2",
+      "prefix": "octo_ko2"
+    },
+    {
+      "id": "v2-kyc-onboarding-governed",
+      "version": "v2",
+      "category": "technical",
+      "title": "KYC / AML Onboarding: governed",
+      "summary": "New banking customers are screened (document, sanctions, risk score); low risk opens the account, medium goes to an analyst, high opens a compliance case. Adds built-in policies: a2a-v1-pii-detector, header-injection, mcp-pii-detector, mcp-schema-validation, rate-limiting.",
+      "agents": 2,
+      "mcps": 3,
+      "protocols": [
+        "1.0",
+        "0.3.0"
+      ],
+      "policies": [
+        "a2a-v1-pii-detector",
+        "header-injection",
+        "mcp-pii-detector",
+        "mcp-schema-validation",
+        "rate-limiting"
+      ],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "brokers/kyc-broker.agent",
+        "README.md"
+      ],
+      "assetId": "kyc-onboarding-governed-v2",
+      "prefix": "octo_ko2g"
+    },
+    {
+      "id": "v2-kyc-onboarding-secured",
+      "version": "v2",
+      "category": "technical",
+      "title": "KYC / AML Onboarding: secured",
+      "summary": "New banking customers are screened (document, sanctions, risk score); low risk opens the account, medium goes to an analyst, high opens a compliance case. Secured: authenticated connections (Basic, Client ID enforcement) with secret variables, the LLM behind a gateway URL, outbound message logging.",
+      "agents": 2,
+      "mcps": 3,
+      "protocols": [
+        "1.0",
+        "0.3.0"
+      ],
+      "policies": [
+        "message-logging-outbound",
+        "rate-limiting"
+      ],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "brokers/kyc-broker.agent",
+        "README.md"
+      ],
+      "assetId": "kyc-onboarding-secured-v2",
+      "prefix": "octo_ko2s"
+    },
+    {
+      "id": "v2-incident-response",
+      "version": "v2",
+      "category": "usecase",
+      "title": "IT Incident Response",
+      "summary": "Alerts are classified; P1s become a major incident with on-call page and status page, others go to the network, database or application specialist.",
+      "agents": 5,
+      "mcps": 2,
+      "protocols": [
+        "1.0",
+        "0.3.0"
+      ],
+      "policies": [],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "brokers/incident-broker.agent",
+        "README.md"
+      ],
+      "assetId": "incident-response-v2",
+      "prefix": "octo_ir2"
+    },
+    {
+      "id": "v2-incident-response-governed",
+      "version": "v2",
+      "category": "technical",
+      "title": "IT Incident Response: governed",
+      "summary": "Alerts are classified; P1s become a major incident with on-call page and status page, others go to the network, database or application specialist. Adds built-in policies: a2a-v1-pii-detector, header-injection, mcp-pii-detector, mcp-schema-validation, rate-limiting.",
+      "agents": 5,
+      "mcps": 2,
+      "protocols": [
+        "1.0",
+        "0.3.0"
+      ],
+      "policies": [
+        "a2a-v1-pii-detector",
+        "header-injection",
+        "mcp-pii-detector",
+        "mcp-schema-validation",
+        "rate-limiting"
+      ],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "brokers/incident-broker.agent",
+        "README.md"
+      ],
+      "assetId": "incident-response-governed-v2",
+      "prefix": "octo_ir2g"
+    },
+    {
+      "id": "v2-incident-response-secured",
+      "version": "v2",
+      "category": "technical",
+      "title": "IT Incident Response: secured",
+      "summary": "Alerts are classified; P1s become a major incident with on-call page and status page, others go to the network, database or application specialist. Secured: authenticated connections (Basic, Client ID enforcement) with secret variables, the LLM behind a gateway URL, outbound message logging.",
+      "agents": 5,
+      "mcps": 2,
+      "protocols": [
+        "1.0",
+        "0.3.0"
+      ],
+      "policies": [
+        "message-logging-outbound",
+        "rate-limiting"
+      ],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "brokers/incident-broker.agent",
+        "README.md"
+      ],
+      "assetId": "incident-response-secured-v2",
+      "prefix": "octo_ir2s"
     }
   ]
 }

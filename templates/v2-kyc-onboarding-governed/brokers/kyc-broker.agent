@@ -1,0 +1,172 @@
+# @dialect: AGENTFABRIC=1.0
+# KYC / AML Onboarding: New banking customers are screened (document, sanctions, risk score); low risk opens the account, medium goes to an analyst, high opens a compliance case.
+# Upstreams are A2D mocks; see README.md for test prompts.
+
+system:
+  instructions: "You are the onboarding desk of a bank. Never open an account before identity, sanctions and risk checks are done."
+
+config:
+  agent_name: "kyc-broker"
+  default_llm: @llm.default
+
+llm:
+  default:
+    target: "llm://openai_connection"
+    kind: "OpenAI"
+    model: "gpt-5-mini"
+
+actions:
+  verify_document:
+    target: "mcp://identity_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "verify_document"
+  screen_name:
+    target: "mcp://sanctions_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "screen_name"
+  score_customer:
+    target: "mcp://risk_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "score_customer"
+  open_case:
+    target: "mcp://risk_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "open_case"
+    inputs:
+      applicant_id: string
+      reason: string
+  kyc_analyst_agent:
+    target: "a2a://kyc_analyst_agent_connection"
+    kind: "a2a:send_message"
+  account_opening_agent:
+    target: "a2a://account_opening_agent_connection"
+    kind: "a2a:send_message"
+
+trigger kycBrokerTrigger:
+  kind: "a2a"
+  target: "brokers://octo_ko2g_kyc_broker/a2a"
+  on_message: ->
+    transition to @generator.extractApplicant
+
+generator extractApplicant:
+  description: "Extracts the applicant id."
+  label: "Extract Applicant"
+  system:
+    instructions: |
+      Extract the applicant id (for example AP-7001) and the applicant name. Use "UNKNOWN" when no id is given.
+  prompt: ->
+    | {!@request.payload.message.parts[0].text}
+  outputs:
+    properties:
+      applicant_id:
+        type: "string"
+        description: "Applicant id, e.g. AP-7001, or UNKNOWN"
+      name:
+        type: "string"
+        description: "Applicant name"
+  on_exit: ->
+    transition to @router.idRouter
+
+router idRouter:
+  description: "Without an applicant id nothing can be checked."
+  routes:
+    - target: @subagent.screening
+      when: @generator.extractApplicant.output.applicant_id != "UNKNOWN"
+      label: "Has id"
+  otherwise:
+    target: @echo.needId
+
+subagent screening:
+  description: "Verifies the document, screens sanctions and scores the risk."
+  label: "Screening"
+  system:
+    instructions: |
+      Call all three checks for the applicant. Band is "high" when the sanctions screen has hits or the score band is high,
+      "low" when the document is verified, there are no hits and the score band is low, otherwise "medium".
+  reasoning:
+    instructions: ->
+      | Applicant {!@generator.extractApplicant.output.applicant_id}.
+    actions:
+      document: @actions.verify_document
+      sanctions: @actions.screen_name
+      score: @actions.score_customer
+    max_number_of_loops: 5
+    outputs:
+      properties:
+        band:
+          type: "string"
+          description: "Overall risk band"
+          enum:
+            - "low"
+            - "medium"
+            - "high"
+        findings:
+          type: "string"
+          description: "Document, sanctions and score results"
+  on_exit: ->
+    transition to @router.riskRouter
+
+router riskRouter:
+  description: "Low risk opens the account, high risk opens a compliance case, medium goes to an analyst."
+  routes:
+    - target: @subagent.openAccount
+      when: @subagent.screening.output.band == "low"
+      label: "Low risk"
+    - target: @executor.openCase
+      when: @subagent.screening.output.band == "high"
+      label: "High risk"
+  otherwise:
+    target: @subagent.analystReview
+
+subagent openAccount:
+  description: "Opens the account."
+  label: "Open Account"
+  reasoning:
+    instructions: ->
+      | Open an account for {!@generator.extractApplicant.output.applicant_id} ({!@generator.extractApplicant.output.name}).
+    actions:
+      open: @actions.account_opening_agent
+  on_exit: ->
+    transition to @echo.opened
+
+subagent analystReview:
+  description: "A KYC analyst reviews the medium-risk applicant, then the account is opened if approved."
+  label: "Analyst Review"
+  reasoning:
+    instructions: ->
+      | Medium risk for {!@generator.extractApplicant.output.applicant_id}: {!@subagent.screening.output.findings}. Ask the KYC analyst for a decision; if approved, open the account.
+    actions:
+      review: @actions.kyc_analyst_agent
+      open: @actions.account_opening_agent
+    max_number_of_loops: 4
+  on_exit: ->
+    transition to @echo.reviewed
+
+executor openCase:
+  description: "Opens a compliance case (no LLM, no account)."
+  do: ->
+    run @actions.open_case
+      with applicant_id = @generator.extractApplicant.output.applicant_id
+      with reason = @subagent.screening.output.findings
+  on_exit: ->
+    transition to @echo.caseOpened
+
+echo needId:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Please give the applicant id (for example AP-7001) to start the onboarding.")]})
+
+echo opened:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Onboarding complete for " + @generator.extractApplicant.output.applicant_id + ". " + @subagent.openAccount.output)]})
+
+echo reviewed:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Analyst review for " + @generator.extractApplicant.output.applicant_id + ": " + @subagent.analystReview.output)]})
+
+echo caseOpened:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("No account opened for " + @generator.extractApplicant.output.applicant_id + ": a compliance case was opened. " + @subagent.screening.output.findings)]})

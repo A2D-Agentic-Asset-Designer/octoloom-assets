@@ -1,0 +1,132 @@
+{
+  "main": "agent-network.yaml",
+  "name": "kyc-onboarding-secured-v2",
+  "classifier": "agentic-network",
+  "descriptorVersion": "1.0.0",
+  "apiVersion": "v1",
+  "tags": [
+    "octoloom-example"
+  ],
+  "metadata": {
+    "variables": {
+      "openai": {
+        "apiKey": {
+          "description": "OpenAI API key (secret, injected at deploy time)",
+          "default": "",
+          "secret": true
+        }
+      },
+      "llmGateway": {
+        "url": {
+          "description": "OpenAI-compatible LLM endpoint: api.openai.com or your LLM gateway in front of it",
+          "default": "https://api.openai.com/v1",
+          "secret": false
+        }
+      },
+      "kycAnalystAgent": {
+        "url": {
+          "description": "KYC Analyst Agent (A2D mock, A2A 1.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/9d2f67ee-62ae-4e7a-85aa-86cc134bd34c/a2a",
+          "secret": false
+        },
+        "username": {
+          "description": "User name for Basic authentication",
+          "default": "octoloom-demo",
+          "secret": false
+        },
+        "password": {
+          "description": "Password (secret, entered at deploy time)",
+          "default": "",
+          "secret": true
+        }
+      },
+      "accountOpeningAgent": {
+        "url": {
+          "description": "Account Opening Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/7c76d68f-65b2-40ba-9139-77c6a4d796e0/a2a",
+          "secret": false
+        },
+        "clientId": {
+          "description": "Client ID for Client ID Enforcement",
+          "default": "octoloom-demo-client",
+          "secret": false
+        },
+        "clientSecret": {
+          "description": "Client secret (secret, entered at deploy time)",
+          "default": "",
+          "secret": true
+        }
+      },
+      "identityMcp": {
+        "url": {
+          "description": "Identity Verification MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/bc1c60ca-df29-4d9d-b25c-2b839730f8d5/",
+          "secret": false
+        },
+        "clientId": {
+          "description": "Client ID for Client ID Enforcement",
+          "default": "octoloom-demo-client",
+          "secret": false
+        },
+        "clientSecret": {
+          "description": "Client secret (secret, entered at deploy time)",
+          "default": "",
+          "secret": true
+        }
+      },
+      "sanctionsMcp": {
+        "url": {
+          "description": "Sanctions Screening MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/b1b3a5b7-5bbc-4764-8194-e6577ab4f52a/",
+          "secret": false
+        },
+        "username": {
+          "description": "User name for Basic authentication",
+          "default": "octoloom-demo",
+          "secret": false
+        },
+        "password": {
+          "description": "Password (secret, entered at deploy time)",
+          "default": "",
+          "secret": true
+        }
+      },
+      "riskMcp": {
+        "url": {
+          "description": "Customer Risk MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/08c986b9-6c22-4e6d-9323-67d551582ab5/",
+          "secret": false
+        },
+        "clientId": {
+          "description": "Client ID for Client ID Enforcement",
+          "default": "octoloom-demo-client",
+          "secret": false
+        },
+        "clientSecret": {
+          "description": "Client secret (secret, entered at deploy time)",
+          "default": "",
+          "secret": true
+        }
+      }
+    }
+  },
+  "dependencies": [
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "message-logging-outbound",
+      "version": "2.1.0"
+    },
+    {
+      "classifier": "schema",
+      "packaging": "zip",
+      "groupId": "68ef9520-24e9-4cf2-b2f5-620025690913",
+      "assetId": "rate-limiting",
+      "version": "1.5.1"
+    }
+  ],
+  "groupId": "${organizationId}",
+  "assetId": "kyc-onboarding-secured-v2",
+  "version": "1.0.0"
+}

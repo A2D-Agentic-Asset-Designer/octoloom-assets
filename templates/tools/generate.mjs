@@ -31,8 +31,24 @@ const POL = {
   mcpSchema: { assetId: 'mcp-schema-validation', version: '1.3.0', configuration: { validateToolSchema: true } },
   a2aPii: { assetId: 'a-two-a-pii-detector', version: '1.0.2', configuration: { entities: ['Email', 'US SSN', 'Credit Card'], action: 'Log' } },
   a2aV1Pii: { assetId: 'a2a-v1-pii-detector', version: '1.0.0', configuration: { entities: ['Email', 'US SSN', 'Credit Card'], action: 'Log' } },
+  logOut: { assetId: 'message-logging-outbound', version: '2.1.0', configuration: { loggingConfiguration: [{ itemName: 'Upstream calls', itemData: { message: '#[attributes.method ++ " " ++ attributes.requestPath]', level: 'INFO', firstSection: true, secondSection: false } }] } },
   prompt: (text) => ({ assetId: 'a-two-a-prompt-decorator', version: '1.0.2', configuration: { textDecorators: [{ text: `#['${text}']` }] } }),
 };
+
+// Secured variant (#31): authenticated connections with deploy-time secret variables, the LLM behind a
+// configurable gateway URL, outbound message logging. A2D mocks ignore the credentials, so it still runs.
+const SEC = (i) => (i % 2 === 0 ? 'basic' : 'apikey-client-credentials');
+function secAuth(kind, g, vars) {
+  if (kind === 'basic') {
+    vars[g].username = { description: 'User name for Basic authentication', default: 'octoloom-demo', secret: false };
+    vars[g].password = { description: 'Password (secret, entered at deploy time)', default: '', secret: true };
+    return { kind: 'basic', username: `\${${g}.username}`, password: `\${${g}.password}` };
+  }
+  vars[g].clientId = { description: 'Client ID for Client ID Enforcement', default: 'octoloom-demo-client', secret: false };
+  vars[g].clientSecret = { description: 'Client secret (secret, entered at deploy time)', default: '', secret: true };
+  return { kind: 'apikey-client-credentials', clientId: { value: `\${${g}.clientId}`, name: 'client_id' }, clientSecret: { value: `\${${g}.clientSecret}`, name: 'client_secret' } };
+}
+const LLM_GW = { llmGateway: { url: { description: 'OpenAI-compatible LLM endpoint: api.openai.com or your LLM gateway in front of it', default: 'https://api.openai.com/v1', secret: false } } };
 
 function skills(list) {
   return list.map((s) => ({ id: s.id, name: s.name, description: s.description, tags: s.tags, examples: s.examples }));
@@ -50,16 +66,16 @@ function exchange(u, vars, deps) {
 const policyDeps = (used) => [...new Map(used.map((p) => [p.assetId, p])).values()].map((p) => ({ classifier: 'schema', packaging: 'zip', groupId: AF, assetId: p.assetId, version: p.version }));
 
 // ─────────────────────────────── v1 (Probabilistic) ───────────────────────────────
-function v1(u, technical) {
+function v1(u, technical, secured) {
   const rec = ids[u.id];
   const R = (k) => `${u.prefix}_${k}`;
   const b = R(u.broker.key);
-  const vars = { ingressgw: { url: { description: 'Ingress gateway base URL (the broker is served under it)', default: '', secret: false } }, openai: { apiKey: { description: 'OpenAI API key (secret, injected at deploy time)', default: '', secret: true } } };
+  const vars = { ingressgw: { url: { description: 'Ingress gateway base URL (the broker is served under it)', default: '', secret: false } }, openai: { apiKey: { description: 'OpenAI API key (secret, injected at deploy time)', default: '', secret: true } }, ...(secured ? LLM_GW : {}) };
   const used = [];
   const pol = (p) => (used.push(p), { ref: { name: p.assetId, namespace: AF }, configuration: p.configuration });
   const net = {
     schemaVersion: '1.0.0',
-    label: `${u.title}${technical ? ' (governed)' : ''}`,
+    label: `${u.title}${technical ? ' (governed)' : secured ? ' (secured)' : ''}`,
     brokers: {
       [b]: {
         card: { protocolVersion: '0.3.0', name: b, description: u.summary, url: `\${ingressgw.url}/${b}`, version: '1.0.0', capabilities: { streaming: false, pushNotifications: false, stateTransitionHistory: false }, defaultInputModes: MODES, defaultOutputModes: MODES, skills: skills(u.broker.skills) },
@@ -69,13 +85,13 @@ function v1(u, technical) {
           links: u.agents.map((a) => ({ agent: { ref: { name: R(a.key) } } })),
           tools: u.mcps.map((m) => ({ mcp: { ref: { name: R(m.key) }, allowed: m.tools.map((t) => t.name) } })),
           maxNumberOfLoops: 25, maxConsecutiveErrors: 3, taskTimeoutSecs: 90,
-          ...(technical ? { policies: [pol(POL.rateLimit(60))] } : {}),
+          ...(technical || secured ? { policies: [pol(POL.rateLimit(60))] } : {}),
         },
       },
     },
     llmProviders: { [R('openai')]: { label: 'OpenAI', description: 'OpenAI LLM provider', metadata: { platform: 'OpenAI', models: [MODEL] } } },
     connections: {
-      'openai-connection': { kind: 'llm', ref: { name: R('openai') }, spec: { url: 'https://api.openai.com/v1/', configuration: { apiKey: '${openai.apiKey}', timeout: 600000 } } },
+      'openai-connection': { kind: 'llm', ref: { name: R('openai') }, spec: { url: secured ? '${llmGateway.url}/' : 'https://api.openai.com/v1/', configuration: { apiKey: '${openai.apiKey}', timeout: 600000 } } },
     },
     mcpServers: {},
     agents: {},
@@ -83,34 +99,34 @@ function v1(u, technical) {
   for (const [i, m] of u.mcps.entries()) {
     const v = camel(m.key);
     vars[v] = { url: { description: `${m.name} (A2D mock) base URL`, default: `${A2D}/${rec.mcps[m.key]}/`, secret: false } };
-    net.connections[`${m.key}-connection`] = { kind: 'mcp', ref: { name: R(m.key) }, spec: { url: `\${${v}.url}`, ...(technical ? { policies: i % 2 === 0 ? [pol(POL.mcpPii)] : [pol(POL.mcpSchema), pol(POL.headers([{ key: 'x-octoloom-source', value: u.slug }]))] } : {}) } };
+    net.connections[`${m.key}-connection`] = { kind: 'mcp', ref: { name: R(m.key) }, spec: { url: `\${${v}.url}`, ...(secured ? { authentication: secAuth(SEC(i + 1), v, vars) } : {}), ...(technical ? { policies: i % 2 === 0 ? [pol(POL.mcpPii)] : [pol(POL.mcpSchema), pol(POL.headers([{ key: 'x-octoloom-source', value: u.slug }]))] } : {}) } };
     net.mcpServers[R(m.key)] = { label: m.name, description: m.description, metadata: { transport: { kind: 'streamableHttp', path: '/mcp' }, tools: m.tools.map((t) => ({ name: t.name, description: t.description, inputSchema: { type: 'object', properties: Object.fromEntries(Object.entries(t.input).map(([k, [type, description]]) => [k, { type, description }])), required: t.required } })) } };
   }
   for (const [i, a] of u.agents.entries()) {
     const v = camel(a.key);
     const url = `${A2D}/${rec.agents[a.key]}/a2a`;
     vars[v] = { url: { description: `${a.name} (A2D mock, A2A 0.3.0) URL`, default: url, secret: false } };
-    net.connections[`${a.key}-connection`] = { kind: 'agent', ref: { name: R(a.key) }, spec: { url: `\${${v}.url}`, ...(technical ? { policies: i % 2 === 0 ? [pol(POL.a2aPii)] : [pol(POL.headers([{ key: 'x-correlation-source', value: b }])), pol(POL.prompt('Answer concisely and never include personal data.'))] } : {}) } };
+    net.connections[`${a.key}-connection`] = { kind: 'agent', ref: { name: R(a.key) }, spec: { url: `\${${v}.url}`, ...(secured ? { authentication: secAuth(SEC(i), v, vars) } : {}), ...(technical ? { policies: i % 2 === 0 ? [pol(POL.a2aPii)] : [pol(POL.headers([{ key: 'x-correlation-source', value: b }])), pol(POL.prompt('Answer concisely and never include personal data.'))] } : {}) } };
     net.agents[R(a.key)] = { label: a.name, description: a.description, metadata: { platform: a.platform, protocol: 'a2a' }, card: { name: a.name, description: a.description, url: `\${${v}.url}`, protocolVersion: '0.3.0', version: '1.0.0', capabilities: { streaming: false, pushNotifications: false }, defaultInputModes: MODES, defaultOutputModes: MODES, skills: skills(a.skills) } };
   }
   return { files: { 'agent-network.yaml': dump(net), 'exchange.json': exchange(u, vars, policyDeps(used)) }, policies: [...new Set(used.map((p) => p.assetId))] };
 }
 
 // ─────────────────────────────── v2 (Deterministic) ───────────────────────────────
-function v2(u, technical) {
+function v2(u, technical, secured) {
   const rec = ids[u.id];
   const f = FLOWS[u.id];
   const R = (k) => `${u.prefix}_${k}`;
   const b = R(u.broker.key);
   const file = u.broker.key.replace(/_/g, '-');
-  const vars = { openai: { apiKey: { description: 'OpenAI API key (secret, injected at deploy time)', default: '', secret: true } } };
+  const vars = { openai: { apiKey: { description: 'OpenAI API key (secret, injected at deploy time)', default: '', secret: true } }, ...(secured ? LLM_GW : {}) };
   const used = [];
   const decl = {};
   const bind = (key, p) => (used.push(p), (decl[key] = { ref: { name: p.assetId, namespace: AF }, configuration: p.configuration }), { ref: { name: key } });
   const inline = (p) => (used.push(p), { policy: { ref: { name: p.assetId, namespace: AF }, configuration: p.configuration } });
   const net = {
     agentNetwork: '2.0.0',
-    info: { label: `${u.title}${technical ? ' (governed)' : ''}`, version: 'v1', description: u.summary },
+    info: { label: `${u.title}${technical ? ' (governed)' : secured ? ' (secured)' : ''}`, version: 'v1', description: u.summary },
     registry: { agents: {}, mcps: {}, llms: { [R('openai')]: { info: { label: 'OpenAI' }, metadata: { platform: 'OpenAI', models: [MODEL] } } } },
     context: { connections: {} },
     brokers: {},
@@ -124,15 +140,15 @@ function v2(u, technical) {
   for (const [i, a] of u.agents.entries()) {
     const v = camel(a.key);
     vars[v] = { url: { description: `${a.name} (A2D mock, A2A ${a.proto}) URL`, default: `${A2D}/${rec.agents[a.key]}/a2a`, secret: false } };
-    net.context.connections[`${a.key}_connection`] = { kind: 'a2a', ref: { name: R(a.key) }, url: `\${${v}.url}`, ...(technical ? { policies: { inbound: i % 2 === 0 ? [a.proto === '1.0' ? bind('a2a_v1_pii', POL.a2aV1Pii) : bind('a2a_pii', POL.a2aPii)] : [inline(POL.headers([{ key: 'x-correlation-source', value: b }]))] } } : {}) };
+    net.context.connections[`${a.key}_connection`] = { kind: 'a2a', ref: { name: R(a.key) }, url: `\${${v}.url}`, ...(secured ? { authentication: secAuth(SEC(i), v, vars), policies: { outbound: [bind('log_upstream', POL.logOut)] } } : {}), ...(technical ? { policies: { inbound: i % 2 === 0 ? [a.proto === '1.0' ? bind('a2a_v1_pii', POL.a2aV1Pii) : bind('a2a_pii', POL.a2aPii)] : [inline(POL.headers([{ key: 'x-correlation-source', value: b }]))] } } : {}) };
   }
   for (const [i, m] of u.mcps.entries()) {
     const v = camel(m.key);
     vars[v] = { url: { description: `${m.name} (A2D mock) base URL`, default: `${A2D}/${rec.mcps[m.key]}/`, secret: false } };
-    net.context.connections[`${m.key}_connection`] = { kind: 'mcp', ref: { name: R(m.key) }, url: `\${${v}.url}`, ...(technical ? { policies: { inbound: i % 2 === 0 ? [bind('mcp_pii', POL.mcpPii), bind('mcp_schema', POL.mcpSchema)] : [bind('mcp_pii', POL.mcpPii), inline(POL.headers([{ key: 'x-octoloom-source', value: u.slug }]))] } } : {}) };
+    net.context.connections[`${m.key}_connection`] = { kind: 'mcp', ref: { name: R(m.key) }, url: `\${${v}.url}`, ...(secured ? { authentication: secAuth(SEC(i + 1), v, vars), policies: { outbound: [bind('log_upstream', POL.logOut)] } } : {}), ...(technical ? { policies: { inbound: i % 2 === 0 ? [bind('mcp_pii', POL.mcpPii), bind('mcp_schema', POL.mcpSchema)] : [bind('mcp_pii', POL.mcpPii), inline(POL.headers([{ key: 'x-octoloom-source', value: u.slug }]))] } } : {}) };
   }
-  net.context.connections.openai_connection = { kind: 'llm', ref: { name: R('openai') }, url: 'https://api.openai.com/v1', authentication: { kind: 'apiKey', apiKey: '${openai.apiKey}' } };
-  net.brokers[b] = { kind: 'AgentScript', implementation: `./brokers/${file}.agent`, interfaces: { a2a: { card: { name: u.broker.name, description: u.summary, version: '1.0.0', capabilities: { streaming: true, pushNotifications: false }, defaultInputModes: ['text/plain'], defaultOutputModes: ['text/plain'], skills: skills(u.broker.skills) }, ...(technical ? { policies: { inbound: [bind('rate_limit', POL.rateLimit(30))] } } : {}) } } };
+  net.context.connections.openai_connection = { kind: 'llm', ref: { name: R('openai') }, url: secured ? '${llmGateway.url}' : 'https://api.openai.com/v1', authentication: { kind: 'apiKey', apiKey: '${openai.apiKey}' } };
+  net.brokers[b] = { kind: 'AgentScript', implementation: `./brokers/${file}.agent`, interfaces: { a2a: { card: { name: u.broker.name, description: u.summary, version: '1.0.0', capabilities: { streaming: true, pushNotifications: false }, defaultInputModes: ['text/plain'], defaultOutputModes: ['text/plain'], skills: skills(u.broker.skills) }, ...(technical || secured ? { policies: { inbound: [bind('rate_limit', POL.rateLimit(30))] } } : {}) } } };
   if (Object.keys(decl).length) net.context.policies = decl;
 
   const actions = Object.entries(f.actions).map(([k, a]) => a.a2a
@@ -169,16 +185,16 @@ ${f.body.trim()}
   return { files: { 'agent-network.yaml': dump(net), 'exchange.json': exchange(u, vars, policyDeps(used)), [`brokers/${file}.agent`]: agent }, policies: [...new Set(used.map((p) => p.assetId))] };
 }
 
-function readme(u, t, technical, policies) {
+function readme(u, t, technical, policies, secured) {
   const ex = u.broker.skills.flatMap((s) => s.examples);
-  return `# ${u.title}${technical ? ' (governed)' : ''}
+  return `# ${u.title}${technical ? ' (governed)' : secured ? ' (secured)' : ''}
 
 ${u.summary}
 
 - Style: ${u.version === 'v1' ? 'Probabilistic (Agent Network 1.0): the LLM broker picks agents and tools from its instructions.' : 'Deterministic (Agent Network 2.0): an AgentScript flow in `brokers/` decides each step.'}
 - Agents: ${u.agents.map((a) => `${a.name} (A2A ${a.proto}, ${a.platform})`).join(', ')}
 - MCP servers: ${u.mcps.map((m) => `${m.name} (${m.tools.map((x) => x.name).join(', ')})`).join('; ')}
-${technical ? `- Policies (Agent Fabric built-ins): ${policies.join(', ')}. They are declared in agent-network.yaml and listed as \`schema\` dependencies in exchange.json.\n` : ''}
+${technical ? `- Policies (Agent Fabric built-ins): ${policies.join(', ')}. They are declared in agent-network.yaml and listed as \`schema\` dependencies in exchange.json.\n` : ''}${secured ? `- Secured: every agent and MCP connection authenticates (Basic or Client ID enforcement, alternating). User names and client ids are variables, passwords and client secrets are secret variables asked for at deploy time. The LLM URL is the variable \`llmGateway.url\` (api.openai.com by default, or your LLM gateway).${u.version === 'v2' ? ' Upstream calls are logged with the outbound Message Logging policy.' : ''} Policies: ${policies.join(', ')}.\n` : ''}
 All agents and MCP servers are public A2D mocks, so the network runs without any other system.
 Set \`openai.apiKey\` at deploy time${u.version === 'v1' ? ' and `ingressgw.url` to your ingress gateway URL' : ''}. No credentials are stored in this template.
 
@@ -190,23 +206,25 @@ ${ex.map((e) => `- ${e}`).join('\n')}
 
 const index = [];
 for (const u of USECASES) {
-  for (const technical of [false, true]) {
-    const id = technical ? `${u.id}-governed` : u.id;
-    const base = id.replace(/^v[12]-/, '').replace(/-governed$/, '');
+  for (const mode of ['plain', 'governed', ...(u.secured ? ['secured'] : [])]) {
+    const technical = mode === 'governed';
+    const secured = mode === 'secured';
+    const id = mode === 'plain' ? u.id : `${u.id}-${mode}`;
+    const base = id.replace(/^v[12]-/, '').replace(/-(governed|secured)$/, '');
     // Registry entries become org-wide Exchange assets, so their ids carry a per-template prefix.
     // The extension replaces it with the user's project prefix when a template is instantiated.
-    const prefix = `octo_${base.split('-').map((w) => w[0]).join('')}${u.version.slice(1)}${technical ? 'g' : ''}`;
+    const prefix = `octo_${base.split('-').map((w) => w[0]).join('')}${u.version.slice(1)}${technical ? 'g' : secured ? 's' : ''}`;
     const t = { ...u, prefix, slug: id.replace(/^v[12]-/, '') + (u.version === 'v1' ? '-v1' : '-v2') };
-    const r = u.version === 'v1' ? v1(t, technical) : v2(t, technical);
+    const r = u.version === 'v1' ? v1(t, technical, secured) : v2(t, technical, secured);
     const dir = path.join(out, id);
     fs.rmSync(dir, { recursive: true, force: true });
-    for (const [f, c] of Object.entries({ ...r.files, 'README.md': readme(u, t, technical, r.policies) })) {
+    for (const [f, c] of Object.entries({ ...r.files, 'README.md': readme(u, t, technical, r.policies, secured) })) {
       fs.mkdirSync(path.dirname(path.join(dir, f)), { recursive: true });
       fs.writeFileSync(path.join(dir, f), c);
     }
     index.push({
-      id, version: u.version, category: technical ? 'technical' : 'usecase', title: technical ? `${u.title}: governed` : u.title,
-      summary: technical ? `${u.summary} Adds built-in policies: ${r.policies.join(', ')}.` : u.summary,
+      id, version: u.version, category: mode === 'plain' ? 'usecase' : 'technical', title: mode === 'plain' ? u.title : `${u.title}: ${mode}`,
+      summary: technical ? `${u.summary} Adds built-in policies: ${r.policies.join(', ')}.` : secured ? `${u.summary} Secured: authenticated connections (Basic, Client ID enforcement) with secret variables, the LLM behind a gateway URL${u.version === 'v2' ? ', outbound message logging' : ''}.` : u.summary,
       agents: u.agents.length, mcps: u.mcps.length, protocols: [...new Set(u.agents.map((a) => a.proto))], policies: r.policies,
       files: Object.keys(r.files).concat('README.md'), assetId: t.slug, prefix,
     });

@@ -1,0 +1,74 @@
+{
+  "main": "agent-network.yaml",
+  "name": "incident-response-v2",
+  "classifier": "agentic-network",
+  "descriptorVersion": "1.0.0",
+  "apiVersion": "v1",
+  "tags": [
+    "octoloom-example"
+  ],
+  "metadata": {
+    "variables": {
+      "openai": {
+        "apiKey": {
+          "description": "OpenAI API key (secret, injected at deploy time)",
+          "default": "",
+          "secret": true
+        }
+      },
+      "triageAgent": {
+        "url": {
+          "description": "Incident Triage Agent (A2D mock, A2A 1.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/56c3a3a9-56e1-4cdc-b9cd-c8868fcc7008/a2a",
+          "secret": false
+        }
+      },
+      "networkAgent": {
+        "url": {
+          "description": "Network Operations Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/4f5e984b-a170-47d7-a58e-23f6ed5cfa07/a2a",
+          "secret": false
+        }
+      },
+      "databaseAgent": {
+        "url": {
+          "description": "Database Operations Agent (A2D mock, A2A 1.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/d26ed478-0c67-4c5b-8efd-636dcfd27db2/a2a",
+          "secret": false
+        }
+      },
+      "appSupportAgent": {
+        "url": {
+          "description": "Application Support Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/8272582f-f9b4-42e8-b5f3-cd27c8751e02/a2a",
+          "secret": false
+        }
+      },
+      "statusPageAgent": {
+        "url": {
+          "description": "Status Page Agent (A2D mock, A2A 1.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/7ff8f6e8-6ee3-41e0-855c-efbdd7c7c5f2/a2a",
+          "secret": false
+        }
+      },
+      "monitoringMcp": {
+        "url": {
+          "description": "Service Health Monitoring MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/f76580a4-c9cf-4e67-a5f9-96a717075626/",
+          "secret": false
+        }
+      },
+      "itsmMcp": {
+        "url": {
+          "description": "Incident Ticketing MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/3c7aac35-436f-4c5c-b436-7430d2d254d2/",
+          "secret": false
+        }
+      }
+    }
+  },
+  "dependencies": [],
+  "groupId": "${organizationId}",
+  "assetId": "incident-response-v2",
+  "version": "1.0.0"
+}
