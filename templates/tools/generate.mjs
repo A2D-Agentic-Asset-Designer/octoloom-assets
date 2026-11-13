@@ -8,6 +8,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { USECASES } from './usecases.mjs';
 import { FLOWS } from './flows.mjs';
+import { TRY } from './tryit.mjs';
 
 const YAML = await import(pathToFileURL(process.argv[2] ?? 'yaml').href).catch(() => import('yaml'));
 const here = path.dirname(new URL(import.meta.url).pathname);
@@ -185,23 +186,39 @@ ${f.body.trim()}
   return { files: { 'agent-network.yaml': dump(net), 'exchange.json': exchange(u, vars, policyDeps(used)), [`brokers/${file}.agent`]: agent }, policies: [...new Set(used.map((p) => p.assetId))] };
 }
 
-function readme(u, t, technical, policies, secured) {
-  const ex = u.broker.skills.flatMap((s) => s.examples);
+function readme(u, t, technical, policies, secured, exchangeJson) {
+  const v1 = u.version === 'v1';
+  const vars = JSON.parse(exchangeJson).metadata?.variables ?? {};
+  const flat = Object.entries(vars).flatMap(([g, o]) => Object.entries(o).map(([k, d]) => ({ key: `${g}.${k}`, ...d })));
+  const secrets = flat.filter((x) => x.secret);
+  const ask = flat.filter((x) => !x.secret && !x.default);
+  const tries = TRY[u.id] ?? u.broker.skills.flatMap((s) => s.examples).map((p) => ({ p, see: '' }));
+  const gov = technical
+    ? [{ p: 'My email is jane.doe@example.com and my phone is +41 79 123 45 67. ' + tries[0].p, see: 'Same answer as the first prompt. The PII detector policies log the email and phone number; on the MCP connections with the MCP PII detector they are masked before the tool sees them. Check the policy logs in Anypoint Monitoring.' },
+       { p: 'Send the first prompt more than 30 times within a minute', see: `The broker answers HTTP 429 (Too Many Requests) once the rate limit of ${v1 ? 60 : 30} requests per minute is reached.` }]
+    : secured ? [{ p: tries[0].p, see: `Same answer as the plain variant: the A²D mocks accept any credentials. The Tracer shows each authenticated upstream call${v1 ? '' : ', and the outbound Message Logging policy writes one log line per call'}.` }] : [];
+  const code = (x) => '`' + x + '`';
   return `# ${u.title}${technical ? ' (governed)' : secured ? ' (secured)' : ''}
 
 ${u.summary}
 
-- Style: ${u.version === 'v1' ? 'Probabilistic (Agent Network 1.0): the LLM broker picks agents and tools from its instructions.' : 'Deterministic (Agent Network 2.0): an AgentScript flow in `brokers/` decides each step.'}
+- Style: ${v1 ? 'Probabilistic (Agent Network 1.0): the LLM broker picks agents and tools from its instructions.' : 'Deterministic (Agent Network 2.0): an AgentScript flow in `brokers/` decides each step.'}
 - Agents: ${u.agents.map((a) => `${a.name} (A2A ${a.proto}, ${a.platform})`).join(', ')}
 - MCP servers: ${u.mcps.map((m) => `${m.name} (${m.tools.map((x) => x.name).join(', ')})`).join('; ')}
-${technical ? `- Policies (Agent Fabric built-ins): ${policies.join(', ')}. They are declared in agent-network.yaml and listed as \`schema\` dependencies in exchange.json.\n` : ''}${secured ? `- Secured: every agent and MCP connection authenticates (Basic or Client ID enforcement, alternating). User names and client ids are variables, passwords and client secrets are secret variables asked for at deploy time. The LLM URL is the variable \`llmGateway.url\` (api.openai.com by default, or your LLM gateway).${u.version === 'v2' ? ' Upstream calls are logged with the outbound Message Logging policy.' : ''} Policies: ${policies.join(', ')}.\n` : ''}
-All agents and MCP servers are public A2D mocks, so the network runs without any other system.
-Set \`openai.apiKey\` at deploy time${u.version === 'v1' ? ' and `ingressgw.url` to your ingress gateway URL' : ''}. No credentials are stored in this template.
+${technical ? `- Policies (Agent Fabric built-ins): ${policies.join(', ')}. They are declared in agent-network.yaml and listed as \`schema\` dependencies in exchange.json.\n` : ''}${secured ? `- Secured: every agent and MCP connection authenticates (Basic or Client ID enforcement, alternating). User names and client ids are variables, passwords and client secrets are secret variables asked for at deploy time. The LLM URL is the variable \`llmGateway.url\` (api.openai.com by default, or your LLM gateway).${v1 ? '' : ' Upstream calls are logged with the outbound Message Logging policy.'} Policies: ${policies.join(', ')}.\n` : ''}
+All agents and MCP servers are public A2D mocks, so the network runs without any other system. No credentials are stored in this template.
+
+## Deploy in 3 steps
+
+1. **Setup & Connect**: connect Agent Fabric (connected app client ID and secret, organization). A²D is not needed: the mock URLs are already the defaults in \`exchange.json\`.
+2. ${ask.length ? `In \`exchange.json\`, fill in ${ask.map((x) => `${code(x.key)} (${x.description.replace(/\s*\(.*\)$/, '').toLowerCase()})`).join(', ')}. ` : ''}In **Projects & Deploy**, click **Deploy** on this project (or **Build & Deploy** in the editor) and pick your gateway. Octoloom asks for each secret variable; nothing you type is stored:
+${secrets.map((x) => `   - ${code(x.key)}: ${x.key === 'openai.apiKey' ? 'your OpenAI API key (required)' : x.description.replace(/\s*\(.*\)$/, '')}${x.key === 'openai.apiKey' ? '' : ' (any value works with the A²D mocks)'}`).join('\n')}
+3. When the status light turns green (**Deployed and running**), click **Open chat** and paste a prompt below. The **ANT** icon under a reply opens the task in the Agent Network Tracer, with each agent and tool call.
 
 ## Try it
 
-${ex.map((e) => `- ${e}`).join('\n')}
-`;
+${[...tries, ...gov].map((x) => `- **${x.p}**${x.see ? `\n  - You should see: ${x.see}` : ''}`).join('\n')}
+${v1 ? '\nThe broker is probabilistic: the LLM picks the agents and tools, so the wording and the order of the calls can change between runs. The ids and numbers come from the mocks and stay the same.\n' : '\nThe broker is deterministic: the branches are fixed in the flow in `brokers/` (open the `.agent` file to see them). The LLM only reads the ids from your prompt and writes the reply text, so the same input takes the same branch.\n'}`;
 }
 
 const index = [];
@@ -218,7 +235,7 @@ for (const u of USECASES) {
     const r = u.version === 'v1' ? v1(t, technical, secured) : v2(t, technical, secured);
     const dir = path.join(out, id);
     fs.rmSync(dir, { recursive: true, force: true });
-    for (const [f, c] of Object.entries({ ...r.files, 'README.md': readme(u, t, technical, r.policies, secured) })) {
+    for (const [f, c] of Object.entries({ ...r.files, 'README.md': readme(u, t, technical, r.policies, secured, r.files['exchange.json']) })) {
       fs.mkdirSync(path.dirname(path.join(dir, f)), { recursive: true });
       fs.writeFileSync(path.join(dir, f), c);
     }

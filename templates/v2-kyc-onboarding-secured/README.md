@@ -7,10 +7,31 @@ New banking customers are screened (document, sanctions, risk score); low risk o
 - MCP servers: Identity Verification MCP (verify_document); Sanctions Screening MCP (screen_name); Customer Risk MCP (score_customer, open_case)
 - Secured: every agent and MCP connection authenticates (Basic or Client ID enforcement, alternating). User names and client ids are variables, passwords and client secrets are secret variables asked for at deploy time. The LLM URL is the variable `llmGateway.url` (api.openai.com by default, or your LLM gateway). Upstream calls are logged with the outbound Message Logging policy. Policies: message-logging-outbound, rate-limiting.
 
-All agents and MCP servers are public A2D mocks, so the network runs without any other system.
-Set `openai.apiKey` at deploy time. No credentials are stored in this template.
+All agents and MCP servers are public A2D mocks, so the network runs without any other system. No credentials are stored in this template.
+
+## Deploy in 3 steps
+
+1. **Setup & Connect**: connect Agent Fabric (connected app client ID and secret, organization). A²D is not needed: the mock URLs are already the defaults in `exchange.json`.
+2. In **Projects & Deploy**, click **Deploy** on this project (or **Build & Deploy** in the editor) and pick your gateway. Octoloom asks for each secret variable; nothing you type is stored:
+   - `openai.apiKey`: your OpenAI API key (required)
+   - `kycAnalystAgent.password`: Password (any value works with the A²D mocks)
+   - `accountOpeningAgent.clientSecret`: Client secret (any value works with the A²D mocks)
+   - `identityMcp.clientSecret`: Client secret (any value works with the A²D mocks)
+   - `sanctionsMcp.password`: Password (any value works with the A²D mocks)
+   - `riskMcp.clientSecret`: Client secret (any value works with the A²D mocks)
+3. When the status light turns green (**Deployed and running**), click **Open chat** and paste a prompt below. The **ANT** icon under a reply opens the task in the Agent Network Tracer, with each agent and tool call.
 
 ## Try it
 
-- Onboard applicant AP-7001, Lena Novak, from Austria
-- Onboard applicant AP-7003, Victor Example, from Panama
+- **Onboard applicant AP-7001, Lena Novak, from Austria**
+  - You should see: Identity `verify_document`, Sanctions `screen_name`: no hit, Risk `score_customer`: low (12). Account Opening opens CH93-0000-7001.
+- **Onboard applicant AP-7002 from Germany**
+  - You should see: Risk medium (48): the KYC Analyst confirms the source of funds, and Account Opening opens CH93-0000-7002 with enhanced monitoring.
+- **Onboard applicant AP-7003, Victor Example, from Panama**
+  - You should see: Sanctions hit (0.93), risk high (91): Risk `open_case` opens CMP-2026-0419. No account.
+- **Onboard applicant AP-9999**
+  - You should see: No document on file, so the risk band is medium and the KYC Analyst asks for more proof; no account is opened.
+- **Onboard applicant AP-7001, Lena Novak, from Austria**
+  - You should see: Same answer as the plain variant: the A²D mocks accept any credentials. The Tracer shows each authenticated upstream call, and the outbound Message Logging policy writes one log line per call.
+
+The broker is deterministic: the branches are fixed in the flow in `brokers/` (open the `.agent` file to see them). The LLM only reads the ids from your prompt and writes the reply text, so the same input takes the same branch.

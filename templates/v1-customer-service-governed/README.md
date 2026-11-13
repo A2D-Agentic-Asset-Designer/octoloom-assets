@@ -7,11 +7,30 @@ One front door for orders, returns, billing and loyalty questions, backed by a C
 - MCP servers: CRM MCP (get_customer, create_case, list_cases)
 - Policies (Agent Fabric built-ins): rate-limiting, mcp-pii-detector, a-two-a-pii-detector, header-injection, a-two-a-prompt-decorator. They are declared in agent-network.yaml and listed as `schema` dependencies in exchange.json.
 
-All agents and MCP servers are public A2D mocks, so the network runs without any other system.
-Set `openai.apiKey` at deploy time and `ingressgw.url` to your ingress gateway URL. No credentials are stored in this template.
+All agents and MCP servers are public A2D mocks, so the network runs without any other system. No credentials are stored in this template.
+
+## Deploy in 3 steps
+
+1. **Setup & Connect**: connect Agent Fabric (connected app client ID and secret, organization). A²D is not needed: the mock URLs are already the defaults in `exchange.json`.
+2. In `exchange.json`, fill in `ingressgw.url` (ingress gateway base url). In **Projects & Deploy**, click **Deploy** on this project (or **Build & Deploy** in the editor) and pick your gateway. Octoloom asks for each secret variable; nothing you type is stored:
+   - `openai.apiKey`: your OpenAI API key (required)
+3. When the status light turns green (**Deployed and running**), click **Open chat** and paste a prompt below. The **ANT** icon under a reply opens the task in the Agent Network Tracer, with each agent and tool call.
 
 ## Try it
 
-- Where is order SO-9001 for customer C-2001?
-- I want to return the shoes from order SO-9002
-- How many points do I have? I am C-2001
+- **Where is order SO-9001 for customer C-2001?**
+  - You should see: CRM `get_customer` finds Lena Fischer (Gold). Order Status Agent: SO-9001 shipped with DHL, ETA 2026-11-12.
+- **I want to return the shoes from order SO-9002**
+  - You should see: Order Status Agent: SO-9002 is delivered. Returns Agent opens return RMA-4410.
+- **Why was I charged twice on invoice INV-7781? I am C-2001**
+  - You should see: Billing Agent: invoice INV-7781 has one charge and one pre-authorisation, released within 3 days. The broker may log CRM case CS-30551 with `create_case`.
+- **How many points do I have? I am C-2001. Redeem them for a voucher**
+  - You should see: Loyalty Agent: 1,840 points, Gold tier until 2027-03-31. Redeeming 500 points gives voucher VC-5050 (10 EUR), 1,340 points left.
+- **Exchange the shoes from SO-9002 for a bigger size**
+  - You should see: Returns Agent: exchange EX-118, size 42 replaces size 41.
+- **My email is jane.doe@example.com and my phone is +41 79 123 45 67. Where is order SO-9001 for customer C-2001?**
+  - You should see: Same answer as the first prompt. The PII detector policies log the email and phone number; on the MCP connections with the MCP PII detector they are masked before the tool sees them. Check the policy logs in Anypoint Monitoring.
+- **Send the first prompt more than 30 times within a minute**
+  - You should see: The broker answers HTTP 429 (Too Many Requests) once the rate limit of 60 requests per minute is reached.
+
+The broker is probabilistic: the LLM picks the agents and tools, so the wording and the order of the calls can change between runs. The ids and numbers come from the mocks and stay the same.
