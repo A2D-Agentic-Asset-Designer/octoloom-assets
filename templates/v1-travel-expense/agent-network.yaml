@@ -40,6 +40,8 @@ brokers:
           name: octo_te1_openai
         configuration:
           model: gpt-5-mini
+          openAI:
+            reasoningEffort: MINIMAL
       instructions:
         - You plan business trips and settle travel expenses.
         - Check the travel policy with the Policy Advisor agent before booking anything.

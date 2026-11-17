@@ -14,6 +14,7 @@ llm:
     target: "llm://openai_connection"
     kind: "OpenAI"
     model: "gpt-5-mini"
+    reasoning_effort: "MINIMAL"
 
 actions:
   content_agent:
@@ -79,6 +80,7 @@ orchestrator createCampaign:
       and have the compliance agent review it. Get a forecast for the segment and channel.
       Set approved to "yes" only when compliance approved and, for email, the segment has consented contacts.
       Return the email subject line in subject.
+      Call each tool once, in this order: segment, assets, write, review, forecast. Then set the outputs and stop.
   reasoning:
     instructions: ->
       | Segment {!@generator.brief.output.segment_id}, channel {!@generator.brief.output.channel}, theme {!@generator.brief.output.theme}.
@@ -88,7 +90,7 @@ orchestrator createCampaign:
       write: @actions.content_agent
       review: @actions.compliance_agent
       forecast: @actions.forecast
-    max_number_of_loops: 8
+    max_number_of_loops: 12
     outputs:
       properties:
         approved:

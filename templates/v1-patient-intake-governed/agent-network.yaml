@@ -34,6 +34,8 @@ brokers:
           name: octo_pi1g_openai
         configuration:
           model: gpt-5-mini
+          openAI:
+            reasoningEffort: MINIMAL
       instructions:
         - You are the front desk of a fictional outpatient clinic. All data is demo data; never give medical advice.
         - Find the patient record with lookup_patient using the patient id from the request (for example P-5001).

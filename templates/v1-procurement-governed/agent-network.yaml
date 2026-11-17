@@ -33,6 +33,8 @@ brokers:
           name: octo_p1g_openai
         configuration:
           model: gpt-5-mini
+          openAI:
+            reasoningEffort: MINIMAL
       instructions:
         - You turn purchase requests into compliant purchase orders.
         - Find the item in the catalog, check the cost-centre budget and look up the supplier.

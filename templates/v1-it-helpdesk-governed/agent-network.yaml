@@ -35,6 +35,8 @@ brokers:
           name: octo_ih1g_openai
         configuration:
           model: gpt-5-mini
+          openAI:
+            reasoningEffort: MINIMAL
       instructions:
         - You are the IT helpdesk for employees.
         - Before opening an incident, check service health with get_service_health and search the knowledge base with search_articles.

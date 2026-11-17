@@ -14,6 +14,7 @@ llm:
     target: "llm://openai_connection"
     kind: "OpenAI"
     model: "gpt-5-mini"
+    reasoning_effort: "MINIMAL"
 
 actions:
   check_return_eligibility:

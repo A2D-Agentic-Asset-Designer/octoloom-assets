@@ -34,6 +34,8 @@ brokers:
           name: octo_hl1g_openai
         configuration:
           model: gpt-5-mini
+          openAI:
+            reasoningEffort: MINIMAL
       instructions:
         - You help employees request time off.
         - Look up the leave balance with get_leave_balance using the employee id from the request (for example E-3001).

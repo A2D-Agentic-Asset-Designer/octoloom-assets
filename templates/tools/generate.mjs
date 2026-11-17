@@ -17,6 +17,8 @@ const ids = JSON.parse(fs.readFileSync(path.join(here, 'a2d-ids.json'), 'utf8'))
 const A2D = 'https://www.a2d-ai.com/api/platform';
 const AF = '68ef9520-24e9-4cf2-b2f5-620025690913';
 const MODEL = 'gpt-5-mini';
+// One LLM call must finish within the gateway's upstream response timeout (15 s by default); medium reasoning takes ~26 s.
+const EFFORT = 'MINIMAL';
 const camel = (s) => s.replace(/[-_]+(\w)/g, (_, c) => c.toUpperCase());
 // Quote date-like scalars (MCP protocolVersion) so the Agent Fabric parser keeps them as strings.
 const dump = (o) => YAML.stringify(o, { lineWidth: 0, aliasDuplicateObjects: false }).replace(/: (\d{4}-\d{2}-\d{2})$/gm, ': "$1"');
@@ -81,7 +83,7 @@ function v1(u, technical, secured) {
       [b]: {
         card: { protocolVersion: '0.3.0', name: b, description: u.summary, url: `\${ingressgw.url}/${b}`, version: '1.0.0', capabilities: { streaming: false, pushNotifications: false, stateTransitionHistory: false }, defaultInputModes: MODES, defaultOutputModes: MODES, skills: skills(u.broker.skills) },
         spec: {
-          llm: { ref: { name: R('openai') }, configuration: { model: MODEL } },
+          llm: { ref: { name: R('openai') }, configuration: { model: MODEL, openAI: { reasoningEffort: EFFORT } } },
           instructions: u.broker.instructions,
           links: u.agents.map((a) => ({ agent: { ref: { name: R(a.key) } } })),
           tools: u.mcps.map((m) => ({ mcp: { ref: { name: R(m.key) }, allowed: m.tools.map((t) => t.name) } })),
@@ -171,6 +173,7 @@ llm:
     target: "llm://openai_connection"
     kind: "OpenAI"
     model: "${MODEL}"
+    reasoning_effort: "${EFFORT}"
 
 actions:
 ${actions}

@@ -14,6 +14,7 @@ llm:
     target: "llm://openai_connection"
     kind: "OpenAI"
     model: "gpt-5-mini"
+    reasoning_effort: "MINIMAL"
 
 actions:
   verify_document:
@@ -123,7 +124,7 @@ subagent openAccount:
   label: "Open Account"
   reasoning:
     instructions: ->
-      | Open an account for {!@generator.extractApplicant.output.applicant_id} ({!@generator.extractApplicant.output.name}).
+      | Identity, sanctions and risk checks are done and passed with low risk: {!@subagent.screening.output.findings}. This is the authorization to open the account. Call the account opening agent once to open an account for {!@generator.extractApplicant.output.applicant_id} ({!@generator.extractApplicant.output.name}) and report the account number.
     actions:
       open: @actions.account_opening_agent
   on_exit: ->
@@ -134,7 +135,7 @@ subagent analystReview:
   label: "Analyst Review"
   reasoning:
     instructions: ->
-      | Medium risk for {!@generator.extractApplicant.output.applicant_id}: {!@subagent.screening.output.findings}. Ask the KYC analyst for a decision; if approved, open the account.
+      | Medium risk for {!@generator.extractApplicant.output.applicant_id}: {!@subagent.screening.output.findings}. Ask the KYC analyst once for a decision. The checks are done; an analyst approval is the authorization to open the account, so when the analyst approves, call the account opening agent once and report the account number and any conditions.
     actions:
       review: @actions.kyc_analyst_agent
       open: @actions.account_opening_agent

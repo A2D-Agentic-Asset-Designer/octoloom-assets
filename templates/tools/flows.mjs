@@ -413,6 +413,7 @@ orchestrator createCampaign:
       and have the compliance agent review it. Get a forecast for the segment and channel.
       Set approved to "yes" only when compliance approved and, for email, the segment has consented contacts.
       Return the email subject line in subject.
+      Call each tool once, in this order: segment, assets, write, review, forecast. Then set the outputs and stop.
   reasoning:
     instructions: ->
       | Segment {!@generator.brief.output.segment_id}, channel {!@generator.brief.output.channel}, theme {!@generator.brief.output.theme}.
@@ -422,7 +423,7 @@ orchestrator createCampaign:
       write: @actions.content_agent
       review: @actions.compliance_agent
       forecast: @actions.forecast
-    max_number_of_loops: 8
+    max_number_of_loops: 12
     outputs:
       properties:
 ${enumProp('approved', 'Compliance and consent approved', ['yes', 'no'], '        ')}
@@ -629,7 +630,7 @@ subagent openAccount:
   label: "Open Account"
   reasoning:
     instructions: ->
-      | Open an account for {!@generator.extractApplicant.output.applicant_id} ({!@generator.extractApplicant.output.name}).
+      | Identity, sanctions and risk checks are done and passed with low risk: {!@subagent.screening.output.findings}. This is the authorization to open the account. Call the account opening agent once to open an account for {!@generator.extractApplicant.output.applicant_id} ({!@generator.extractApplicant.output.name}) and report the account number.
     actions:
       open: @actions.account_opening_agent
   on_exit: ->
@@ -640,7 +641,7 @@ subagent analystReview:
   label: "Analyst Review"
   reasoning:
     instructions: ->
-      | Medium risk for {!@generator.extractApplicant.output.applicant_id}: {!@subagent.screening.output.findings}. Ask the KYC analyst for a decision; if approved, open the account.
+      | Medium risk for {!@generator.extractApplicant.output.applicant_id}: {!@subagent.screening.output.findings}. Ask the KYC analyst once for a decision. The checks are done; an analyst approval is the authorization to open the account, so when the analyst approves, call the account opening agent once and report the account number and any conditions.
     actions:
       review: @actions.kyc_analyst_agent
       open: @actions.account_opening_agent
