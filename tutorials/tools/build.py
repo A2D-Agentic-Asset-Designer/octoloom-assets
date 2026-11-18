@@ -9,6 +9,8 @@ no org data: URLs in screenshots are gateway.example.com.
 """
 import json, os, re, subprocess, sys, shutil, tempfile
 import yaml
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import scratch
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.dirname(HERE)                      # tutorials/
@@ -175,9 +177,10 @@ def tutorial(t, m, nxt, prev):
           f"> {t['summary']}", '',
           f"| Agents | MCP servers | A2A | Policies | Template id |", '|---|---|---|---|---|',
           f"| {t['agents']} | {t['mcps']} | {', '.join(t['protocols'])} | {len(t['policies'])} | `{tid}` |", '',
-          'There are two ways to use this template:', '',
+          'There are three ways to use this template:', '',
           '1. **[Just use it](#path-1-just-use-it)**: create the project, deploy it and chat with it in about 10 minutes.',
-          '2. **[Learn step by step](#path-2-learn-step-by-step)**: the same steps, with what each part of the network does and how Octoloom shows it.', '',
+          '2. **[Learn step by step](#path-2-learn-step-by-step)**: the same steps, with what each part of the network does and how Octoloom shows it.',
+          '3. **[Build it from scratch](#path-3-build-it-from-scratch)**: start from a blank project and build the same network yourself, no code, one screenshot per step.', '',
           '## Before you start', '',
           '- VS Code with **Octoloom for Agent Fabric** installed (Marketplace), version 0.9.25 or later.',
           '- An Anypoint organization with Agent Fabric, a connected app (client ID and secret), an environment and a Flex gateway.',
@@ -260,9 +263,11 @@ def tutorial(t, m, nxt, prev):
     n += 1
     L += [f'### Step {n}. Share it (optional)', '',
           'The **Share** icon in the chat header opens the Share dialog. **A²D sessions** invites people by email to chat with this deployed broker and brings their passed / failed marks and comments back. **Local portal** generates a small web chat you can run or host anywhere.', '',
+          *scratch.path3(t, m, lambda name, alt: img(tid, name, alt)),
           '## What you learned', '',
           f"- How a {STYLE[v].lower()} network is built: " + ('an LLM broker with instructions picks agents and MCP tools.' if v=='v1' else 'an AgentScript flow decides every step; the LLM extracts and writes text.'),
           '- How the canvas, the inspector and the code view edit the same YAML.',
+          '- How to build the same network from a blank project with forms and menus only (Path 3).',
           *(['- How policies are attached and checked with Governance.'] if t['policies'] else []),
           *(['- How authenticated connections use variables and secret variables.'] if var=='secured' else []),
           '- How to validate, build, deploy, chat and trace with Octoloom.', '',
@@ -278,9 +283,10 @@ ORDER_KEY = lambda t: ({'usecase': 0, 'technical': 1}[t['category']], {'plain': 
 
 def index_md():
     L = ['# Octoloom tutorials', '',
-         'One tutorial for every template project in Octoloom for Agent Fabric. Each one gives you two paths:', '',
+         'One tutorial for every template project in Octoloom for Agent Fabric. Each one gives you three paths:', '',
          '1. **Just use it**: import the template from **New Project**, deploy it and chat with it.',
-         '2. **Learn step by step**: the same project, explained part by part (canvas, AgentScript flow, policies, deploy, chat, Tracer), with screenshots.', '',
+         '2. **Learn step by step**: the same project, explained part by part (canvas, AgentScript flow, policies, deploy, chat, Tracer), with screenshots.',
+         '3. **Build it from scratch**: start from a blank project and build the same network with forms, menus and buttons only (no code), one screenshot per step.', '',
          'New to Octoloom? Start with **[Getting started](getting-started.md)**, then pick a template. A good learning order is the smallest ones first: *Retail Returns* (deterministic) and *Customer Service* (probabilistic), then their governed and secured variants.', '']
     for v in ('v1', 'v2'):
         L += [f"## {STYLE[v]} networks ({'Agent Network 1.0' if v=='v1' else 'Agent Network 2.0, AgentScript'})", '',
@@ -301,7 +307,7 @@ def main():
             m = model(t)
             os.makedirs(os.path.join(OUT, t['id']), exist_ok=True)
             open(os.path.join(OUT, t['id'], 'README.md'), 'w').write(tutorial(t, m, lst[i + 1] if i + 1 < len(lst) else None, lst[i - 1] if i else None))
-            if SHOTS: shoot(t['id'], specs(t, m), 'dark' if i % 2 == 0 else 'light')
+            if SHOTS: shoot(t['id'], specs(t, m) + scratch.specs3(t, m, specs(t, m)[1]['messages'][0]['network']), 'dark' if i % 2 == 0 else 'light')
             print('ok', t['id'])
     if not ONLY: open(os.path.join(OUT, 'README.md'), 'w').write(index_md())
 

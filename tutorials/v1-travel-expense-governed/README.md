@@ -8,10 +8,11 @@
 |---|---|---|---|---|
 | 5 | 4 | 0.3.0 | 6 | `v1-travel-expense-governed` |
 
-There are two ways to use this template:
+There are three ways to use this template:
 
 1. **[Just use it](#path-1-just-use-it)**: create the project, deploy it and chat with it in about 10 minutes.
 2. **[Learn step by step](#path-2-learn-step-by-step)**: the same steps, with what each part of the network does and how Octoloom shows it.
+3. **[Build it from scratch](#path-3-build-it-from-scratch)**: start from a blank project and build the same network yourself, no code, one screenshot per step.
 
 ## Before you start
 
@@ -142,10 +143,201 @@ Under each reply, the **Tracer** icon opens the task in the **Agent Network Trac
 
 The **Share** icon in the chat header opens the Share dialog. **A²D sessions** invites people by email to chat with this deployed broker and brings their passed / failed marks and comments back. **Local portal** generates a small web chat you can run or host anywhere.
 
+## Path 3: Build it from scratch
+
+Here you build the same network yourself, starting from a blank project. Every step uses a form, a menu or a button. You never import the template, and you never type YAML. The names below are the template's names without the `octo_te1g_` prefix. You can use your own names, but keep them consistent.
+
+> The text fields take plain values. Where a value looks like `${group.name}`, type it as shown: it is a **variable** that `exchange.json` declares and that deploy fills in.
+
+### Step 3.1. Create a blank project with a starter broker
+
+Connect Octoloom first, as in [Path 2, Step 1](#step-1-connect-octoloom). Then, on **Home**, click **New Probabilistic Network**. In **2 Start from**, choose **Blank** and turn on **Add a starter broker**.
+
+- **Broker name**: `travel-expense-broker`
+- **Name**: `travel-expense-governed-scratch` (the Exchange asset id; a different name from the template, so both can live in one org)
+- **Parent folder**: pick a folder, then click **Create blank project**.
+
+![Blank project with a starter broker](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-travel-expense-governed/img/scratch-new.png)
+
+The starter broker is an LLM broker with an OpenAI LLM (`openai` provider, `openai-connection`) and default instructions. The LLM is already done.
+
+### Step 3.2. Add the agents
+
+On the canvas, click **+** (Add to the network) → **Agent** → **Empty**. The new agent opens in the inspector on the right. Fill it in, then repeat for each agent:
+
+![The Add to the network menu with the Agent submenu](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-travel-expense-governed/img/scratch-add.png)
+
+- **Travel Booking Agent**
+  - **Identity → Key**: `travel-booking-agent`
+  - **Label**: Travel Booking Agent · **Description**: Books flights, hotels and rail.
+  - **Metadata → Platform**: `MuleSoft` (or click its icon under **Agent framework**)
+  - **Agent card**: **Name** Travel Booking Agent, **Description** as above, **URL** `${travelBookingAgent.url}`, **Protocol version** `0.3.0`
+- **Policy Advisor Agent**
+  - **Identity → Key**: `policy-advisor-agent`
+  - **Label**: Policy Advisor Agent · **Description**: Explains the corporate travel policy.
+  - **Metadata → Platform**: `AgentForce` (or click its icon under **Agent framework**)
+  - **Agent card**: **Name** Policy Advisor Agent, **Description** as above, **URL** `${policyAdvisorAgent.url}`, **Protocol version** `0.3.0`
+- **Visa Agent**
+  - **Identity → Key**: `visa-agent`
+  - **Label**: Visa Agent · **Description**: Visa and entry requirements.
+  - **Metadata → Platform**: `Bedrock` (or click its icon under **Agent framework**)
+  - **Agent card**: **Name** Visa Agent, **Description** as above, **URL** `${visaAgent.url}`, **Protocol version** `0.3.0`
+- **Expense Audit Agent**
+  - **Identity → Key**: `expense-audit-agent`
+  - **Label**: Expense Audit Agent · **Description**: Audits expenses against policy.
+  - **Metadata → Platform**: `OpenAI` (or click its icon under **Agent framework**)
+  - **Agent card**: **Name** Expense Audit Agent, **Description** as above, **URL** `${expenseAuditAgent.url}`, **Protocol version** `0.3.0`
+- **Reimbursement Agent**
+  - **Identity → Key**: `reimbursement-agent`
+  - **Label**: Reimbursement Agent · **Description**: Pays out approved expenses.
+  - **Metadata → Platform**: `Snowflake` (or click its icon under **Agent framework**)
+  - **Agent card**: **Name** Reimbursement Agent, **Description** as above, **URL** `${reimbursementAgent.url}`, **Protocol version** `0.3.0`
+
+![An agent in the inspector](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-travel-expense-governed/img/scratch-agent.png)
+
+The card skills are optional. Once the agent has a connection (two steps on), the inspector offers **Read skills from the live agent**, which fills them from the running agent.
+
+### Step 3.3. Add the MCP servers
+
+Click **+** → **MCP server** → **Empty**, then fill in:
+
+- **Flights MCP**: **Key** `flights-mcp`, **Label** Flights MCP, **Description** Flight search. The transport is already Streamable HTTP on `/mcp`.
+- **Hotels MCP**: **Key** `hotels-mcp`, **Label** Hotels MCP, **Description** Hotel search. The transport is already Streamable HTTP on `/mcp`.
+- **Expense MCP**: **Key** `expense-mcp`, **Label** Expense MCP, **Description** Expense reports. The transport is already Streamable HTTP on `/mcp`.
+- **Currency MCP**: **Key** `currency-mcp`, **Label** Currency MCP, **Description** Currency conversion. The transport is already Streamable HTTP on `/mcp`.
+
+### Step 3.4. Add the connections
+
+A connection is the URL (and authentication) Agent Fabric uses to reach an agent or an MCP server. Click **+** → **Connection** → **Empty** once per agent and MCP server, and fill in:
+
+| Key | Kind | Target → Name | URL |
+|---|---|---|---|
+| `flights-mcp-connection` | `mcp` | `flights-mcp` | `${flightsMcp.url}` |
+| `hotels-mcp-connection` | `mcp` | `hotels-mcp` | `${hotelsMcp.url}` |
+| `expense-mcp-connection` | `mcp` | `expense-mcp` | `${expenseMcp.url}` |
+| `currency-mcp-connection` | `mcp` | `currency-mcp` | `${currencyMcp.url}` |
+| `travel-booking-agent-connection` | `agent` | `travel-booking-agent` | `${travelBookingAgent.url}` |
+| `policy-advisor-agent-connection` | `agent` | `policy-advisor-agent` | `${policyAdvisorAgent.url}` |
+| `visa-agent-connection` | `agent` | `visa-agent` | `${visaAgent.url}` |
+| `expense-audit-agent-connection` | `agent` | `expense-audit-agent` | `${expenseAuditAgent.url}` |
+| `reimbursement-agent-connection` | `agent` | `reimbursement-agent` | `${reimbursementAgent.url}` |
+
+![A connection in the inspector](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-travel-expense-governed/img/scratch-conn.png)
+
+### Step 3.5. Declare the variables
+
+The Problems bar now shows **Variable ${…} is not declared in exchange.json** for each new variable. Click **Add to exchange.json** on each one.
+
+Then open `exchange.json` (it opens as a form) and, under **Variables**, set the defaults:
+
+| Variable | Default |
+|---|---|
+| `ingressgw.url` | (your ingress gateway URL) |
+| `flightsMcp.url` | `https://www.a2d-ai.com/api/platform/1f6d63f2-3c3d-4268-9471-40e6d18955d3/` |
+| `hotelsMcp.url` | `https://www.a2d-ai.com/api/platform/6875794f-e1ea-479e-a2f8-4d9ed4b29dfc/` |
+| `expenseMcp.url` | `https://www.a2d-ai.com/api/platform/75a62546-5ff3-4c98-ac92-d1bf91a1265c/` |
+| `currencyMcp.url` | `https://www.a2d-ai.com/api/platform/54c12af9-4b43-4be6-a861-fe9ad82c0944/` |
+| `travelBookingAgent.url` | `https://www.a2d-ai.com/api/platform/e106ec8c-02ee-4ce5-b015-2cd536b26b77/a2a` |
+| `policyAdvisorAgent.url` | `https://www.a2d-ai.com/api/platform/cdf8b42e-2666-42f6-a5ae-09b40aee71bc/a2a` |
+| `visaAgent.url` | `https://www.a2d-ai.com/api/platform/7256173e-0e33-484b-b11b-1f07610c1f75/a2a` |
+| `expenseAuditAgent.url` | `https://www.a2d-ai.com/api/platform/bcc0eab9-61c0-48e5-9092-6d4ce1a6c0d9/a2a` |
+| `reimbursementAgent.url` | `https://www.a2d-ai.com/api/platform/c0ffe718-d2aa-4298-b713-96c807aa2551/a2a` |
+
+Leave the secret variables (`openai.apiKey`) empty: deploy asks for them and never stores them.
+
+![The exchange.json form with the variables](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-travel-expense-governed/img/scratch-vars.png)
+
+### Step 3.6. Declare the MCP tools
+
+On each MCP server card, click the **Tools** row (or its pencil). Octoloom reads the tool list from the running server: tick the tools below. You can also type a name in **Add a tool by name…**.
+
+- **Flights MCP**: `search_flights`
+- **Hotels MCP**: `search_hotels`
+- **Expense MCP**: `create_expense_report`
+- **Currency MCP**: `convert_currency`
+
+![The Tools row of an MCP server card](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-travel-expense-governed/img/scratch-tools.png)
+
+### Step 3.7. Give the broker its agents and tools
+
+Select the broker `travel-expense-broker`. In the inspector:
+
+1. Click **Agents (0)**. In **Add existing agent…**, pick each agent and click **Add**: `travel-booking-agent`, `policy-advisor-agent`, `visa-agent`, `expense-audit-agent`, `reimbursement-agent`.
+2. Click **MCP servers**. Add each server with **Add existing MCP server…**, then tick its **Allowed tools**:
+   - `flights-mcp`: `search_flights`
+   - `hotels-mcp`: `search_hotels`
+   - `expense-mcp`: `create_expense_report`
+   - `currency-mcp`: `convert_currency`
+
+![The MCP servers of the broker with their allowed tools](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-travel-expense-governed/img/scratch-links.png)
+
+### Step 3.8. Write the broker instructions
+
+Back in the broker inspector, open **Instructions and limits**. Replace the default instruction with these entries, one per line:
+
+- You plan business trips and settle travel expenses.
+- Check the travel policy with the Policy Advisor agent before booking anything.
+- Search flights and hotels with the tools, then book through the Travel Booking agent.
+- For trips abroad ask the Visa agent whether a visa is needed.
+- Expenses: convert amounts with convert_currency, audit them with the Expense Audit agent and pay out through the Reimbursement agent.
+
+Set **Max number of loops** `25`, **Max consecutive errors** `3` and **Task timeout (s)** `90`.
+Under **Model parameters → OpenAI**, set **Reasoning effort** to `MINIMAL`. The broker then answers within the gateway timeout.
+
+Optionally, fill the broker's **Agent card (A2A 0.3.0)** description: *Five specialist agents and four travel and finance tool servers plan trips and settle expenses.*
+
+![The broker instructions and limits](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-travel-expense-governed/img/scratch-broker.png)
+
+### Step 3.9. Add the policies
+
+Select the broker or connection, scroll to **Policies** and click **Add policy**. Pick the policy (search by name) and set its **Configuration** fields. **Header Injection** has its own header list. Octoloom also adds each policy as an `exchange.json` dependency.
+
+- Broker `travel-expense-broker`: **Rate Limiting**
+  - **rateLimits** (one entry each, **+**): maximumRequests `60`, timePeriodInMilliseconds `60000`
+  - **exposeHeaders**: on
+- Connection `flights-mcp-connection`: **MCP PII Detector**
+  - **entities**: `Email`, `US SSN`, `Credit Card`, `Phone Number`
+  - **action**: `Log and mask`
+- Connection `hotels-mcp-connection`: **MCP Schema Validation**
+  - **validateToolSchema**: on
+- Connection `hotels-mcp-connection`: **Header Injection**
+  - **inboundHeaders** (one entry each, **+**): `x-octoloom-source` = `travel-expense-governed-v1`
+- Connection `expense-mcp-connection`: **MCP PII Detector**
+  - **entities**: `Email`, `US SSN`, `Credit Card`, `Phone Number`
+  - **action**: `Log and mask`
+- Connection `currency-mcp-connection`: **MCP Schema Validation**
+  - **validateToolSchema**: on
+- Connection `currency-mcp-connection`: **Header Injection**
+  - **inboundHeaders** (one entry each, **+**): `x-octoloom-source` = `travel-expense-governed-v1`
+- Connection `travel-booking-agent-connection`: **A2A PII Detector**
+  - **entities**: `Email`, `US SSN`, `Credit Card`
+  - **action**: `Log`
+- Connection `policy-advisor-agent-connection`: **Header Injection**
+  - **inboundHeaders** (one entry each, **+**): `x-correlation-source` = `travel-expense-broker`
+- Connection `policy-advisor-agent-connection`: **A2A Prompt Decorator**
+  - **textDecorators** (one entry each, **+**): text `#['Answer concisely and never include personal data.']`
+- Connection `visa-agent-connection`: **A2A PII Detector**
+  - **entities**: `Email`, `US SSN`, `Credit Card`
+  - **action**: `Log`
+- Connection `expense-audit-agent-connection`: **Header Injection**
+  - **inboundHeaders** (one entry each, **+**): `x-correlation-source` = `travel-expense-broker`
+- Connection `expense-audit-agent-connection`: **A2A Prompt Decorator**
+  - **textDecorators** (one entry each, **+**): text `#['Answer concisely and never include personal data.']`
+- Connection `reimbursement-agent-connection`: **A2A PII Detector**
+  - **entities**: `Email`, `US SSN`, `Credit Card`
+  - **action**: `Log`
+
+![Policies on the broker](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-travel-expense-governed/img/scratch-policy.png)
+
+### Step 3.10. Validate, deploy and chat
+
+Run **Validate** from the canvas CLI menu and fix anything in the Problems bar. Then follow Path 2 from [Validate and build](#step-4-validate-and-build) onwards: deploy (enter the secrets), wait for the green light, open the chat and send the same prompts. Your network answers like the template, because it is the same network, built by hand.
+
 ## What you learned
 
 - How a probabilistic network is built: an LLM broker with instructions picks agents and MCP tools.
 - How the canvas, the inspector and the code view edit the same YAML.
+- How to build the same network from a blank project with forms and menus only (Path 3).
 - How policies are attached and checked with Governance.
 - How to validate, build, deploy, chat and trace with Octoloom.
 

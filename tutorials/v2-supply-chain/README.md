@@ -8,10 +8,11 @@
 |---|---|---|---|---|
 | 4 | 3 | 1.0, 0.3.0 | 0 | `v2-supply-chain` |
 
-There are two ways to use this template:
+There are three ways to use this template:
 
 1. **[Just use it](#path-1-just-use-it)**: create the project, deploy it and chat with it in about 10 minutes.
 2. **[Learn step by step](#path-2-learn-step-by-step)**: the same steps, with what each part of the network does and how Octoloom shows it.
+3. **[Build it from scratch](#path-3-build-it-from-scratch)**: start from a blank project and build the same network yourself, no code, one screenshot per step.
 
 ## Before you start
 
@@ -131,10 +132,248 @@ Under each reply, the **Tracer** icon opens the task in the **Agent Network Trac
 
 The **Share** icon in the chat header opens the Share dialog. **A²D sessions** invites people by email to chat with this deployed broker and brings their passed / failed marks and comments back. **Local portal** generates a small web chat you can run or host anywhere.
 
+## Path 3: Build it from scratch
+
+Here you build the same network yourself, starting from a blank project. Every step uses a form, a menu or a button. You never import the template, and you never type YAML or AgentScript. The names below are the template's names without the `octo_sc2_` prefix. You can use your own names, but keep them consistent.
+
+> The text fields take plain values. Where a value looks like `${group.name}`, type it as shown: it is a **variable** that `exchange.json` declares and that deploy fills in.
+
+### Step 3.1. Create a blank project with a starter broker
+
+Connect Octoloom first, as in [Path 2, Step 1](#step-1-connect-octoloom). Then, on **Home**, click **New Deterministic Network**. In **2 Start from**, choose **Blank** and turn on **Add a starter broker**.
+
+- **Broker name**: `Disruption Broker`
+- **Name**: `supply-chain-scratch` (the Exchange asset id; a different name from the template, so both can live in one org)
+- **Parent folder**: pick a folder, then click **Create blank project**.
+
+![Blank project with a starter broker](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-supply-chain/img/scratch-new.png)
+
+The starter broker `disruption_broker` has an OpenAI LLM connection (`openai_connection`, MuleSoft's published OpenAI LLM) and a flow `brokers/disruption-broker.agent` with a trigger, one subagent and the built-in `done` reply. The LLM is already done.
+
+### Step 3.2. Add the agents
+
+On the canvas, click **+** (Add to the network) → **Agent** → **Empty**. The new agent opens in the inspector on the right. Fill it in, then repeat for each agent:
+
+![The Add to the network menu with the Agent submenu](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-supply-chain/img/scratch-add.png)
+
+- **Supplier Risk Agent**
+  - **Identity → Key**: `supplier_risk_agent`
+  - **Info → Label**: Supplier Risk Agent · **Description**: Rates supplier reliability and alternatives.
+  - **Metadata → Platform**: `Snowflake` (or click its icon under **Agent framework**)
+  - **Interface**: click `a2a` (A2A 1.0). **Agent card (A2A 1.x)**: **Name** Supplier Risk Agent, **Description** as above, **Supported interfaces → URL** `https://www.a2d-ai.com/api/platform/a0a7350b-dbd8-42de-ad71-bff62486e0f9/a2a`, Binding `JSONRPC`, Protocol version `1.0`
+- **Logistics Agent**
+  - **Identity → Key**: `logistics_agent`
+  - **Info → Label**: Logistics Agent · **Description**: Plans transport alternatives.
+  - **Metadata → Platform**: `MuleSoft` (or click its icon under **Agent framework**)
+  - **Interface**: keep `a2a_v03` (A2A 0.3.0). **Agent card (A2A 0.3)**: **Name** Logistics Agent, **Description** as above, **URL** `https://www.a2d-ai.com/api/platform/98d5b94b-db87-4ebc-9b1c-e6259e810fec/a2a`
+- **Procurement Buyer Agent**
+  - **Identity → Key**: `buyer_agent`
+  - **Info → Label**: Procurement Buyer Agent · **Description**: Places expedite and alternative purchase orders.
+  - **Metadata → Platform**: `AgentForce` (or click its icon under **Agent framework**)
+  - **Interface**: click `a2a` (A2A 1.0). **Agent card (A2A 1.x)**: **Name** Procurement Buyer Agent, **Description** as above, **Supported interfaces → URL** `https://www.a2d-ai.com/api/platform/a2cf5661-5b77-415b-a071-41c19de7c31b/a2a`, Binding `JSONRPC`, Protocol version `1.0`
+- **Customer Communications Agent**
+  - **Identity → Key**: `customer_comms_agent`
+  - **Info → Label**: Customer Communications Agent · **Description**: Informs affected customers about new delivery dates.
+  - **Metadata → Platform**: `Vertex` (or click its icon under **Agent framework**)
+  - **Interface**: keep `a2a_v03` (A2A 0.3.0). **Agent card (A2A 0.3)**: **Name** Customer Communications Agent, **Description** as above, **URL** `https://www.a2d-ai.com/api/platform/9dcf701b-2dd0-4b19-a1d8-18435a4eac49/a2a`
+
+![An agent in the inspector](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-supply-chain/img/scratch-agent.png)
+
+The card skills are optional. Once the agent has a connection (two steps on), the inspector offers **Read skills from the live agent**, which fills them from the running agent.
+
+### Step 3.3. Add the MCP servers
+
+Click **+** → **MCP server** → **Empty**, then fill in:
+
+- **Shipments MCP**: **Key** `shipments_mcp`, **Label** Shipments MCP, **Description** Shipment tracking and rerouting · **Protocol version** `2025-06-18`. The transport is already Streamable HTTP on `/mcp`.
+- **Inventory MCP**: **Key** `inventory_mcp`, **Label** Inventory MCP, **Description** Stock levels per SKU · **Protocol version** `2025-06-18`. The transport is already Streamable HTTP on `/mcp`.
+- **Supplier MCP**: **Key** `supplier_mcp`, **Label** Supplier MCP, **Description** Approved supplier catalogue · **Protocol version** `2025-06-18`. The transport is already Streamable HTTP on `/mcp`.
+
+### Step 3.4. Add the connections
+
+A connection is the URL (and authentication) Agent Fabric uses to reach an agent or an MCP server. Click **+** → **Connection** → **Empty** once per agent and MCP server, and fill in:
+
+| Key | Kind | Registry entry → Name | URL |
+|---|---|---|---|
+| `supplier_risk_agent_connection` | `a2a` | `supplier_risk_agent` | `${supplierRiskAgent.url}` |
+| `logistics_agent_connection` | `a2a` | `logistics_agent` | `${logisticsAgent.url}` |
+| `buyer_agent_connection` | `a2a` | `buyer_agent` | `${buyerAgent.url}` |
+| `customer_comms_agent_connection` | `a2a` | `customer_comms_agent` | `${customerCommsAgent.url}` |
+| `shipments_mcp_connection` | `mcp` | `shipments_mcp` | `${shipmentsMcp.url}` |
+| `inventory_mcp_connection` | `mcp` | `inventory_mcp` | `${inventoryMcp.url}` |
+| `supplier_mcp_connection` | `mcp` | `supplier_mcp` | `${supplierMcp.url}` |
+
+![A connection in the inspector](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-supply-chain/img/scratch-conn.png)
+
+### Step 3.5. Declare the variables
+
+The Problems bar now shows **Variable ${…} is not declared in exchange.json** for each new variable. Click **Add to exchange.json** on each one.
+
+Then open `exchange.json` (it opens as a form) and, under **Variables**, set the defaults:
+
+| Variable | Default |
+|---|---|
+| `supplierRiskAgent.url` | `https://www.a2d-ai.com/api/platform/a0a7350b-dbd8-42de-ad71-bff62486e0f9/a2a` |
+| `logisticsAgent.url` | `https://www.a2d-ai.com/api/platform/98d5b94b-db87-4ebc-9b1c-e6259e810fec/a2a` |
+| `buyerAgent.url` | `https://www.a2d-ai.com/api/platform/a2cf5661-5b77-415b-a071-41c19de7c31b/a2a` |
+| `customerCommsAgent.url` | `https://www.a2d-ai.com/api/platform/9dcf701b-2dd0-4b19-a1d8-18435a4eac49/a2a` |
+| `shipmentsMcp.url` | `https://www.a2d-ai.com/api/platform/55dce81c-8a2b-44cf-ad5f-26ed16363dfd/` |
+| `inventoryMcp.url` | `https://www.a2d-ai.com/api/platform/e821f794-fba0-438e-aee1-b2391abfeb37/` |
+| `supplierMcp.url` | `https://www.a2d-ai.com/api/platform/df692006-f8d9-46f7-8d6b-08a1cc265dd8/` |
+
+Leave the secret variables (`openai.apiKey`) empty: deploy asks for them and never stores them.
+
+![The exchange.json form with the variables](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-supply-chain/img/scratch-vars.png)
+
+Also click **Remove it** on any **declared but not used** variable that the Problems bar shows.
+
+### Step 3.6. Declare the MCP tools
+
+On each MCP server card, click the **Tools** row (or its pencil). Octoloom reads the tool list from the running server: tick the tools below. You can also type a name in **Add a tool by name…**.
+
+- **Shipments MCP**: `get_shipment`, `reroute_shipment`
+- **Inventory MCP**: `get_stock`
+- **Supplier MCP**: `find_alternative_supplier`
+
+![The Tools row of an MCP server card](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-supply-chain/img/scratch-tools.png)
+
+### Step 3.7. Link the agents and MCP servers to the broker
+
+Every agent and MCP card now has a **Broker** row with **Link to Disruption Broker**. Click it on each card. Octoloom adds the matching actions to the broker flow: one per agent and one per declared MCP tool.
+
+![Link to the broker on the agent and MCP cards](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-supply-chain/img/scratch-link.png)
+
+**Link to** also reads the required inputs from the tool schema. In the flow (next step), open **Connections** in the explorer and check that these actions show them under **Inputs** (one per line; type them if they are missing):
+- `reroute_shipment`: `shipment_id: string`
+
+### Step 3.8. Build the broker flow
+
+On the broker card (or in its inspector), click **Open broker flow**. Then set up the flow:
+
+1. **Settings → Language Settings**: on the `default` model, set **Reasoning effort (OpenAI)** to `MINIMAL`.
+2. **Settings → System Messages**: set the instructions to: *You are the supply chain control tower. Decide from shipment and stock data, never from guesses.*
+3. Select the `assistant` subagent and delete it (trash icon). The trigger and the built-in `done` reply stay.
+4. Add the steps below in order. Select the step that comes before, click **Add node**, pick the kind and choose **Empty**, then set its **API name** in **General**. Octoloom wires each new step after the selected one, and you set the exact next step in the inspector.
+
+![Add node in the flow editor](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-supply-chain/img/scratch-flow-add.png)
+
+Select the trigger and, under **Go to**, pick `extractDisruption` once that step exists.
+
+#### Generator `extractDisruption`
+
+- **Label** Extract Disruption · **Description** Extracts the shipment id and the kind of disruption.
+- **System instructions**:
+
+  > Extract the shipment id (for example SHP-4401) and classify the disruption.
+  > Kind is "delay" for late shipments and "shortage" when the supplier cannot deliver the quantity.
+
+- **Prompt**:
+
+  > {!@request.payload.message.parts[0].text}
+
+- **Structured output** (**Add field** for each):
+  - `shipment_id` (string): Shipment id, e.g. SHP-4401
+  - `kind` (string): Kind of disruption · **Allowed values** `delay`, `shortage`
+- **Next step (on exit) → Go to**: `assessImpact`
+
+#### Subagent `assessImpact`
+
+- **Label** Assess Impact · **Description** Reads the shipment and the stock cover of its SKU and rates the impact.
+- **System instructions**:
+
+  > Get the shipment, then the stock of its SKU.
+  > Severity is "severe" when the delay in days is larger than the days of cover, otherwise "manageable".
+
+- **Reasoning instructions**:
+
+  > Shipment {!@generator.extractDisruption.output.shipment_id}, kind {!@generator.extractDisruption.output.kind}.
+
+- **Actions** (**+ Add action…**): `get_shipment`, `get_stock`
+- **Limits → Max loops**: `4`
+- **Structured output** (**Add field** for each):
+  - `severity` (string): Impact on stock · **Allowed values** `severe`, `manageable`
+  - `detail` (string): SKU, delay and days of cover
+- **Next step (on exit) → Go to**: `mitigationRouter`
+
+#### Router `mitigationRouter`
+
+- **Description** Severe delays are rerouted, shortages get a new supplier, the rest a plan.
+- **Routes** (**+**): **Label** Severe delay · **When** `@subagent.assessImpact.output.severity == "severe" and @generator.extractDisruption.output.kind == "delay"` · **Go to** `reroute`
+- **Routes** (**+**): **Label** Shortage · **When** `@generator.extractDisruption.output.kind == "shortage"` · **Go to** `resource`
+- **Otherwise → Go to**: `mitigationPlan`
+
+#### Executor `reroute`
+
+- **Description** Switches the shipment to a faster mode (no LLM).
+- **Steps (do)**: **Run action**
+  - **Action** `reroute_shipment`
+    - **Bind argument** `shipment_id` = `@generator.extractDisruption.output.shipment_id`
+- **Next step (on exit) → Go to**: `informCustomers`
+
+#### Subagent `informCustomers`
+
+- **Label** Inform Customers · **Description** Tells the affected customers the new date.
+- **Reasoning instructions**:
+
+  > Shipment {!@generator.extractDisruption.output.shipment_id} was rerouted. Impact: {!@subagent.assessImpact.output.detail}. Inform the affected customers.
+
+- **Actions** (**+ Add action…**): `customer_comms_agent`
+- **Next step (on exit) → Go to**: `rerouted`
+
+#### Orchestrator `resource`
+
+- **Label** Re-source · **Description** Finds an alternative supplier, checks its risk and places the order.
+- **System instructions**:
+
+  > Find approved alternative suppliers for the SKU, ask the supplier risk agent which one to use,
+  > then ask the buyer agent to place the order. Summarise supplier, quantity and delivery date.
+
+- **Reasoning instructions**:
+
+  > Shortage on shipment {!@generator.extractDisruption.output.shipment_id}: {!@subagent.assessImpact.output.detail}
+
+- **Actions** (**+ Add action…**): `find_alternative_supplier`, `supplier_risk_agent`, `buyer_agent`
+- **Limits → Max loops**: `6`
+- **Next step (on exit) → Go to**: `resourced`
+
+#### Subagent `mitigationPlan`
+
+- **Label** Mitigation Plan · **Description** Stock covers the delay: proposes a plan with the logistics agent.
+- **Reasoning instructions**:
+
+  > Stock covers the disruption of {!@generator.extractDisruption.output.shipment_id}: {!@subagent.assessImpact.output.detail}. Ask logistics for options and propose a plan.
+
+- **Actions** (**+ Add action…**): `logistics_agent`
+- **Next step (on exit) → Go to**: `planned`
+
+#### Reply `rerouted`
+
+- **Use expression**, then **Message (expression)**: `"Shipment " + @generator.extractDisruption.output.shipment_id + " rerouted. " + @subagent.informCustomers.output`
+- **Task state**: `TASK_STATE_COMPLETED`
+
+#### Reply `resourced`
+
+- **Use expression**, then **Message (expression)**: `"Shortage handled: " + @orchestrator.resource.output`
+- **Task state**: `TASK_STATE_COMPLETED`
+
+#### Reply `planned`
+
+- **Use expression**, then **Message (expression)**: `"No stock-out expected. " + @subagent.mitigationPlan.output`
+- **Task state**: `TASK_STATE_COMPLETED`
+
+![The finished broker flow](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-supply-chain/img/scratch-flow.png)
+
+When you are done, the flow matches the template's flow ([Path 2, Step 4](#step-4-follow-the-broker-flow-agentscript)). The built-in `done` reply isn't used by this use case. The Problems bar shows **echo done is not reachable from the trigger** as a warning, and you can leave it.
+
+### Step 3.9. Validate, deploy and chat
+
+Run **Validate** from the canvas CLI menu and fix anything in the Problems bar. Then follow Path 2 from [Validate and build](#step-5-validate-and-build) onwards: deploy (enter the secrets), wait for the green light, open the chat and send the same prompts. Your network answers like the template, because it is the same network, built by hand.
+
 ## What you learned
 
 - How a deterministic network is built: an AgentScript flow decides every step; the LLM extracts and writes text.
 - How the canvas, the inspector and the code view edit the same YAML.
+- How to build the same network from a blank project with forms and menus only (Path 3).
 - How to validate, build, deploy, chat and trace with Octoloom.
 
 ## Next

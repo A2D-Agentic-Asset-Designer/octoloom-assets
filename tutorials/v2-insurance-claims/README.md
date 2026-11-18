@@ -8,10 +8,11 @@
 |---|---|---|---|---|
 | 4 | 2 | 1.0, 0.3.0 | 0 | `v2-insurance-claims` |
 
-There are two ways to use this template:
+There are three ways to use this template:
 
 1. **[Just use it](#path-1-just-use-it)**: create the project, deploy it and chat with it in about 10 minutes.
 2. **[Learn step by step](#path-2-learn-step-by-step)**: the same steps, with what each part of the network does and how Octoloom shows it.
+3. **[Build it from scratch](#path-3-build-it-from-scratch)**: start from a blank project and build the same network yourself, no code, one screenshot per step.
 
 ## Before you start
 
@@ -129,10 +130,229 @@ Under each reply, the **Tracer** icon opens the task in the **Agent Network Trac
 
 The **Share** icon in the chat header opens the Share dialog. **A²D sessions** invites people by email to chat with this deployed broker and brings their passed / failed marks and comments back. **Local portal** generates a small web chat you can run or host anywhere.
 
+## Path 3: Build it from scratch
+
+Here you build the same network yourself, starting from a blank project. Every step uses a form, a menu or a button. You never import the template, and you never type YAML or AgentScript. The names below are the template's names without the `octo_ic2_` prefix. You can use your own names, but keep them consistent.
+
+> The text fields take plain values. Where a value looks like `${group.name}`, type it as shown: it is a **variable** that `exchange.json` declares and that deploy fills in.
+
+### Step 3.1. Create a blank project with a starter broker
+
+Connect Octoloom first, as in [Path 2, Step 1](#step-1-connect-octoloom). Then, on **Home**, click **New Deterministic Network**. In **2 Start from**, choose **Blank** and turn on **Add a starter broker**.
+
+- **Broker name**: `Claims Broker`
+- **Name**: `insurance-claims-scratch` (the Exchange asset id; a different name from the template, so both can live in one org)
+- **Parent folder**: pick a folder, then click **Create blank project**.
+
+![Blank project with a starter broker](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-insurance-claims/img/scratch-new.png)
+
+The starter broker `claims_broker` has an OpenAI LLM connection (`openai_connection`, MuleSoft's published OpenAI LLM) and a flow `brokers/claims-broker.agent` with a trigger, one subagent and the built-in `done` reply. The LLM is already done.
+
+### Step 3.2. Add the agents
+
+On the canvas, click **+** (Add to the network) → **Agent** → **Empty**. The new agent opens in the inspector on the right. Fill it in, then repeat for each agent:
+
+![The Add to the network menu with the Agent submenu](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-insurance-claims/img/scratch-add.png)
+
+- **FNOL Intake Agent**
+  - **Identity → Key**: `fnol_agent`
+  - **Info → Label**: FNOL Intake Agent · **Description**: Captures the first notice of loss with all required facts.
+  - **Metadata → Platform**: `AgentForce` (or click its icon under **Agent framework**)
+  - **Interface**: click `a2a` (A2A 1.0). **Agent card (A2A 1.x)**: **Name** FNOL Intake Agent, **Description** as above, **Supported interfaces → URL** `https://www.a2d-ai.com/api/platform/2fba0256-4819-484e-a00a-5a622f41c178/a2a`, Binding `JSONRPC`, Protocol version `1.0`
+- **Fraud Screening Agent**
+  - **Identity → Key**: `fraud_agent`
+  - **Info → Label**: Fraud Screening Agent · **Description**: Scores claims for fraud indicators.
+  - **Metadata → Platform**: `Databricks` (or click its icon under **Agent framework**)
+  - **Interface**: keep `a2a_v03` (A2A 0.3.0). **Agent card (A2A 0.3)**: **Name** Fraud Screening Agent, **Description** as above, **URL** `https://www.a2d-ai.com/api/platform/d6dbd985-7aa4-4629-be75-860b1fb9d7f0/a2a`
+- **Claims Adjuster Agent**
+  - **Identity → Key**: `adjuster_agent`
+  - **Info → Label**: Claims Adjuster Agent · **Description**: Estimates the loss and proposes a settlement.
+  - **Metadata → Platform**: `MuleSoft` (or click its icon under **Agent framework**)
+  - **Interface**: click `a2a` (A2A 1.0). **Agent card (A2A 1.x)**: **Name** Claims Adjuster Agent, **Description** as above, **Supported interfaces → URL** `https://www.a2d-ai.com/api/platform/8e75ca41-b1ce-4dd8-b84c-90c80d864ce9/a2a`, Binding `JSONRPC`, Protocol version `1.0`
+- **Claims Payments Agent**
+  - **Identity → Key**: `payments_agent`
+  - **Info → Label**: Claims Payments Agent · **Description**: Pays settled claims.
+  - **Metadata → Platform**: `Bedrock` (or click its icon under **Agent framework**)
+  - **Interface**: keep `a2a_v03` (A2A 0.3.0). **Agent card (A2A 0.3)**: **Name** Claims Payments Agent, **Description** as above, **URL** `https://www.a2d-ai.com/api/platform/4b5b6ba6-bbc0-48f2-a8f5-fdbe4af3f0bf/a2a`
+
+![An agent in the inspector](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-insurance-claims/img/scratch-agent.png)
+
+The card skills are optional. Once the agent has a connection (two steps on), the inspector offers **Read skills from the live agent**, which fills them from the running agent.
+
+### Step 3.3. Add the MCP servers
+
+Click **+** → **MCP server** → **Empty**, then fill in:
+
+- **Policy Admin MCP**: **Key** `policy_admin_mcp`, **Label** Policy Admin MCP, **Description** Policy administration: coverage checks · **Protocol version** `2025-06-18`. The transport is already Streamable HTTP on `/mcp`.
+- **Claims MCP**: **Key** `claims_mcp`, **Label** Claims MCP, **Description** Claims system of record · **Protocol version** `2025-06-18`. The transport is already Streamable HTTP on `/mcp`.
+
+### Step 3.4. Add the connections
+
+A connection is the URL (and authentication) Agent Fabric uses to reach an agent or an MCP server. Click **+** → **Connection** → **Empty** once per agent and MCP server, and fill in:
+
+| Key | Kind | Registry entry → Name | URL |
+|---|---|---|---|
+| `fnol_agent_connection` | `a2a` | `fnol_agent` | `${fnolAgent.url}` |
+| `fraud_agent_connection` | `a2a` | `fraud_agent` | `${fraudAgent.url}` |
+| `adjuster_agent_connection` | `a2a` | `adjuster_agent` | `${adjusterAgent.url}` |
+| `payments_agent_connection` | `a2a` | `payments_agent` | `${paymentsAgent.url}` |
+| `policy_admin_mcp_connection` | `mcp` | `policy_admin_mcp` | `${policyAdminMcp.url}` |
+| `claims_mcp_connection` | `mcp` | `claims_mcp` | `${claimsMcp.url}` |
+
+![A connection in the inspector](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-insurance-claims/img/scratch-conn.png)
+
+### Step 3.5. Declare the variables
+
+The Problems bar now shows **Variable ${…} is not declared in exchange.json** for each new variable. Click **Add to exchange.json** on each one.
+
+Then open `exchange.json` (it opens as a form) and, under **Variables**, set the defaults:
+
+| Variable | Default |
+|---|---|
+| `fnolAgent.url` | `https://www.a2d-ai.com/api/platform/2fba0256-4819-484e-a00a-5a622f41c178/a2a` |
+| `fraudAgent.url` | `https://www.a2d-ai.com/api/platform/d6dbd985-7aa4-4629-be75-860b1fb9d7f0/a2a` |
+| `adjusterAgent.url` | `https://www.a2d-ai.com/api/platform/8e75ca41-b1ce-4dd8-b84c-90c80d864ce9/a2a` |
+| `paymentsAgent.url` | `https://www.a2d-ai.com/api/platform/4b5b6ba6-bbc0-48f2-a8f5-fdbe4af3f0bf/a2a` |
+| `policyAdminMcp.url` | `https://www.a2d-ai.com/api/platform/8de15fa9-276c-459f-8243-c4b4c882fcb1/` |
+| `claimsMcp.url` | `https://www.a2d-ai.com/api/platform/587c6f66-199a-4a79-b1d4-5c77953ee271/` |
+
+Leave the secret variables (`openai.apiKey`) empty: deploy asks for them and never stores them.
+
+![The exchange.json form with the variables](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-insurance-claims/img/scratch-vars.png)
+
+Also click **Remove it** on any **declared but not used** variable that the Problems bar shows.
+
+### Step 3.6. Declare the MCP tools
+
+On each MCP server card, click the **Tools** row (or its pencil). Octoloom reads the tool list from the running server: tick the tools below. You can also type a name in **Add a tool by name…**.
+
+- **Policy Admin MCP**: `check_coverage`
+- **Claims MCP**: `create_claim`, `refer_to_siu`
+
+![The Tools row of an MCP server card](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-insurance-claims/img/scratch-tools.png)
+
+### Step 3.7. Link the agents and MCP servers to the broker
+
+Every agent and MCP card now has a **Broker** row with **Link to Claims Broker**. Click it on each card. Octoloom adds the matching actions to the broker flow: one per agent and one per declared MCP tool.
+
+![Link to the broker on the agent and MCP cards](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-insurance-claims/img/scratch-link.png)
+
+**Link to** also reads the required inputs from the tool schema. In the flow (next step), open **Connections** in the explorer and check that these actions show them under **Inputs** (one per line; type them if they are missing):
+- `refer_to_siu`: `policy_id: string`, `reason: string`
+
+### Step 3.8. Build the broker flow
+
+On the broker card (or in its inspector), click **Open broker flow**. Then set up the flow:
+
+1. **Settings → Language Settings**: on the `default` model, set **Reasoning effort (OpenAI)** to `MINIMAL`.
+2. **Settings → System Messages**: set the instructions to: *You are a claims handler. Every claim is checked for coverage and fraud before any money moves.*
+3. Select the `assistant` subagent and delete it (trash icon). The trigger and the built-in `done` reply stay.
+4. Add the steps below in order. Select the step that comes before, click **Add node**, pick the kind and choose **Empty**, then set its **API name** in **General**. Octoloom wires each new step after the selected one, and you set the exact next step in the inspector.
+
+![Add node in the flow editor](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-insurance-claims/img/scratch-flow-add.png)
+
+Select the trigger and, under **Go to**, pick `classifyClaim` once that step exists.
+
+#### Generator `classifyClaim`
+
+- **Label** Classify Claim · **Description** Classifies the loss and extracts the policy id.
+- **System instructions**:
+
+  > Extract the policy id (for example POL-5001), the loss type and a one-line summary.
+  > Loss type is "motor" for vehicles and "property" for homes and buildings.
+
+- **Prompt**:
+
+  > {!@request.payload.message.parts[0].text}
+
+- **Structured output** (**Add field** for each):
+  - `policy_id` (string): Policy id, e.g. POL-5001
+  - `loss_type` (string): Type of loss · **Allowed values** `motor`, `property`
+  - `summary` (string): One-line loss summary
+- **Next step (on exit) → Go to**: `assessClaim`
+
+#### Orchestrator `assessClaim`
+
+- **Label** Assess Claim · **Description** Records the FNOL, checks coverage and screens for fraud.
+- **System instructions**:
+
+  > 1. Record the first notice of loss with the FNOL agent.
+  > 2. Check coverage for the policy and loss type.
+  > 3. Ask the Fraud Screening agent for a risk level.
+  > Set covered to "yes" or "no" from the coverage tool and fraud_risk to "high" or "low" from the fraud agent.
+
+- **Reasoning instructions**:
+
+  > Policy {!@generator.classifyClaim.output.policy_id}, {!@generator.classifyClaim.output.loss_type}: {!@request.payload.message.parts[0].text}
+
+- **Actions** (**+ Add action…**): `fnol_agent`, `check_coverage`, `fraud_agent`
+- **Limits → Max loops**: `6`
+- **Structured output** (**Add field** for each):
+  - `covered` (string): Coverage result · **Allowed values** `yes`, `no`
+  - `fraud_risk` (string): Fraud risk level · **Allowed values** `high`, `low`
+  - `detail` (string): What was found
+- **Next step (on exit) → Go to**: `claimRouter`
+
+#### Router `claimRouter`
+
+- **Description** Not covered: stop. High fraud risk: refer to SIU. Otherwise settle.
+- **Routes** (**+**): **Label** Not covered · **When** `@orchestrator.assessClaim.output.covered == "no"` · **Go to** `notCovered`
+- **Routes** (**+**): **Label** High fraud risk · **When** `@orchestrator.assessClaim.output.fraud_risk == "high"` · **Go to** `referToSiu`
+- **Otherwise → Go to**: `settleClaim`
+
+#### Reply `notCovered`
+
+- **Use expression**, then **Message (expression)**: `"Claim not covered for policy " + @generator.classifyClaim.output.policy_id + ": " + @orchestrator.assessClaim.output.detail`
+- **Task state**: `TASK_STATE_COMPLETED`
+
+#### Executor `referToSiu`
+
+- **Description** Refers the claim to the special investigations unit.
+- **Steps (do)**: **Run action**
+  - **Action** `refer_to_siu`
+    - **Bind argument** `policy_id` = `@generator.classifyClaim.output.policy_id`
+    - **Bind argument** `reason` = `"High fraud risk score"`
+- **Next step (on exit) → Go to**: `referred`
+
+#### Reply `referred`
+
+- **Use expression**, then **Message (expression)**: `"Claim for policy " + @generator.classifyClaim.output.policy_id + " was referred to special investigations. A specialist will contact you."`
+- **Task state**: `TASK_STATE_COMPLETED`
+
+#### Orchestrator `settleClaim`
+
+- **Label** Settle Claim · **Description** Creates the claim, gets a settlement and pays it.
+- **System instructions**:
+
+  > Create the claim record, ask the adjuster for a settlement proposal, then pay it with the payments agent.
+  > Return a short summary with the claim id, settlement amount and payment id.
+
+- **Reasoning instructions**:
+
+  > Policy {!@generator.classifyClaim.output.policy_id}, {!@generator.classifyClaim.output.loss_type}: {!@generator.classifyClaim.output.summary}
+
+- **Actions** (**+ Add action…**): `create_claim`, `adjuster_agent`, `payments_agent`
+- **Limits → Max loops**: `8`
+- **Next step (on exit) → Go to**: `settled`
+
+#### Reply `settled`
+
+- **Use expression**, then **Message (expression)**: `@orchestrator.settleClaim.output`
+- **Task state**: `TASK_STATE_COMPLETED`
+
+![The finished broker flow](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-insurance-claims/img/scratch-flow.png)
+
+When you are done, the flow matches the template's flow ([Path 2, Step 4](#step-4-follow-the-broker-flow-agentscript)). The built-in `done` reply isn't used by this use case. The Problems bar shows **echo done is not reachable from the trigger** as a warning, and you can leave it.
+
+### Step 3.9. Validate, deploy and chat
+
+Run **Validate** from the canvas CLI menu and fix anything in the Problems bar. Then follow Path 2 from [Validate and build](#step-5-validate-and-build) onwards: deploy (enter the secrets), wait for the green light, open the chat and send the same prompts. Your network answers like the template, because it is the same network, built by hand.
+
 ## What you learned
 
 - How a deterministic network is built: an AgentScript flow decides every step; the LLM extracts and writes text.
 - How the canvas, the inspector and the code view edit the same YAML.
+- How to build the same network from a blank project with forms and menus only (Path 3).
 - How to validate, build, deploy, chat and trace with Octoloom.
 
 ## Next

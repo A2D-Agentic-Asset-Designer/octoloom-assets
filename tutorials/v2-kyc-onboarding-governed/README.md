@@ -8,10 +8,11 @@
 |---|---|---|---|---|
 | 2 | 3 | 1.0, 0.3.0 | 5 | `v2-kyc-onboarding-governed` |
 
-There are two ways to use this template:
+There are three ways to use this template:
 
 1. **[Just use it](#path-1-just-use-it)**: create the project, deploy it and chat with it in about 10 minutes.
 2. **[Learn step by step](#path-2-learn-step-by-step)**: the same steps, with what each part of the network does and how Octoloom shows it.
+3. **[Build it from scratch](#path-3-build-it-from-scratch)**: start from a blank project and build the same network yourself, no code, one screenshot per step.
 
 ## Before you start
 
@@ -147,10 +148,262 @@ Under each reply, the **Tracer** icon opens the task in the **Agent Network Trac
 
 The **Share** icon in the chat header opens the Share dialog. **A²D sessions** invites people by email to chat with this deployed broker and brings their passed / failed marks and comments back. **Local portal** generates a small web chat you can run or host anywhere.
 
+## Path 3: Build it from scratch
+
+Here you build the same network yourself, starting from a blank project. Every step uses a form, a menu or a button. You never import the template, and you never type YAML or AgentScript. The names below are the template's names without the `octo_ko2g_` prefix. You can use your own names, but keep them consistent.
+
+> The text fields take plain values. Where a value looks like `${group.name}`, type it as shown: it is a **variable** that `exchange.json` declares and that deploy fills in.
+
+### Step 3.1. Create a blank project with a starter broker
+
+Connect Octoloom first, as in [Path 2, Step 1](#step-1-connect-octoloom). Then, on **Home**, click **New Deterministic Network**. In **2 Start from**, choose **Blank** and turn on **Add a starter broker**.
+
+- **Broker name**: `KYC Onboarding Broker`
+- **Name**: `kyc-onboarding-governed-scratch` (the Exchange asset id; a different name from the template, so both can live in one org)
+- **Parent folder**: pick a folder, then click **Create blank project**.
+
+![Blank project with a starter broker](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-kyc-onboarding-governed/img/scratch-new.png)
+
+The starter broker `kyc_onboarding_broker` has an OpenAI LLM connection (`openai_connection`, MuleSoft's published OpenAI LLM) and a flow `brokers/kyc-onboarding-broker.agent` with a trigger, one subagent and the built-in `done` reply. The LLM is already done.
+
+### Step 3.2. Add the agents
+
+On the canvas, click **+** (Add to the network) → **Agent** → **Empty**. The new agent opens in the inspector on the right. Fill it in, then repeat for each agent:
+
+![The Add to the network menu with the Agent submenu](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-kyc-onboarding-governed/img/scratch-add.png)
+
+- **KYC Analyst Agent**
+  - **Identity → Key**: `kyc_analyst_agent`
+  - **Info → Label**: KYC Analyst Agent · **Description**: Reviews medium-risk applicants and asks for extra documents.
+  - **Metadata → Platform**: `Azure` (or click its icon under **Agent framework**)
+  - **Interface**: click `a2a` (A2A 1.0). **Agent card (A2A 1.x)**: **Name** KYC Analyst Agent, **Description** as above, **Supported interfaces → URL** `https://www.a2d-ai.com/api/platform/9d2f67ee-62ae-4e7a-85aa-86cc134bd34c/a2a`, Binding `JSONRPC`, Protocol version `1.0`
+- **Account Opening Agent**
+  - **Identity → Key**: `account_opening_agent`
+  - **Info → Label**: Account Opening Agent · **Description**: Opens the account and sends the welcome pack.
+  - **Metadata → Platform**: `AgentForce` (or click its icon under **Agent framework**)
+  - **Interface**: keep `a2a_v03` (A2A 0.3.0). **Agent card (A2A 0.3)**: **Name** Account Opening Agent, **Description** as above, **URL** `https://www.a2d-ai.com/api/platform/7c76d68f-65b2-40ba-9139-77c6a4d796e0/a2a`
+
+![An agent in the inspector](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-kyc-onboarding-governed/img/scratch-agent.png)
+
+The card skills are optional. Once the agent has a connection (two steps on), the inspector offers **Read skills from the live agent**, which fills them from the running agent.
+
+### Step 3.3. Add the MCP servers
+
+Click **+** → **MCP server** → **Empty**, then fill in:
+
+- **Identity Verification MCP**: **Key** `identity_mcp`, **Label** Identity Verification MCP, **Description** ID document checks · **Protocol version** `2025-06-18`. The transport is already Streamable HTTP on `/mcp`.
+- **Sanctions Screening MCP**: **Key** `sanctions_mcp`, **Label** Sanctions Screening MCP, **Description** Sanctions and PEP lists (fictional) · **Protocol version** `2025-06-18`. The transport is already Streamable HTTP on `/mcp`.
+- **Customer Risk MCP**: **Key** `risk_mcp`, **Label** Customer Risk MCP, **Description** Risk scoring and compliance cases · **Protocol version** `2025-06-18`. The transport is already Streamable HTTP on `/mcp`.
+
+### Step 3.4. Add the connections
+
+A connection is the URL (and authentication) Agent Fabric uses to reach an agent or an MCP server. Click **+** → **Connection** → **Empty** once per agent and MCP server, and fill in:
+
+| Key | Kind | Registry entry → Name | URL |
+|---|---|---|---|
+| `kyc_analyst_agent_connection` | `a2a` | `kyc_analyst_agent` | `${kycAnalystAgent.url}` |
+| `account_opening_agent_connection` | `a2a` | `account_opening_agent` | `${accountOpeningAgent.url}` |
+| `identity_mcp_connection` | `mcp` | `identity_mcp` | `${identityMcp.url}` |
+| `sanctions_mcp_connection` | `mcp` | `sanctions_mcp` | `${sanctionsMcp.url}` |
+| `risk_mcp_connection` | `mcp` | `risk_mcp` | `${riskMcp.url}` |
+
+![A connection in the inspector](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-kyc-onboarding-governed/img/scratch-conn.png)
+
+### Step 3.5. Declare the variables
+
+The Problems bar now shows **Variable ${…} is not declared in exchange.json** for each new variable. Click **Add to exchange.json** on each one.
+
+Then open `exchange.json` (it opens as a form) and, under **Variables**, set the defaults:
+
+| Variable | Default |
+|---|---|
+| `kycAnalystAgent.url` | `https://www.a2d-ai.com/api/platform/9d2f67ee-62ae-4e7a-85aa-86cc134bd34c/a2a` |
+| `accountOpeningAgent.url` | `https://www.a2d-ai.com/api/platform/7c76d68f-65b2-40ba-9139-77c6a4d796e0/a2a` |
+| `identityMcp.url` | `https://www.a2d-ai.com/api/platform/bc1c60ca-df29-4d9d-b25c-2b839730f8d5/` |
+| `sanctionsMcp.url` | `https://www.a2d-ai.com/api/platform/b1b3a5b7-5bbc-4764-8194-e6577ab4f52a/` |
+| `riskMcp.url` | `https://www.a2d-ai.com/api/platform/08c986b9-6c22-4e6d-9323-67d551582ab5/` |
+
+Leave the secret variables (`openai.apiKey`) empty: deploy asks for them and never stores them.
+
+![The exchange.json form with the variables](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-kyc-onboarding-governed/img/scratch-vars.png)
+
+Also click **Remove it** on any **declared but not used** variable that the Problems bar shows.
+
+### Step 3.6. Declare the MCP tools
+
+On each MCP server card, click the **Tools** row (or its pencil). Octoloom reads the tool list from the running server: tick the tools below. You can also type a name in **Add a tool by name…**.
+
+- **Identity Verification MCP**: `verify_document`
+- **Sanctions Screening MCP**: `screen_name`
+- **Customer Risk MCP**: `score_customer`, `open_case`
+
+![The Tools row of an MCP server card](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-kyc-onboarding-governed/img/scratch-tools.png)
+
+### Step 3.7. Link the agents and MCP servers to the broker
+
+Every agent and MCP card now has a **Broker** row with **Link to KYC Onboarding Broker**. Click it on each card. Octoloom adds the matching actions to the broker flow: one per agent and one per declared MCP tool.
+
+![Link to the broker on the agent and MCP cards](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-kyc-onboarding-governed/img/scratch-link.png)
+
+**Link to** also reads the required inputs from the tool schema. In the flow (next step), open **Connections** in the explorer and check that these actions show them under **Inputs** (one per line; type them if they are missing):
+- `open_case`: `applicant_id: string`, `reason: string`
+
+### Step 3.8. Build the broker flow
+
+On the broker card (or in its inspector), click **Open broker flow**. Then set up the flow:
+
+1. **Settings → Language Settings**: on the `default` model, set **Reasoning effort (OpenAI)** to `MINIMAL`.
+2. **Settings → System Messages**: set the instructions to: *You are the onboarding desk of a bank. Never open an account before identity, sanctions and risk checks are done.*
+3. Select the `assistant` subagent and delete it (trash icon). The trigger and the built-in `done` reply stay.
+4. Add the steps below in order. Select the step that comes before, click **Add node**, pick the kind and choose **Empty**, then set its **API name** in **General**. Octoloom wires each new step after the selected one, and you set the exact next step in the inspector.
+
+![Add node in the flow editor](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-kyc-onboarding-governed/img/scratch-flow-add.png)
+
+Select the trigger and, under **Go to**, pick `extractApplicant` once that step exists.
+
+#### Generator `extractApplicant`
+
+- **Label** Extract Applicant · **Description** Extracts the applicant id.
+- **System instructions**:
+
+  > Extract the applicant id (for example AP-7001) and the applicant name. Use "UNKNOWN" when no id is given.
+
+- **Prompt**:
+
+  > {!@request.payload.message.parts[0].text}
+
+- **Structured output** (**Add field** for each):
+  - `applicant_id` (string): Applicant id, e.g. AP-7001, or UNKNOWN
+  - `name` (string): Applicant name
+- **Next step (on exit) → Go to**: `idRouter`
+
+#### Router `idRouter`
+
+- **Description** Without an applicant id nothing can be checked.
+- **Routes** (**+**): **Label** Has id · **When** `@generator.extractApplicant.output.applicant_id != "UNKNOWN"` · **Go to** `screening`
+- **Otherwise → Go to**: `needId`
+
+#### Subagent `screening`
+
+- **Label** Screening · **Description** Verifies the document, screens sanctions and scores the risk.
+- **System instructions**:
+
+  > Call all three checks for the applicant. Band is "high" when the sanctions screen has hits or the score band is high,
+  > "low" when the document is verified, there are no hits and the score band is low, otherwise "medium".
+
+- **Reasoning instructions**:
+
+  > Applicant {!@generator.extractApplicant.output.applicant_id}.
+
+- **Actions** (**+ Add action…**): `verify_document`, `screen_name`, `score_customer`
+- **Limits → Max loops**: `5`
+- **Structured output** (**Add field** for each):
+  - `band` (string): Overall risk band · **Allowed values** `low`, `medium`, `high`
+  - `findings` (string): Document, sanctions and score results
+- **Next step (on exit) → Go to**: `riskRouter`
+
+#### Router `riskRouter`
+
+- **Description** Low risk opens the account, high risk opens a compliance case, medium goes to an analyst.
+- **Routes** (**+**): **Label** Low risk · **When** `@subagent.screening.output.band == "low"` · **Go to** `openAccount`
+- **Routes** (**+**): **Label** High risk · **When** `@subagent.screening.output.band == "high"` · **Go to** `openCase`
+- **Otherwise → Go to**: `analystReview`
+
+#### Subagent `openAccount`
+
+- **Label** Open Account · **Description** Opens the account.
+- **Reasoning instructions**:
+
+  > Identity, sanctions and risk checks are done and passed with low risk: {!@subagent.screening.output.findings}. This is the authorization to open the account. Call the account opening agent once to open an account for {!@generator.extractApplicant.output.applicant_id} ({!@generator.extractApplicant.output.name}) and report the account number.
+
+- **Actions** (**+ Add action…**): `account_opening_agent`
+- **Next step (on exit) → Go to**: `opened`
+
+#### Subagent `analystReview`
+
+- **Label** Analyst Review · **Description** A KYC analyst reviews the medium-risk applicant, then the account is opened if approved.
+- **Reasoning instructions**:
+
+  > Medium risk for {!@generator.extractApplicant.output.applicant_id}: {!@subagent.screening.output.findings}. Ask the KYC analyst once for a decision. The checks are done; an analyst approval is the authorization to open the account, so when the analyst approves, call the account opening agent once and report the account number and any conditions.
+
+- **Actions** (**+ Add action…**): `kyc_analyst_agent`, `account_opening_agent`
+- **Limits → Max loops**: `4`
+- **Next step (on exit) → Go to**: `reviewed`
+
+#### Executor `openCase`
+
+- **Description** Opens a compliance case (no LLM, no account).
+- **Steps (do)**: **Run action**
+  - **Action** `open_case`
+    - **Bind argument** `applicant_id` = `@generator.extractApplicant.output.applicant_id`
+    - **Bind argument** `reason` = `@subagent.screening.output.findings`
+- **Next step (on exit) → Go to**: `caseOpened`
+
+#### Reply `needId`
+
+- **Message text**: Please give the applicant id (for example AP-7001) to start the onboarding.
+- **Task state**: `TASK_STATE_COMPLETED`
+
+#### Reply `opened`
+
+- **Use expression**, then **Message (expression)**: `"Onboarding complete for " + @generator.extractApplicant.output.applicant_id + ". " + @subagent.openAccount.output`
+- **Task state**: `TASK_STATE_COMPLETED`
+
+#### Reply `reviewed`
+
+- **Use expression**, then **Message (expression)**: `"Analyst review for " + @generator.extractApplicant.output.applicant_id + ": " + @subagent.analystReview.output`
+- **Task state**: `TASK_STATE_COMPLETED`
+
+#### Reply `caseOpened`
+
+- **Use expression**, then **Message (expression)**: `"No account opened for " + @generator.extractApplicant.output.applicant_id + ": a compliance case was opened. " + @subagent.screening.output.findings`
+- **Task state**: `TASK_STATE_COMPLETED`
+
+![The finished broker flow](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-kyc-onboarding-governed/img/scratch-flow.png)
+
+When you are done, the flow matches the template's flow ([Path 2, Step 4](#step-4-follow-the-broker-flow-agentscript)). The built-in `done` reply isn't used by this use case. The Problems bar shows **echo done is not reachable from the trigger** as a warning, and you can leave it.
+
+### Step 3.9. Add the policies
+
+Select the broker or connection, scroll to **Policies** and click **Add policy**. Pick the policy (search by name), choose the **Direction** and set its **Configuration** fields. **Header Injection** has its own header list. Octoloom also adds each policy as an `exchange.json` dependency.
+
+- Broker `kyc_onboarding_broker`: **Rate Limiting** (inbound)
+  - **rateLimits** (one entry each, **+**): maximumRequests `30`, timePeriodInMilliseconds `60000`
+  - **exposeHeaders**: on
+- Connection `kyc_analyst_agent_connection`: **A2A v1 PII Detector** (inbound)
+  - **entities**: `Email`, `US SSN`, `Credit Card`
+  - **action**: `Log`
+- Connection `account_opening_agent_connection`: **Header Injection** (inbound)
+  - **inboundHeaders** (one entry each, **+**): `x-correlation-source` = `kyc_broker`
+- Connection `identity_mcp_connection`: **MCP PII Detector** (inbound)
+  - **entities**: `Email`, `US SSN`, `Credit Card`, `Phone Number`
+  - **action**: `Log and mask`
+- Connection `identity_mcp_connection`: **MCP Schema Validation** (inbound)
+  - **validateToolSchema**: on
+- Connection `sanctions_mcp_connection`: **MCP PII Detector** (inbound)
+  - **entities**: `Email`, `US SSN`, `Credit Card`, `Phone Number`
+  - **action**: `Log and mask`
+- Connection `sanctions_mcp_connection`: **Header Injection** (inbound)
+  - **inboundHeaders** (one entry each, **+**): `x-octoloom-source` = `kyc-onboarding-governed-v2`
+- Connection `risk_mcp_connection`: **MCP PII Detector** (inbound)
+  - **entities**: `Email`, `US SSN`, `Credit Card`, `Phone Number`
+  - **action**: `Log and mask`
+- Connection `risk_mcp_connection`: **MCP Schema Validation** (inbound)
+  - **validateToolSchema**: on
+
+![Policies on the broker](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-kyc-onboarding-governed/img/scratch-policy.png)
+
+The template declares a policy once under `context.policies` and points to it from each connection. **Add policy** writes each policy on its connection instead. Both give the same result at runtime.
+
+### Step 3.10. Validate, deploy and chat
+
+Run **Validate** from the canvas CLI menu and fix anything in the Problems bar. Then follow Path 2 from [Validate and build](#step-5-validate-and-build) onwards: deploy (enter the secrets), wait for the green light, open the chat and send the same prompts. Your network answers like the template, because it is the same network, built by hand.
+
 ## What you learned
 
 - How a deterministic network is built: an AgentScript flow decides every step; the LLM extracts and writes text.
 - How the canvas, the inspector and the code view edit the same YAML.
+- How to build the same network from a blank project with forms and menus only (Path 3).
 - How policies are attached and checked with Governance.
 - How to validate, build, deploy, chat and trace with Octoloom.
 

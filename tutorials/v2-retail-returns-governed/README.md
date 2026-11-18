@@ -8,10 +8,11 @@
 |---|---|---|---|---|
 | 2 | 1 | 1.0, 0.3.0 | 5 | `v2-retail-returns-governed` |
 
-There are two ways to use this template:
+There are three ways to use this template:
 
 1. **[Just use it](#path-1-just-use-it)**: create the project, deploy it and chat with it in about 10 minutes.
 2. **[Learn step by step](#path-2-learn-step-by-step)**: the same steps, with what each part of the network does and how Octoloom shows it.
+3. **[Build it from scratch](#path-3-build-it-from-scratch)**: start from a blank project and build the same network yourself, no code, one screenshot per step.
 
 ## Before you start
 
@@ -138,10 +139,227 @@ Under each reply, the **Tracer** icon opens the task in the **Agent Network Trac
 
 The **Share** icon in the chat header opens the Share dialog. **A²D sessions** invites people by email to chat with this deployed broker and brings their passed / failed marks and comments back. **Local portal** generates a small web chat you can run or host anywhere.
 
+## Path 3: Build it from scratch
+
+Here you build the same network yourself, starting from a blank project. Every step uses a form, a menu or a button. You never import the template, and you never type YAML or AgentScript. The names below are the template's names without the `octo_rr2g_` prefix. You can use your own names, but keep them consistent.
+
+> The text fields take plain values. Where a value looks like `${group.name}`, type it as shown: it is a **variable** that `exchange.json` declares and that deploy fills in.
+
+### Step 3.1. Create a blank project with a starter broker
+
+Connect Octoloom first, as in [Path 2, Step 1](#step-1-connect-octoloom). Then, on **Home**, click **New Deterministic Network**. In **2 Start from**, choose **Blank** and turn on **Add a starter broker**.
+
+- **Broker name**: `Returns Broker`
+- **Name**: `retail-returns-governed-scratch` (the Exchange asset id; a different name from the template, so both can live in one org)
+- **Parent folder**: pick a folder, then click **Create blank project**.
+
+![Blank project with a starter broker](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-retail-returns-governed/img/scratch-new.png)
+
+The starter broker `returns_broker` has an OpenAI LLM connection (`openai_connection`, MuleSoft's published OpenAI LLM) and a flow `brokers/returns-broker.agent` with a trigger, one subagent and the built-in `done` reply. The LLM is already done.
+
+### Step 3.2. Add the agents
+
+On the canvas, click **+** (Add to the network) → **Agent** → **Empty**. The new agent opens in the inspector on the right. Fill it in, then repeat for each agent:
+
+![The Add to the network menu with the Agent submenu](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-retail-returns-governed/img/scratch-add.png)
+
+- **Returns Desk Agent**
+  - **Identity → Key**: `returns_desk_agent`
+  - **Info → Label**: Returns Desk Agent · **Description**: Explains return rules and alternatives to the customer.
+  - **Metadata → Platform**: `AgentForce` (or click its icon under **Agent framework**)
+  - **Interface**: click `a2a` (A2A 1.0). **Agent card (A2A 1.x)**: **Name** Returns Desk Agent, **Description** as above, **Supported interfaces → URL** `https://www.a2d-ai.com/api/platform/5bf5ade2-6c7a-465b-b465-243935b3ea91/a2a`, Binding `JSONRPC`, Protocol version `1.0`
+- **Refund Agent**
+  - **Identity → Key**: `refund_agent`
+  - **Info → Label**: Refund Agent · **Description**: Issues refunds to the original payment method.
+  - **Metadata → Platform**: `MuleSoft` (or click its icon under **Agent framework**)
+  - **Interface**: keep `a2a_v03` (A2A 0.3.0). **Agent card (A2A 0.3)**: **Name** Refund Agent, **Description** as above, **URL** `https://www.a2d-ai.com/api/platform/3d1bcf9c-e00f-44dd-8a88-2be871b4d7bb/a2a`
+
+![An agent in the inspector](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-retail-returns-governed/img/scratch-agent.png)
+
+The card skills are optional. Once the agent has a connection (two steps on), the inspector offers **Read skills from the live agent**, which fills them from the running agent.
+
+### Step 3.3. Add the MCP servers
+
+Click **+** → **MCP server** → **Empty**, then fill in:
+
+- **Orders MCP**: **Key** `orders_mcp`, **Label** Orders MCP, **Description** Order management: eligibility and RMAs · **Protocol version** `2025-06-18`. The transport is already Streamable HTTP on `/mcp`.
+
+### Step 3.4. Add the connections
+
+A connection is the URL (and authentication) Agent Fabric uses to reach an agent or an MCP server. Click **+** → **Connection** → **Empty** once per agent and MCP server, and fill in:
+
+| Key | Kind | Registry entry → Name | URL |
+|---|---|---|---|
+| `returns_desk_agent_connection` | `a2a` | `returns_desk_agent` | `${returnsDeskAgent.url}` |
+| `refund_agent_connection` | `a2a` | `refund_agent` | `${refundAgent.url}` |
+| `orders_mcp_connection` | `mcp` | `orders_mcp` | `${ordersMcp.url}` |
+
+![A connection in the inspector](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-retail-returns-governed/img/scratch-conn.png)
+
+### Step 3.5. Declare the variables
+
+The Problems bar now shows **Variable ${…} is not declared in exchange.json** for each new variable. Click **Add to exchange.json** on each one.
+
+Then open `exchange.json` (it opens as a form) and, under **Variables**, set the defaults:
+
+| Variable | Default |
+|---|---|
+| `returnsDeskAgent.url` | `https://www.a2d-ai.com/api/platform/5bf5ade2-6c7a-465b-b465-243935b3ea91/a2a` |
+| `refundAgent.url` | `https://www.a2d-ai.com/api/platform/3d1bcf9c-e00f-44dd-8a88-2be871b4d7bb/a2a` |
+| `ordersMcp.url` | `https://www.a2d-ai.com/api/platform/5aaa63c0-3f1c-462b-bc61-06cb4557ea43/` |
+
+Leave the secret variables (`openai.apiKey`) empty: deploy asks for them and never stores them.
+
+![The exchange.json form with the variables](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-retail-returns-governed/img/scratch-vars.png)
+
+Also click **Remove it** on any **declared but not used** variable that the Problems bar shows.
+
+### Step 3.6. Declare the MCP tools
+
+On each MCP server card, click the **Tools** row (or its pencil). Octoloom reads the tool list from the running server: tick the tools below. You can also type a name in **Add a tool by name…**.
+
+- **Orders MCP**: `check_return_eligibility`, `create_rma`
+
+![The Tools row of an MCP server card](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-retail-returns-governed/img/scratch-tools.png)
+
+### Step 3.7. Link the agents and MCP servers to the broker
+
+Every agent and MCP card now has a **Broker** row with **Link to Returns Broker**. Click it on each card. Octoloom adds the matching actions to the broker flow: one per agent and one per declared MCP tool.
+
+![Link to the broker on the agent and MCP cards](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-retail-returns-governed/img/scratch-link.png)
+
+**Link to** also reads the required inputs from the tool schema. In the flow (next step), open **Connections** in the explorer and check that these actions show them under **Inputs** (one per line; type them if they are missing):
+- `create_rma`: `order_id: string`, `reason: string`
+
+### Step 3.8. Build the broker flow
+
+On the broker card (or in its inspector), click **Open broker flow**. Then set up the flow:
+
+1. **Settings → Language Settings**: on the `default` model, set **Reasoning effort (OpenAI)** to `MINIMAL`.
+2. **Settings → System Messages**: set the instructions to: *You are the returns desk of an online retailer. Process returns only when the order system says the order is eligible.*
+3. Select the `assistant` subagent and delete it (trash icon). The trigger and the built-in `done` reply stay.
+4. Add the steps below in order. Select the step that comes before, click **Add node**, pick the kind and choose **Empty**, then set its **API name** in **General**. Octoloom wires each new step after the selected one, and you set the exact next step in the inspector.
+
+![Add node in the flow editor](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-retail-returns-governed/img/scratch-flow-add.png)
+
+Select the trigger and, under **Go to**, pick `extractReturn` once that step exists.
+
+#### Generator `extractReturn`
+
+- **Label** Extract Return · **Description** Extracts the order id and the return reason from the request.
+- **System instructions**:
+
+  > Extract the order id (for example ORD-1001) and a short return reason from the customer message.
+  > Use "UNKNOWN" when no order id is present.
+
+- **Prompt**:
+
+  > {!@request.payload.message.parts[0].text}
+
+- **Structured output** (**Add field** for each):
+  - `order_id` (string): Order id, e.g. ORD-1001, or UNKNOWN
+  - `reason` (string): Short return reason
+- **Next step (on exit) → Go to**: `eligibilityGate`
+
+#### Subagent `eligibilityGate`
+
+- **Label** Eligibility Gate · **Description** Checks return eligibility with the Orders MCP.
+- **System instructions**:
+
+  > Call the eligibility tool for the order id and report whether the order can be returned.
+  > Set eligible to "yes" only when the tool returns eligible true.
+
+- **Reasoning instructions**:
+
+  > Order: {!@generator.extractReturn.output.order_id}. Request: {!@request.payload.message.parts[0].text}
+
+- **Actions** (**+ Add action…**): `check_return_eligibility`
+- **Limits → Max loops**: `3`
+- **Structured output** (**Add field** for each):
+  - `eligible` (string): Whether the order can be returned · **Allowed values** `yes`, `no`
+  - `detail` (string): Eligibility detail from the tool
+- **Next step (on exit) → Go to**: `eligibilityRouter`
+
+#### Router `eligibilityRouter`
+
+- **Description** Eligible orders get an RMA and a refund; the others get advice.
+- **Routes** (**+**): **Label** Eligible · **When** `@subagent.eligibilityGate.output.eligible == "yes"` · **Go to** `createRma`
+- **Otherwise → Go to**: `explainDecline`
+
+#### Executor `createRma`
+
+- **Description** Creates the return authorisation.
+- **Steps (do)**: **Run action**
+  - **Action** `create_rma`
+    - **Bind argument** `order_id` = `@generator.extractReturn.output.order_id`
+    - **Bind argument** `reason` = `@generator.extractReturn.output.reason`
+- **Next step (on exit) → Go to**: `refund`
+
+#### Subagent `refund`
+
+- **Label** Refund · **Description** Issues the refund through the Refund agent.
+- **Reasoning instructions**:
+
+  > Refund order {!@generator.extractReturn.output.order_id}. Reason: {!@generator.extractReturn.output.reason}
+
+- **Actions** (**+ Add action…**): `refund_agent`
+- **Next step (on exit) → Go to**: `returnAccepted`
+
+#### Reply `returnAccepted`
+
+- **Use expression**, then **Message (expression)**: `"Return accepted for " + @generator.extractReturn.output.order_id + ". " + @subagent.refund.output`
+- **Task state**: `TASK_STATE_COMPLETED`
+
+#### Subagent `explainDecline`
+
+- **Label** Explain Decline · **Description** Explains why the return is declined and offers alternatives.
+- **Reasoning instructions**:
+
+  > Order {!@generator.extractReturn.output.order_id} cannot be returned: {!@subagent.eligibilityGate.output.detail}. Explain this and offer alternatives.
+
+- **Actions** (**+ Add action…**): `returns_desk_agent`
+- **Next step (on exit) → Go to**: `returnDeclined`
+
+#### Reply `returnDeclined`
+
+- **Use expression**, then **Message (expression)**: `@subagent.explainDecline.output`
+- **Task state**: `TASK_STATE_COMPLETED`
+
+![The finished broker flow](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-retail-returns-governed/img/scratch-flow.png)
+
+When you are done, the flow matches the template's flow ([Path 2, Step 4](#step-4-follow-the-broker-flow-agentscript)). The built-in `done` reply isn't used by this use case. The Problems bar shows **echo done is not reachable from the trigger** as a warning, and you can leave it.
+
+### Step 3.9. Add the policies
+
+Select the broker or connection, scroll to **Policies** and click **Add policy**. Pick the policy (search by name), choose the **Direction** and set its **Configuration** fields. **Header Injection** has its own header list. Octoloom also adds each policy as an `exchange.json` dependency.
+
+- Broker `returns_broker`: **Rate Limiting** (inbound)
+  - **rateLimits** (one entry each, **+**): maximumRequests `30`, timePeriodInMilliseconds `60000`
+  - **exposeHeaders**: on
+- Connection `returns_desk_agent_connection`: **A2A v1 PII Detector** (inbound)
+  - **entities**: `Email`, `US SSN`, `Credit Card`
+  - **action**: `Log`
+- Connection `refund_agent_connection`: **Header Injection** (inbound)
+  - **inboundHeaders** (one entry each, **+**): `x-correlation-source` = `returns_broker`
+- Connection `orders_mcp_connection`: **MCP PII Detector** (inbound)
+  - **entities**: `Email`, `US SSN`, `Credit Card`, `Phone Number`
+  - **action**: `Log and mask`
+- Connection `orders_mcp_connection`: **MCP Schema Validation** (inbound)
+  - **validateToolSchema**: on
+
+![Policies on the broker](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-retail-returns-governed/img/scratch-policy.png)
+
+The template declares a policy once under `context.policies` and points to it from each connection. **Add policy** writes each policy on its connection instead. Both give the same result at runtime.
+
+### Step 3.10. Validate, deploy and chat
+
+Run **Validate** from the canvas CLI menu and fix anything in the Problems bar. Then follow Path 2 from [Validate and build](#step-5-validate-and-build) onwards: deploy (enter the secrets), wait for the green light, open the chat and send the same prompts. Your network answers like the template, because it is the same network, built by hand.
+
 ## What you learned
 
 - How a deterministic network is built: an AgentScript flow decides every step; the LLM extracts and writes text.
 - How the canvas, the inspector and the code view edit the same YAML.
+- How to build the same network from a blank project with forms and menus only (Path 3).
 - How policies are attached and checked with Governance.
 - How to validate, build, deploy, chat and trace with Octoloom.
 

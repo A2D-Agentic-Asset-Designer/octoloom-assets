@@ -8,10 +8,11 @@
 |---|---|---|---|---|
 | 0 | 4 | 0.3.0 | 0 | `v1-idmc-customer-steward` |
 
-There are two ways to use this template:
+There are three ways to use this template:
 
 1. **[Just use it](#path-1-just-use-it)**: create the project, deploy it and chat with it in about 10 minutes.
 2. **[Learn step by step](#path-2-learn-step-by-step)**: the same steps, with what each part of the network does and how Octoloom shows it.
+3. **[Build it from scratch](#path-3-build-it-from-scratch)**: start from a blank project and build the same network yourself, no code, one screenshot per step.
 
 ## Before you start
 
@@ -124,10 +125,123 @@ Under each reply, the **Tracer** icon opens the task in the **Agent Network Trac
 
 The **Share** icon in the chat header opens the Share dialog. **A²D sessions** invites people by email to chat with this deployed broker and brings their passed / failed marks and comments back. **Local portal** generates a small web chat you can run or host anywhere.
 
+## Path 3: Build it from scratch
+
+Here you build the same network yourself, starting from a blank project. Every step uses a form, a menu or a button. You never import the template, and you never type YAML. The names below are the template's names without the `octo_iv1_` prefix. You can use your own names, but keep them consistent.
+
+> The text fields take plain values. Where a value looks like `${group.name}`, type it as shown: it is a **variable** that `exchange.json` declares and that deploy fills in.
+
+### Step 3.1. Create a blank project with a starter broker
+
+Connect Octoloom first, as in [Path 2, Step 1](#step-1-connect-octoloom). Then, on **Home**, click **New Probabilistic Network**. In **2 Start from**, choose **Blank** and turn on **Add a starter broker**.
+
+- **Broker name**: `customer-steward-broker`
+- **Name**: `idmc-customer-steward-scratch` (the Exchange asset id; a different name from the template, so both can live in one org)
+- **Parent folder**: pick a folder, then click **Create blank project**.
+
+![Blank project with a starter broker](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-idmc-customer-steward/img/scratch-new.png)
+
+The starter broker is an LLM broker with an OpenAI LLM (`openai` provider, `openai-connection`) and default instructions. The LLM is already done.
+
+### Step 3.2. Add the MCP servers
+
+Click **+** → **MCP server** → **Empty**, then fill in:
+
+- **Customer Identification**: **Key** `searchcustomer-mcp`, **Label** Customer Identification, **Description** Resolve customer identities and read master records from Informatica MDM SaaS (Customer 360). The transport is already Streamable HTTP on `/mcp`.
+- **Address Verification**: **Key** `dqverifyaddress-mcp`, **Label** Address Verification, **Description** Validate, standardize and geocode postal addresses with Cloud Address Verification. The transport is already Streamable HTTP on `/mcp`.
+- **CDGC Metadata Search**: **Key** `cdgcsearchmetadata-mcp`, **Label** CDGC Metadata Search, **Description** Search the governed data catalog (CDGC) for data assets and their metadata. The transport is already Streamable HTTP on `/mcp`.
+- **CDGC Data Quality Score**: **Key** `cdgcdataqualityscore-mcp`, **Label** CDGC Data Quality Score, **Description** Data quality scores of governed assets from Data Governance and Catalog. The transport is already Streamable HTTP on `/mcp`.
+
+### Step 3.3. Add the connections
+
+A connection is the URL (and authentication) Agent Fabric uses to reach an agent or an MCP server. Click **+** → **Connection** → **Empty** once per MCP server, and fill in:
+
+| Key | Kind | Target → Name | URL |
+|---|---|---|---|
+| `searchcustomer-mcp-connection` | `mcp` | `searchcustomer-mcp` | `${idmcCustomerMcp.url}` |
+| `dqverifyaddress-mcp-connection` | `mcp` | `dqverifyaddress-mcp` | `${idmcAddressMcp.url}` |
+| `cdgcsearchmetadata-mcp-connection` | `mcp` | `cdgcsearchmetadata-mcp` | `${idmcMetadataMcp.url}` |
+| `cdgcdataqualityscore-mcp-connection` | `mcp` | `cdgcdataqualityscore-mcp` | `${idmcDqMcp.url}` |
+
+![A connection in the inspector](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-idmc-customer-steward/img/scratch-conn.png)
+
+These connections also authenticate. In **Authentication**, pick the kind and type the values exactly as shown. The values are variables, and the secret ones are asked for at deploy time:
+
+- `searchcustomer-mcp-connection`: **OAuth 2.0 client credentials (bearer token)**, **clientId** `${idmc.clientId}`, **clientSecret** `${idmc.clientSecret}`, **Token → Token URL** `${idmc.tokenUrl}`, **Body encoding** `form`
+- `dqverifyaddress-mcp-connection`: **OAuth 2.0 client credentials (bearer token)**, **clientId** `${idmc.clientId}`, **clientSecret** `${idmc.clientSecret}`, **Token → Token URL** `${idmc.tokenUrl}`, **Body encoding** `form`
+- `cdgcsearchmetadata-mcp-connection`: **OAuth 2.0 client credentials (bearer token)**, **clientId** `${idmc.clientId}`, **clientSecret** `${idmc.clientSecret}`, **Token → Token URL** `${idmc.tokenUrl}`, **Body encoding** `form`
+- `cdgcdataqualityscore-mcp-connection`: **OAuth 2.0 client credentials (bearer token)**, **clientId** `${idmc.clientId}`, **clientSecret** `${idmc.clientSecret}`, **Token → Token URL** `${idmc.tokenUrl}`, **Body encoding** `form`
+
+### Step 3.4. Declare the variables
+
+The Problems bar now shows **Variable ${…} is not declared in exchange.json** for each new variable. Click **Add to exchange.json** on each one.
+
+Then open `exchange.json` (it opens as a form) and, under **Variables**, set the defaults:
+
+| Variable | Default |
+|---|---|
+| `idmc.tokenUrl` | `https://dmp-us.informaticacloud.com/authz-service/oauth/token` |
+| `idmcCustomerMcp.url` | `https://mcp.dmp-us.informaticacloud.com/mcp-servers/public/searchcustomer` |
+| `idmcAddressMcp.url` | `https://mcp.dmp-us.informaticacloud.com/mcp-servers/public/dqverifyaddress` |
+| `idmcMetadataMcp.url` | `https://mcp.dmp-us.informaticacloud.com/mcp-servers/public/cdgcsearchmetadata` |
+| `idmcDqMcp.url` | `https://mcp.dmp-us.informaticacloud.com/mcp-servers/public/cdgcdataqualityscore` |
+| `ingressgw.url` | (your ingress gateway URL) |
+
+Leave the secret variables (`openai.apiKey`, `idmc.clientId`, `idmc.clientSecret`) empty: deploy asks for them and never stores them.
+
+![The exchange.json form with the variables](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-idmc-customer-steward/img/scratch-vars.png)
+
+### Step 3.5. Declare the MCP tools
+
+On each MCP server card, click the **Tools** row (or its pencil). Octoloom reads the tool list from the running server: tick the tools below. You can also type a name in **Add a tool by name…**.
+
+- **Customer Identification**: `get_master_record_details`, `get_related_records`, `search_master_record`
+- **Address Verification**: `verify_address`
+- **CDGC Metadata Search**: `get_asset_details`, `search_metadata`
+- **CDGC Data Quality Score**: `get_asset_score`
+
+![The Tools row of an MCP server card](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-idmc-customer-steward/img/scratch-tools.png)
+
+### Step 3.6. Give the broker its tools
+
+Select the broker `customer-steward-broker`. In the inspector:
+
+1. Click **MCP servers (0)**. Add each server with **Add existing MCP server…**, then tick its **Allowed tools**:
+   - `searchcustomer-mcp`: `get_master_record_details`, `get_related_records`, `search_master_record`
+   - `dqverifyaddress-mcp`: `verify_address`
+   - `cdgcsearchmetadata-mcp`: `get_asset_details`, `search_metadata`
+   - `cdgcdataqualityscore-mcp`: `get_asset_score`
+
+![The MCP servers of the broker with their allowed tools](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-idmc-customer-steward/img/scratch-links.png)
+
+### Step 3.7. Write the broker instructions
+
+Back in the broker inspector, open **Instructions and limits**. Replace the default instruction with these entries, one per line:
+
+- You are a customer data steward. Answer only with data from the Informatica MCP servers.
+- Pick the tools by what the user asks; never ask the user to choose a business entity.
+- For an address check or standardization, call verify_address directly with Request {IO:{Inputs:[{AddressElements:{Country:"USA",Locality:[{Value:<city>}],PostalCode:[{Value:<zip>}],AdministrativeDivision:[{Value:<state>}]},PreformattedData:{PostalDeliveryAddressLines:[<street>]}}]}}. Do not search master records for it.
+- Call verify_address at most once per request. When it returns an error, report the error in one sentence and continue with the other steps; do not retry it.
+- For a catalog or data quality question, call search_metadata with a short knowledgeQuery (for example "customer address"), list the hits with name and type, then call get_asset_score for the best data collection or field.
+- For a named customer, call search_master_record once (entityType "c360.person", or "c360.organization" for a company). When it fails (for example "business entity is not valid"), say so in one sentence and continue with the address and catalog steps.
+- Say clearly when a tool returns no data or an authentication error (the OAuth client or token may be wrong).
+
+Set **Max number of loops** `20`, **Max consecutive errors** `3` and **Task timeout (s)** `120`.
+Under **Model parameters → OpenAI**, set **Reasoning effort** to `MINIMAL`. The broker then answers within the gateway timeout.
+
+Optionally, fill the broker's **Agent card (A2A 0.3.0)** description: *Answers customer and data questions with governed Informatica data: master records from MDM SaaS, verified addresses, catalog metadata and data quality scores.*
+
+![The broker instructions and limits](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-idmc-customer-steward/img/scratch-broker.png)
+
+### Step 3.8. Validate, deploy and chat
+
+Run **Validate** from the canvas CLI menu and fix anything in the Problems bar. Then follow Path 2 from [Validate and build](#step-4-validate-and-build) onwards: deploy (enter the secrets), wait for the green light, open the chat and send the same prompts. Your network answers like the template, because it is the same network, built by hand.
+
 ## What you learned
 
 - How a probabilistic network is built: an LLM broker with instructions picks agents and MCP tools.
 - How the canvas, the inspector and the code view edit the same YAML.
+- How to build the same network from a blank project with forms and menus only (Path 3).
 - How to validate, build, deploy, chat and trace with Octoloom.
 
 ## Next

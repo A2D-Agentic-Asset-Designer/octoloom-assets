@@ -8,10 +8,11 @@
 |---|---|---|---|---|
 | 5 | 3 | 1.0, 0.3.0 | 6 | `v2-loan-origination-governed` |
 
-There are two ways to use this template:
+There are three ways to use this template:
 
 1. **[Just use it](#path-1-just-use-it)**: create the project, deploy it and chat with it in about 10 minutes.
 2. **[Learn step by step](#path-2-learn-step-by-step)**: the same steps, with what each part of the network does and how Octoloom shows it.
+3. **[Build it from scratch](#path-3-build-it-from-scratch)**: start from a blank project and build the same network yourself, no code, one screenshot per step.
 
 ## Before you start
 
@@ -149,10 +150,292 @@ Under each reply, the **Tracer** icon opens the task in the **Agent Network Trac
 
 The **Share** icon in the chat header opens the Share dialog. **A²D sessions** invites people by email to chat with this deployed broker and brings their passed / failed marks and comments back. **Local portal** generates a small web chat you can run or host anywhere.
 
+## Path 3: Build it from scratch
+
+Here you build the same network yourself, starting from a blank project. Every step uses a form, a menu or a button. You never import the template, and you never type YAML or AgentScript. The names below are the template's names without the `octo_lo2g_` prefix. You can use your own names, but keep them consistent.
+
+> The text fields take plain values. Where a value looks like `${group.name}`, type it as shown: it is a **variable** that `exchange.json` declares and that deploy fills in.
+
+### Step 3.1. Create a blank project with a starter broker
+
+Connect Octoloom first, as in [Path 2, Step 1](#step-1-connect-octoloom). Then, on **Home**, click **New Deterministic Network**. In **2 Start from**, choose **Blank** and turn on **Add a starter broker**.
+
+- **Broker name**: `Loan Origination Broker`
+- **Name**: `loan-origination-governed-scratch` (the Exchange asset id; a different name from the template, so both can live in one org)
+- **Parent folder**: pick a folder, then click **Create blank project**.
+
+![Blank project with a starter broker](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-loan-origination-governed/img/scratch-new.png)
+
+The starter broker `loan_origination_broker` has an OpenAI LLM connection (`openai_connection`, MuleSoft's published OpenAI LLM) and a flow `brokers/loan-origination-broker.agent` with a trigger, one subagent and the built-in `done` reply. The LLM is already done.
+
+### Step 3.2. Add the agents
+
+On the canvas, click **+** (Add to the network) → **Agent** → **Empty**. The new agent opens in the inspector on the right. Fill it in, then repeat for each agent:
+
+![The Add to the network menu with the Agent submenu](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-loan-origination-governed/img/scratch-add.png)
+
+- **Loan Intake Agent**
+  - **Identity → Key**: `intake_agent`
+  - **Info → Label**: Loan Intake Agent · **Description**: Collects application details and missing documents.
+  - **Metadata → Platform**: `AgentForce` (or click its icon under **Agent framework**)
+  - **Interface**: click `a2a` (A2A 1.0). **Agent card (A2A 1.x)**: **Name** Loan Intake Agent, **Description** as above, **Supported interfaces → URL** `https://www.a2d-ai.com/api/platform/2ea30f69-75a2-4381-a635-29e555bd4bd3/a2a`, Binding `JSONRPC`, Protocol version `1.0`
+- **KYC Agent**
+  - **Identity → Key**: `kyc_agent`
+  - **Info → Label**: KYC Agent · **Description**: Identity, sanctions and PEP screening.
+  - **Metadata → Platform**: `Azure` (or click its icon under **Agent framework**)
+  - **Interface**: click `a2a` (A2A 1.0). **Agent card (A2A 1.x)**: **Name** KYC Agent, **Description** as above, **Supported interfaces → URL** `https://www.a2d-ai.com/api/platform/97024288-98ec-4586-92b6-13b6f0f74a72/a2a`, Binding `JSONRPC`, Protocol version `1.0`
+- **Credit Analysis Agent**
+  - **Identity → Key**: `credit_agent`
+  - **Info → Label**: Credit Analysis Agent · **Description**: Analyses affordability from bureau and account data.
+  - **Metadata → Platform**: `Snowflake` (or click its icon under **Agent framework**)
+  - **Interface**: keep `a2a_v03` (A2A 0.3.0). **Agent card (A2A 0.3)**: **Name** Credit Analysis Agent, **Description** as above, **URL** `https://www.a2d-ai.com/api/platform/6a1f14e9-59ea-411e-9d81-c90b1ebd5ca5/a2a`
+- **Underwriting Agent**
+  - **Identity → Key**: `underwriting_agent`
+  - **Info → Label**: Underwriting Agent · **Description**: Reviews applications that need a human-style underwriting decision.
+  - **Metadata → Platform**: `MuleSoft` (or click its icon under **Agent framework**)
+  - **Interface**: keep `a2a_v03` (A2A 0.3.0). **Agent card (A2A 0.3)**: **Name** Underwriting Agent, **Description** as above, **URL** `https://www.a2d-ai.com/api/platform/5da083cf-f7d6-49e5-897b-234894062950/a2a`
+- **Customer Notification Agent**
+  - **Identity → Key**: `notification_agent`
+  - **Info → Label**: Customer Notification Agent · **Description**: Sends the decision to the applicant.
+  - **Metadata → Platform**: `Vertex` (or click its icon under **Agent framework**)
+  - **Interface**: click `a2a` (A2A 1.0). **Agent card (A2A 1.x)**: **Name** Customer Notification Agent, **Description** as above, **Supported interfaces → URL** `https://www.a2d-ai.com/api/platform/7e50ef53-bf45-4efb-b816-165f22551a1d/a2a`, Binding `JSONRPC`, Protocol version `1.0`
+
+![An agent in the inspector](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-loan-origination-governed/img/scratch-agent.png)
+
+The card skills are optional. Once the agent has a connection (two steps on), the inspector offers **Read skills from the live agent**, which fills them from the running agent.
+
+### Step 3.3. Add the MCP servers
+
+Click **+** → **MCP server** → **Empty**, then fill in:
+
+- **Credit Bureau MCP**: **Key** `credit_bureau_mcp`, **Label** Credit Bureau MCP, **Description** Credit bureau scores · **Protocol version** `2025-06-18`. The transport is already Streamable HTTP on `/mcp`.
+- **Core Banking MCP**: **Key** `core_banking_mcp`, **Label** Core Banking MCP, **Description** Accounts and loan booking · **Protocol version** `2025-06-18`. The transport is already Streamable HTTP on `/mcp`.
+- **Documents MCP**: **Key** `documents_mcp`, **Label** Documents MCP, **Description** Contract documents · **Protocol version** `2025-06-18`. The transport is already Streamable HTTP on `/mcp`.
+
+### Step 3.4. Add the connections
+
+A connection is the URL (and authentication) Agent Fabric uses to reach an agent or an MCP server. Click **+** → **Connection** → **Empty** once per agent and MCP server, and fill in:
+
+| Key | Kind | Registry entry → Name | URL |
+|---|---|---|---|
+| `intake_agent_connection` | `a2a` | `intake_agent` | `${intakeAgent.url}` |
+| `kyc_agent_connection` | `a2a` | `kyc_agent` | `${kycAgent.url}` |
+| `credit_agent_connection` | `a2a` | `credit_agent` | `${creditAgent.url}` |
+| `underwriting_agent_connection` | `a2a` | `underwriting_agent` | `${underwritingAgent.url}` |
+| `notification_agent_connection` | `a2a` | `notification_agent` | `${notificationAgent.url}` |
+| `credit_bureau_mcp_connection` | `mcp` | `credit_bureau_mcp` | `${creditBureauMcp.url}` |
+| `core_banking_mcp_connection` | `mcp` | `core_banking_mcp` | `${coreBankingMcp.url}` |
+| `documents_mcp_connection` | `mcp` | `documents_mcp` | `${documentsMcp.url}` |
+
+![A connection in the inspector](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-loan-origination-governed/img/scratch-conn.png)
+
+### Step 3.5. Declare the variables
+
+The Problems bar now shows **Variable ${…} is not declared in exchange.json** for each new variable. Click **Add to exchange.json** on each one.
+
+Then open `exchange.json` (it opens as a form) and, under **Variables**, set the defaults:
+
+| Variable | Default |
+|---|---|
+| `intakeAgent.url` | `https://www.a2d-ai.com/api/platform/2ea30f69-75a2-4381-a635-29e555bd4bd3/a2a` |
+| `kycAgent.url` | `https://www.a2d-ai.com/api/platform/97024288-98ec-4586-92b6-13b6f0f74a72/a2a` |
+| `creditAgent.url` | `https://www.a2d-ai.com/api/platform/6a1f14e9-59ea-411e-9d81-c90b1ebd5ca5/a2a` |
+| `underwritingAgent.url` | `https://www.a2d-ai.com/api/platform/5da083cf-f7d6-49e5-897b-234894062950/a2a` |
+| `notificationAgent.url` | `https://www.a2d-ai.com/api/platform/7e50ef53-bf45-4efb-b816-165f22551a1d/a2a` |
+| `creditBureauMcp.url` | `https://www.a2d-ai.com/api/platform/c41e39ee-96a3-4e06-b5fe-c7fb4b4d7e67/` |
+| `coreBankingMcp.url` | `https://www.a2d-ai.com/api/platform/07001b9c-9654-4d45-a016-31eb73dd5a5d/` |
+| `documentsMcp.url` | `https://www.a2d-ai.com/api/platform/80adaf50-d7fe-48dc-807c-2ebddd187893/` |
+
+Leave the secret variables (`openai.apiKey`) empty: deploy asks for them and never stores them.
+
+![The exchange.json form with the variables](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-loan-origination-governed/img/scratch-vars.png)
+
+Also click **Remove it** on any **declared but not used** variable that the Problems bar shows.
+
+### Step 3.6. Declare the MCP tools
+
+On each MCP server card, click the **Tools** row (or its pencil). Octoloom reads the tool list from the running server: tick the tools below. You can also type a name in **Add a tool by name…**.
+
+- **Credit Bureau MCP**: `get_credit_score`
+- **Core Banking MCP**: `get_accounts`, `book_loan`
+- **Documents MCP**: `generate_contract`
+
+![The Tools row of an MCP server card](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-loan-origination-governed/img/scratch-tools.png)
+
+### Step 3.7. Link the agents and MCP servers to the broker
+
+Every agent and MCP card now has a **Broker** row with **Link to Loan Origination Broker**. Click it on each card. Octoloom adds the matching actions to the broker flow: one per agent and one per declared MCP tool.
+
+![Link to the broker on the agent and MCP cards](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-loan-origination-governed/img/scratch-link.png)
+
+**Link to** also reads the required inputs from the tool schema. In the flow (next step), open **Connections** in the explorer and check that these actions show them under **Inputs** (one per line; type them if they are missing):
+- `book_loan`: `applicant_id: string`, `amount: number`
+
+### Step 3.8. Build the broker flow
+
+On the broker card (or in its inspector), click **Open broker flow**. Then set up the flow:
+
+1. **Settings → Language Settings**: on the `default` model, set **Reasoning effort (OpenAI)** to `MINIMAL`.
+2. **Settings → System Messages**: set the instructions to: *You are a loan origination desk. Decisions follow the credit data; never promise an approval before the assessment.*
+3. Select the `assistant` subagent and delete it (trash icon). The trigger and the built-in `done` reply stay.
+4. Add the steps below in order. Select the step that comes before, click **Add node**, pick the kind and choose **Empty**, then set its **API name** in **General**. Octoloom wires each new step after the selected one, and you set the exact next step in the inspector.
+
+![Add node in the flow editor](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-loan-origination-governed/img/scratch-flow-add.png)
+
+Select the trigger and, under **Go to**, pick `parseApplication` once that step exists.
+
+#### Generator `parseApplication`
+
+- **Label** Parse Application · **Description** Extracts applicant, amount and product.
+- **System instructions**:
+
+  > Extract the applicant id (for example APP-100), the requested amount in CHF as a number, and the product.
+  > Product is "mortgage" for property financing, otherwise "personal".
+
+- **Prompt**:
+
+  > {!@request.payload.message.parts[0].text}
+
+- **Structured output** (**Add field** for each):
+  - `applicant_id` (string): Applicant id, e.g. APP-100
+  - `amount` (number): Requested amount in CHF
+  - `product` (string): Loan product · **Allowed values** `personal`, `mortgage`
+- **Next step (on exit) → Go to**: `assess`
+
+#### Orchestrator `assess`
+
+- **Label** Assess Application · **Description** Runs intake, KYC and the credit analysis.
+- **System instructions**:
+
+  > Run intake, KYC and the credit analysis, and read the bureau score and the accounts.
+  > Decision rules: "approve" when KYC passed, score >= 700 and debt-to-income <= 35%.
+  > "refer" when KYC passed but the score or affordability is borderline. "decline" when KYC fails.
+
+- **Reasoning instructions**:
+
+  > Applicant {!@generator.parseApplication.output.applicant_id} requests {!@generator.parseApplication.output.amount} CHF ({!@generator.parseApplication.output.product}).
+
+- **Actions** (**+ Add action…**): `intake_agent`, `kyc_agent`, `credit_agent`, `get_credit_score`, `get_accounts`
+- **Limits → Max loops**: `8`
+- **Structured output** (**Add field** for each):
+  - `decision` (string): Assessment decision · **Allowed values** `approve`, `refer`, `decline`
+  - `summary` (string): Reasons for the decision
+- **Next step (on exit) → Go to**: `decisionRouter`
+
+#### Router `decisionRouter`
+
+- **Description** Approve books the loan, refer goes to underwriting, decline notifies.
+- **Routes** (**+**): **Label** Approve · **When** `@orchestrator.assess.output.decision == "approve"` · **Go to** `bookLoan`
+- **Routes** (**+**): **Label** Refer · **When** `@orchestrator.assess.output.decision == "refer"` · **Go to** `underwrite`
+- **Otherwise → Go to**: `notifyDecline`
+
+#### Executor `bookLoan`
+
+- **Description** Books the approved loan.
+- **Steps (do)**: **Run action**
+  - **Action** `book_loan`
+    - **Bind argument** `applicant_id` = `@generator.parseApplication.output.applicant_id`
+    - **Bind argument** `amount` = `@generator.parseApplication.output.amount`
+- **Next step (on exit) → Go to**: `notifyApproval`
+
+#### Subagent `notifyApproval`
+
+- **Label** Notify Approval · **Description** Generates the contract and notifies the applicant.
+- **Reasoning instructions**:
+
+  > The loan for {!@generator.parseApplication.output.applicant_id} is booked. Generate the contract and notify the applicant.
+
+- **Actions** (**+ Add action…**): `generate_contract`, `notification_agent`
+- **Next step (on exit) → Go to**: `approved`
+
+#### Reply `approved`
+
+- **Use expression**, then **Message (expression)**: `"Approved: " + @orchestrator.assess.output.summary + " " + @subagent.notifyApproval.output`
+- **Task state**: `TASK_STATE_COMPLETED`
+
+#### Subagent `underwrite`
+
+- **Label** Underwriting · **Description** Sends borderline applications to underwriting.
+- **Reasoning instructions**:
+
+  > Underwrite application of {!@generator.parseApplication.output.applicant_id}: {!@orchestrator.assess.output.summary}
+
+- **Actions** (**+ Add action…**): `underwriting_agent`
+- **Next step (on exit) → Go to**: `underwritten`
+
+#### Reply `underwritten`
+
+- **Use expression**, then **Message (expression)**: `@subagent.underwrite.output`
+- **Task state**: `TASK_STATE_COMPLETED`
+
+#### Subagent `notifyDecline`
+
+- **Label** Notify Decline · **Description** Notifies the applicant of a decline.
+- **Reasoning instructions**:
+
+  > Notify {!@generator.parseApplication.output.applicant_id} that the application was declined: {!@orchestrator.assess.output.summary}
+
+- **Actions** (**+ Add action…**): `notification_agent`
+- **Next step (on exit) → Go to**: `declined`
+
+#### Reply `declined`
+
+- **Use expression**, then **Message (expression)**: `"Declined: " + @orchestrator.assess.output.summary`
+- **Task state**: `TASK_STATE_COMPLETED`
+
+![The finished broker flow](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-loan-origination-governed/img/scratch-flow.png)
+
+When you are done, the flow matches the template's flow ([Path 2, Step 4](#step-4-follow-the-broker-flow-agentscript)). The built-in `done` reply isn't used by this use case. The Problems bar shows **echo done is not reachable from the trigger** as a warning, and you can leave it.
+
+### Step 3.9. Add the policies
+
+Select the broker or connection, scroll to **Policies** and click **Add policy**. Pick the policy (search by name), choose the **Direction** and set its **Configuration** fields. **Header Injection** has its own header list. Octoloom also adds each policy as an `exchange.json` dependency.
+
+- Broker `loan_origination_broker`: **Rate Limiting** (inbound)
+  - **rateLimits** (one entry each, **+**): maximumRequests `30`, timePeriodInMilliseconds `60000`
+  - **exposeHeaders**: on
+- Connection `intake_agent_connection`: **A2A v1 PII Detector** (inbound)
+  - **entities**: `Email`, `US SSN`, `Credit Card`
+  - **action**: `Log`
+- Connection `kyc_agent_connection`: **Header Injection** (inbound)
+  - **inboundHeaders** (one entry each, **+**): `x-correlation-source` = `loan_broker`
+- Connection `credit_agent_connection`: **A2A PII Detector** (inbound)
+  - **entities**: `Email`, `US SSN`, `Credit Card`
+  - **action**: `Log`
+- Connection `underwriting_agent_connection`: **Header Injection** (inbound)
+  - **inboundHeaders** (one entry each, **+**): `x-correlation-source` = `loan_broker`
+- Connection `notification_agent_connection`: **A2A v1 PII Detector** (inbound)
+  - **entities**: `Email`, `US SSN`, `Credit Card`
+  - **action**: `Log`
+- Connection `credit_bureau_mcp_connection`: **MCP PII Detector** (inbound)
+  - **entities**: `Email`, `US SSN`, `Credit Card`, `Phone Number`
+  - **action**: `Log and mask`
+- Connection `credit_bureau_mcp_connection`: **MCP Schema Validation** (inbound)
+  - **validateToolSchema**: on
+- Connection `core_banking_mcp_connection`: **MCP PII Detector** (inbound)
+  - **entities**: `Email`, `US SSN`, `Credit Card`, `Phone Number`
+  - **action**: `Log and mask`
+- Connection `core_banking_mcp_connection`: **Header Injection** (inbound)
+  - **inboundHeaders** (one entry each, **+**): `x-octoloom-source` = `loan-origination-governed-v2`
+- Connection `documents_mcp_connection`: **MCP PII Detector** (inbound)
+  - **entities**: `Email`, `US SSN`, `Credit Card`, `Phone Number`
+  - **action**: `Log and mask`
+- Connection `documents_mcp_connection`: **MCP Schema Validation** (inbound)
+  - **validateToolSchema**: on
+
+![Policies on the broker](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-loan-origination-governed/img/scratch-policy.png)
+
+The template declares a policy once under `context.policies` and points to it from each connection. **Add policy** writes each policy on its connection instead. Both give the same result at runtime.
+
+### Step 3.10. Validate, deploy and chat
+
+Run **Validate** from the canvas CLI menu and fix anything in the Problems bar. Then follow Path 2 from [Validate and build](#step-5-validate-and-build) onwards: deploy (enter the secrets), wait for the green light, open the chat and send the same prompts. Your network answers like the template, because it is the same network, built by hand.
+
 ## What you learned
 
 - How a deterministic network is built: an AgentScript flow decides every step; the LLM extracts and writes text.
 - How the canvas, the inspector and the code view edit the same YAML.
+- How to build the same network from a blank project with forms and menus only (Path 3).
 - How policies are attached and checked with Governance.
 - How to validate, build, deploy, chat and trace with Octoloom.
 

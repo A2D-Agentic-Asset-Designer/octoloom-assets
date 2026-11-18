@@ -8,10 +8,11 @@
 |---|---|---|---|---|
 | 3 | 4 | 1.0, 0.3.0 | 0 | `v2-field-service` |
 
-There are two ways to use this template:
+There are three ways to use this template:
 
 1. **[Just use it](#path-1-just-use-it)**: create the project, deploy it and chat with it in about 10 minutes.
 2. **[Learn step by step](#path-2-learn-step-by-step)**: the same steps, with what each part of the network does and how Octoloom shows it.
+3. **[Build it from scratch](#path-3-build-it-from-scratch)**: start from a blank project and build the same network yourself, no code, one screenshot per step.
 
 ## Before you start
 
@@ -128,10 +129,217 @@ Under each reply, the **Tracer** icon opens the task in the **Agent Network Trac
 
 The **Share** icon in the chat header opens the Share dialog. **A²D sessions** invites people by email to chat with this deployed broker and brings their passed / failed marks and comments back. **Local portal** generates a small web chat you can run or host anywhere.
 
+## Path 3: Build it from scratch
+
+Here you build the same network yourself, starting from a blank project. Every step uses a form, a menu or a button. You never import the template, and you never type YAML or AgentScript. The names below are the template's names without the `octo_fs2_` prefix. You can use your own names, but keep them consistent.
+
+> The text fields take plain values. Where a value looks like `${group.name}`, type it as shown: it is a **variable** that `exchange.json` declares and that deploy fills in.
+
+### Step 3.1. Create a blank project with a starter broker
+
+Connect Octoloom first, as in [Path 2, Step 1](#step-1-connect-octoloom). Then, on **Home**, click **New Deterministic Network**. In **2 Start from**, choose **Blank** and turn on **Add a starter broker**.
+
+- **Broker name**: `Field Service Broker`
+- **Name**: `field-service-scratch` (the Exchange asset id; a different name from the template, so both can live in one org)
+- **Parent folder**: pick a folder, then click **Create blank project**.
+
+![Blank project with a starter broker](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-field-service/img/scratch-new.png)
+
+The starter broker `field_service_broker` has an OpenAI LLM connection (`openai_connection`, MuleSoft's published OpenAI LLM) and a flow `brokers/field-service-broker.agent` with a trigger, one subagent and the built-in `done` reply. The LLM is already done.
+
+### Step 3.2. Add the agents
+
+On the canvas, click **+** (Add to the network) → **Agent** → **Empty**. The new agent opens in the inspector on the right. Fill it in, then repeat for each agent:
+
+![The Add to the network menu with the Agent submenu](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-field-service/img/scratch-add.png)
+
+- **Dispatch Agent**
+  - **Identity → Key**: `dispatch_agent`
+  - **Info → Label**: Dispatch Agent · **Description**: Books technicians for on-site visits.
+  - **Metadata → Platform**: `ServiceNow` (or click its icon under **Agent framework**)
+  - **Interface**: click `a2a` (A2A 1.0). **Agent card (A2A 1.x)**: **Name** Dispatch Agent, **Description** as above, **Supported interfaces → URL** `https://www.a2d-ai.com/api/platform/69ebd12e-296f-4eed-949f-26296e3c7fe9/a2a`, Binding `JSONRPC`, Protocol version `1.0`
+- **Parts Logistics Agent**
+  - **Identity → Key**: `parts_agent`
+  - **Info → Label**: Parts Logistics Agent · **Description**: Reserves and ships spare parts.
+  - **Metadata → Platform**: `MuleSoft` (or click its icon under **Agent framework**)
+  - **Interface**: keep `a2a_v03` (A2A 0.3.0). **Agent card (A2A 0.3)**: **Name** Parts Logistics Agent, **Description** as above, **URL** `https://www.a2d-ai.com/api/platform/1f49d5bd-b631-498b-b2a6-84de58a41521/a2a`
+- **Customer Communications Agent**
+  - **Identity → Key**: `customer_comms_agent`
+  - **Info → Label**: Customer Communications Agent · **Description**: Keeps the customer informed.
+  - **Metadata → Platform**: `AgentForce` (or click its icon under **Agent framework**)
+  - **Interface**: click `a2a` (A2A 1.0). **Agent card (A2A 1.x)**: **Name** Customer Communications Agent, **Description** as above, **Supported interfaces → URL** `https://www.a2d-ai.com/api/platform/f3d6ebd7-0b13-43c2-b2ef-f55ac045c18a/a2a`, Binding `JSONRPC`, Protocol version `1.0`
+
+![An agent in the inspector](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-field-service/img/scratch-agent.png)
+
+The card skills are optional. Once the agent has a connection (two steps on), the inspector offers **Read skills from the live agent**, which fills them from the running agent.
+
+### Step 3.3. Add the MCP servers
+
+Click **+** → **MCP server** → **Empty**, then fill in:
+
+- **Asset Registry MCP**: **Key** `asset_registry_mcp`, **Label** Asset Registry MCP, **Description** Installed equipment · **Protocol version** `2025-06-18`. The transport is already Streamable HTTP on `/mcp`.
+- **Diagnostics MCP**: **Key** `diagnostics_mcp`, **Label** Diagnostics MCP, **Description** Remote diagnostics · **Protocol version** `2025-06-18`. The transport is already Streamable HTTP on `/mcp`.
+- **Parts Inventory MCP**: **Key** `inventory_mcp`, **Label** Parts Inventory MCP, **Description** Spare parts stock · **Protocol version** `2025-06-18`. The transport is already Streamable HTTP on `/mcp`.
+- **Weather MCP**: **Key** `weather_mcp`, **Label** Weather MCP, **Description** Weather for safe outdoor work · **Protocol version** `2025-06-18`. The transport is already Streamable HTTP on `/mcp`.
+
+### Step 3.4. Add the connections
+
+A connection is the URL (and authentication) Agent Fabric uses to reach an agent or an MCP server. Click **+** → **Connection** → **Empty** once per agent and MCP server, and fill in:
+
+| Key | Kind | Registry entry → Name | URL |
+|---|---|---|---|
+| `dispatch_agent_connection` | `a2a` | `dispatch_agent` | `${dispatchAgent.url}` |
+| `parts_agent_connection` | `a2a` | `parts_agent` | `${partsAgent.url}` |
+| `customer_comms_agent_connection` | `a2a` | `customer_comms_agent` | `${customerCommsAgent.url}` |
+| `asset_registry_mcp_connection` | `mcp` | `asset_registry_mcp` | `${assetRegistryMcp.url}` |
+| `diagnostics_mcp_connection` | `mcp` | `diagnostics_mcp` | `${diagnosticsMcp.url}` |
+| `inventory_mcp_connection` | `mcp` | `inventory_mcp` | `${inventoryMcp.url}` |
+| `weather_mcp_connection` | `mcp` | `weather_mcp` | `${weatherMcp.url}` |
+
+![A connection in the inspector](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-field-service/img/scratch-conn.png)
+
+### Step 3.5. Declare the variables
+
+The Problems bar now shows **Variable ${…} is not declared in exchange.json** for each new variable. Click **Add to exchange.json** on each one.
+
+Then open `exchange.json` (it opens as a form) and, under **Variables**, set the defaults:
+
+| Variable | Default |
+|---|---|
+| `dispatchAgent.url` | `https://www.a2d-ai.com/api/platform/69ebd12e-296f-4eed-949f-26296e3c7fe9/a2a` |
+| `partsAgent.url` | `https://www.a2d-ai.com/api/platform/1f49d5bd-b631-498b-b2a6-84de58a41521/a2a` |
+| `customerCommsAgent.url` | `https://www.a2d-ai.com/api/platform/f3d6ebd7-0b13-43c2-b2ef-f55ac045c18a/a2a` |
+| `assetRegistryMcp.url` | `https://www.a2d-ai.com/api/platform/e63366bc-fc42-4a5f-82c6-960245f373d8/` |
+| `diagnosticsMcp.url` | `https://www.a2d-ai.com/api/platform/9c1cb10f-5950-428c-88aa-d2b0f52f508e/` |
+| `inventoryMcp.url` | `https://www.a2d-ai.com/api/platform/646e87d9-595d-4194-8ffd-4eeb958fc2f5/` |
+| `weatherMcp.url` | `https://www.a2d-ai.com/api/platform/1839bfc8-fb85-4256-9195-26c193243b7d/` |
+
+Leave the secret variables (`openai.apiKey`) empty: deploy asks for them and never stores them.
+
+![The exchange.json form with the variables](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-field-service/img/scratch-vars.png)
+
+Also click **Remove it** on any **declared but not used** variable that the Problems bar shows.
+
+### Step 3.6. Declare the MCP tools
+
+On each MCP server card, click the **Tools** row (or its pencil). Octoloom reads the tool list from the running server: tick the tools below. You can also type a name in **Add a tool by name…**.
+
+- **Asset Registry MCP**: `get_asset`
+- **Diagnostics MCP**: `run_diagnostics`
+- **Parts Inventory MCP**: `check_stock`
+- **Weather MCP**: `get_forecast`
+
+![The Tools row of an MCP server card](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-field-service/img/scratch-tools.png)
+
+### Step 3.7. Link the agents and MCP servers to the broker
+
+Every agent and MCP card now has a **Broker** row with **Link to Field Service Broker**. Click it on each card. Octoloom adds the matching actions to the broker flow: one per agent and one per declared MCP tool.
+
+![Link to the broker on the agent and MCP cards](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-field-service/img/scratch-link.png)
+
+### Step 3.8. Build the broker flow
+
+On the broker card (or in its inspector), click **Open broker flow**. Then set up the flow:
+
+1. **Settings → Language Settings**: on the `default` model, set **Reasoning effort (OpenAI)** to `MINIMAL`.
+2. **Settings → System Messages**: set the instructions to: *You run field service for heating and solar equipment. Fix remotely when possible; dispatch only when needed and safe.*
+3. Select the `assistant` subagent and delete it (trash icon). The trigger and the built-in `done` reply stay.
+4. Add the steps below in order. Select the step that comes before, click **Add node**, pick the kind and choose **Empty**, then set its **API name** in **General**. Octoloom wires each new step after the selected one, and you set the exact next step in the inspector.
+
+![Add node in the flow editor](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-field-service/img/scratch-flow-add.png)
+
+Select the trigger and, under **Go to**, pick `parseRequest` once that step exists.
+
+#### Generator `parseRequest`
+
+- **Label** Parse Request · **Description** Extracts the asset id and the symptom.
+- **Prompt**:
+
+  > Extract the asset id (for example HP-301 or INV-77) and the symptom from: {!@request.payload.message.parts[0].text}
+
+- **Structured output** (**Add field** for each):
+  - `asset_id` (string): Asset id
+  - `symptom` (string): Reported symptom
+- **Next step (on exit) → Go to**: `diagnose`
+
+#### Subagent `diagnose`
+
+- **Label** Diagnose · **Description** Looks up the asset and runs remote diagnostics.
+- **System instructions**:
+
+  > Look up the asset and run remote diagnostics.
+  > Set remote_fix to "yes" when diagnostics fixed the fault remotely, otherwise "no".
+  > Return the part id when a part is needed and the town of the site.
+
+- **Reasoning instructions**:
+
+  > Asset {!@generator.parseRequest.output.asset_id}: {!@generator.parseRequest.output.symptom}
+
+- **Actions** (**+ Add action…**): `get_asset`, `run_diagnostics`
+- **Limits → Max loops**: `4`
+- **Structured output** (**Add field** for each):
+  - `remote_fix` (string): Fixed remotely · **Allowed values** `yes`, `no`
+  - `part_id` (string): Needed part id or NONE
+  - `town` (string): Town of the site
+  - `detail` (string): Diagnosis detail
+- **Next step (on exit) → Go to**: `fixRouter`
+
+#### Router `fixRouter`
+
+- **Description** Remote fixes only need a customer update; the rest are dispatched.
+- **Routes** (**+**): **Label** Fixed remotely · **When** `@subagent.diagnose.output.remote_fix == "yes"` · **Go to** `informCustomer`
+- **Otherwise → Go to**: `dispatchVisit`
+
+#### Subagent `informCustomer`
+
+- **Label** Inform Customer · **Description** Tells the customer the fault was fixed remotely.
+- **Reasoning instructions**:
+
+  > Tell the customer the fault on {!@generator.parseRequest.output.asset_id} was fixed remotely: {!@subagent.diagnose.output.detail}
+
+- **Actions** (**+ Add action…**): `customer_comms_agent`
+- **Next step (on exit) → Go to**: `resolvedRemotely`
+
+#### Reply `resolvedRemotely`
+
+- **Use expression**, then **Message (expression)**: `"Resolved remotely: " + @subagent.diagnose.output.detail`
+- **Task state**: `TASK_STATE_COMPLETED`
+
+#### Orchestrator `dispatchVisit`
+
+- **Label** Dispatch Visit · **Description** Checks parts and weather, reserves the part and books a technician.
+- **System instructions**:
+
+  > Check stock for the part and the weather for the town. Reserve the part with the parts agent,
+  > book a technician with the dispatch agent and inform the customer of the visit window.
+  > If the forecast is unsafe for outdoor work, book the next safe day instead.
+
+- **Reasoning instructions**:
+
+  > Asset {!@generator.parseRequest.output.asset_id} in {!@subagent.diagnose.output.town} needs part {!@subagent.diagnose.output.part_id}: {!@subagent.diagnose.output.detail}
+
+- **Actions** (**+ Add action…**): `check_stock`, `get_forecast`, `parts_agent`, `dispatch_agent`, `customer_comms_agent`
+- **Limits → Max loops**: `8`
+- **Next step (on exit) → Go to**: `dispatched`
+
+#### Reply `dispatched`
+
+- **Use expression**, then **Message (expression)**: `@orchestrator.dispatchVisit.output`
+- **Task state**: `TASK_STATE_COMPLETED`
+
+![The finished broker flow](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-field-service/img/scratch-flow.png)
+
+When you are done, the flow matches the template's flow ([Path 2, Step 4](#step-4-follow-the-broker-flow-agentscript)). The built-in `done` reply isn't used by this use case. The Problems bar shows **echo done is not reachable from the trigger** as a warning, and you can leave it.
+
+### Step 3.9. Validate, deploy and chat
+
+Run **Validate** from the canvas CLI menu and fix anything in the Problems bar. Then follow Path 2 from [Validate and build](#step-5-validate-and-build) onwards: deploy (enter the secrets), wait for the green light, open the chat and send the same prompts. Your network answers like the template, because it is the same network, built by hand.
+
 ## What you learned
 
 - How a deterministic network is built: an AgentScript flow decides every step; the LLM extracts and writes text.
 - How the canvas, the inspector and the code view edit the same YAML.
+- How to build the same network from a blank project with forms and menus only (Path 3).
 - How to validate, build, deploy, chat and trace with Octoloom.
 
 ## Next

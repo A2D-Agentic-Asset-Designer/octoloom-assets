@@ -8,10 +8,11 @@
 |---|---|---|---|---|
 | 0 | 4 |  | 0 | `v2-idmc-data-trust` |
 
-There are two ways to use this template:
+There are three ways to use this template:
 
 1. **[Just use it](#path-1-just-use-it)**: create the project, deploy it and chat with it in about 10 minutes.
 2. **[Learn step by step](#path-2-learn-step-by-step)**: the same steps, with what each part of the network does and how Octoloom shows it.
+3. **[Build it from scratch](#path-3-build-it-from-scratch)**: start from a blank project and build the same network yourself, no code, one screenshot per step.
 
 ## Before you start
 
@@ -134,10 +135,207 @@ Under each reply, the **Tracer** icon opens the task in the **Agent Network Trac
 
 The **Share** icon in the chat header opens the Share dialog. **A²D sessions** invites people by email to chat with this deployed broker and brings their passed / failed marks and comments back. **Local portal** generates a small web chat you can run or host anywhere.
 
+## Path 3: Build it from scratch
+
+Here you build the same network yourself, starting from a blank project. Every step uses a form, a menu or a button. You never import the template, and you never type YAML or AgentScript. The names below are the template's names without the `octo_iv2_` prefix. You can use your own names, but keep them consistent.
+
+> The text fields take plain values. Where a value looks like `${group.name}`, type it as shown: it is a **variable** that `exchange.json` declares and that deploy fills in.
+
+### Step 3.1. Create a blank project with a starter broker
+
+Connect Octoloom first, as in [Path 2, Step 1](#step-1-connect-octoloom). Then, on **Home**, click **New Deterministic Network**. In **2 Start from**, choose **Blank** and turn on **Add a starter broker**.
+
+- **Broker name**: `Data Trust Broker`
+- **Name**: `idmc-data-trust-scratch` (the Exchange asset id; a different name from the template, so both can live in one org)
+- **Parent folder**: pick a folder, then click **Create blank project**.
+
+![Blank project with a starter broker](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-idmc-data-trust/img/scratch-new.png)
+
+The starter broker `data_trust_broker` has an OpenAI LLM connection (`openai_connection`, MuleSoft's published OpenAI LLM) and a flow `brokers/data-trust-broker.agent` with a trigger, one subagent and the built-in `done` reply. The LLM is already done.
+
+### Step 3.2. Add the MCP servers
+
+Click **+** → **MCP server** → **Empty**, then fill in:
+
+- **Customer Identification**: **Key** `searchcustomer_mcp`, **Label** Customer Identification, **Description** Resolve customer identities and read master records from Informatica MDM SaaS (Customer 360) · **Protocol version** `2025-06-18`. The transport is already Streamable HTTP on `/mcp`.
+- **Address Verification**: **Key** `dqverifyaddress_mcp`, **Label** Address Verification, **Description** Validate, standardize and geocode postal addresses with Cloud Address Verification · **Protocol version** `2025-06-18`. The transport is already Streamable HTTP on `/mcp`.
+- **CDGC Metadata Search**: **Key** `cdgcsearchmetadata_mcp`, **Label** CDGC Metadata Search, **Description** Search the governed data catalog (CDGC) for data assets and their metadata · **Protocol version** `2025-06-18`. The transport is already Streamable HTTP on `/mcp`.
+- **CDGC Data Quality Score**: **Key** `cdgcdataqualityscore_mcp`, **Label** CDGC Data Quality Score, **Description** Data quality scores of governed assets from Data Governance and Catalog · **Protocol version** `2025-06-18`. The transport is already Streamable HTTP on `/mcp`.
+
+### Step 3.3. Add the connections
+
+A connection is the URL (and authentication) Agent Fabric uses to reach an agent or an MCP server. Click **+** → **Connection** → **Empty** once per MCP server, and fill in:
+
+| Key | Kind | Registry entry → Name | URL |
+|---|---|---|---|
+| `searchcustomer_mcp_connection` | `mcp` | `searchcustomer_mcp` | `${idmcCustomerMcp.url}` |
+| `dqverifyaddress_mcp_connection` | `mcp` | `dqverifyaddress_mcp` | `${idmcAddressMcp.url}` |
+| `cdgcsearchmetadata_mcp_connection` | `mcp` | `cdgcsearchmetadata_mcp` | `${idmcMetadataMcp.url}` |
+| `cdgcdataqualityscore_mcp_connection` | `mcp` | `cdgcdataqualityscore_mcp` | `${idmcDqMcp.url}` |
+
+![A connection in the inspector](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-idmc-data-trust/img/scratch-conn.png)
+
+These connections also authenticate. In **Authentication**, pick the kind and type the values exactly as shown. The values are variables, and the secret ones are asked for at deploy time:
+
+- `searchcustomer_mcp_connection`: **OAuth 2.0 client credentials (bearer token)**, **clientId** `${idmc.clientId}`, **clientSecret** `${idmc.clientSecret}`, **Token → Token URL** `${idmc.tokenUrl}`, **Body encoding** `form`
+- `dqverifyaddress_mcp_connection`: **OAuth 2.0 client credentials (bearer token)**, **clientId** `${idmc.clientId}`, **clientSecret** `${idmc.clientSecret}`, **Token → Token URL** `${idmc.tokenUrl}`, **Body encoding** `form`
+- `cdgcsearchmetadata_mcp_connection`: **OAuth 2.0 client credentials (bearer token)**, **clientId** `${idmc.clientId}`, **clientSecret** `${idmc.clientSecret}`, **Token → Token URL** `${idmc.tokenUrl}`, **Body encoding** `form`
+- `cdgcdataqualityscore_mcp_connection`: **OAuth 2.0 client credentials (bearer token)**, **clientId** `${idmc.clientId}`, **clientSecret** `${idmc.clientSecret}`, **Token → Token URL** `${idmc.tokenUrl}`, **Body encoding** `form`
+
+### Step 3.4. Declare the variables
+
+The Problems bar now shows **Variable ${…} is not declared in exchange.json** for each new variable. Click **Add to exchange.json** on each one.
+
+Then open `exchange.json` (it opens as a form) and, under **Variables**, set the defaults:
+
+| Variable | Default |
+|---|---|
+| `idmc.tokenUrl` | `https://dmp-us.informaticacloud.com/authz-service/oauth/token` |
+| `idmcCustomerMcp.url` | `https://mcp.dmp-us.informaticacloud.com/mcp-servers/public/searchcustomer` |
+| `idmcAddressMcp.url` | `https://mcp.dmp-us.informaticacloud.com/mcp-servers/public/dqverifyaddress` |
+| `idmcMetadataMcp.url` | `https://mcp.dmp-us.informaticacloud.com/mcp-servers/public/cdgcsearchmetadata` |
+| `idmcDqMcp.url` | `https://mcp.dmp-us.informaticacloud.com/mcp-servers/public/cdgcdataqualityscore` |
+
+Leave the secret variables (`openai.apiKey`, `idmc.clientId`, `idmc.clientSecret`) empty: deploy asks for them and never stores them.
+
+![The exchange.json form with the variables](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-idmc-data-trust/img/scratch-vars.png)
+
+Also click **Remove it** on any **declared but not used** variable that the Problems bar shows.
+
+### Step 3.5. Declare the MCP tools
+
+On each MCP server card, click the **Tools** row (or its pencil). Octoloom reads the tool list from the running server: tick the tools below. You can also type a name in **Add a tool by name…**.
+
+- **Customer Identification**: `get_master_record_details`, `get_related_records`, `search_master_record`
+- **Address Verification**: `verify_address`
+- **CDGC Metadata Search**: `get_asset_details`, `search_metadata`
+- **CDGC Data Quality Score**: `get_asset_score`
+
+![The Tools row of an MCP server card](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-idmc-data-trust/img/scratch-tools.png)
+
+### Step 3.6. Link the MCP servers to the broker
+
+Every MCP card now has a **Broker** row with **Link to Data Trust Broker**. Click it on each card. Octoloom adds the matching actions to the broker flow: one per declared MCP tool.
+
+![Link to the broker on the agent and MCP cards](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-idmc-data-trust/img/scratch-link.png)
+
+### Step 3.7. Build the broker flow
+
+On the broker card (or in its inspector), click **Open broker flow**. Then set up the flow:
+
+1. **Settings → Language Settings**: on the `default` model, set **Reasoning effort (OpenAI)** to `MINIMAL`.
+2. **Settings → System Messages**: set the instructions to: *You are a customer data steward. Use only data the Informatica MCP servers return. When a tool fails or returns nothing, say so in one sentence and continue with the other steps; never ask the user to choose a business entity.*
+3. Select the `assistant` subagent and delete it (trash icon). The trigger and the built-in `done` reply stay.
+4. Add the steps below in order. Select the step that comes before, click **Add node**, pick the kind and choose **Empty**, then set its **API name** in **General**. Octoloom wires each new step after the selected one, and you set the exact next step in the inspector.
+
+![Add node in the flow editor](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-idmc-data-trust/img/scratch-flow-add.png)
+
+Select the trigger and, under **Go to**, pick `classify` once that step exists.
+
+#### Generator `classify`
+
+- **Label** Classify Request · **Description** Decides whether the request is an address check, a catalog question or a customer lookup.
+- **System instructions**:
+
+  > Classify the message.
+  > intent = "address" when it only asks to verify or standardize a postal address,
+  > "catalog" when it asks about data assets, catalog, classifications, protections or data quality (with or without an address),
+  > "customer" when it names a person or company to look up.
+  > Extract the postal address on one line, or "NONE". Extract the customer name, or "NONE".
+  > catalogQuery = two or three keywords for the catalog search (for example "customer address"), or "NONE".
+
+- **Prompt**:
+
+  > {!@request.payload.message.parts[0].text}
+
+- **Structured output** (**Add field** for each):
+  - `intent` (string): What the request needs · **Allowed values** `address`, `catalog`, `customer`
+  - `address` (string): Postal address on one line, or NONE
+  - `customer` (string): Customer name, or NONE
+  - `catalogQuery` (string): Keywords for the catalog search, or NONE
+- **Next step (on exit) → Go to**: `intentRouter`
+
+#### Router `intentRouter`
+
+- **Description** Customer lookups go to MDM; address checks and catalog questions go straight to their servers.
+- **Routes** (**+**): **Label** Customer · **When** `@generator.classify.output.intent == "customer"` · **Go to** `resolveCustomer`
+- **Routes** (**+**): **Label** Catalog · **When** `@generator.classify.output.intent == "catalog"` · **Go to** `catalog`
+- **Otherwise → Go to**: `verifyAddress`
+
+#### Subagent `resolveCustomer`
+
+- **Label** Resolve Customer · **Description** Finds the customer master record in MDM SaaS.
+- **Reasoning instructions**:
+
+  > Find the master record of: {!@generator.classify.output.customer}. Call search_master_record once with entityType "c360.person" (or "c360.organization" for a company), recordsToReturn 5 and the name in search; do not pass fields. When a match is found, call get_master_record_details with its id and entityType. When the call fails (for example "business entity is not valid"), stop and report the error in one sentence.
+
+- **Actions** (**+ Add action…**): `search_master_record`, `get_master_record_details`
+- **Limits → Max loops**: `6`
+- **Structured output** (**Add field** for each):
+  - `summary` (string): Business ID, name and address of the master record, or the error
+- **Next step (on exit) → Go to**: `customerAddress`
+
+#### Subagent `customerAddress`
+
+- **Label** Verify Customer Address · **Description** Verifies the address from the request, else the one on the master record.
+- **Reasoning instructions**:
+
+  > Address from the request: {!@generator.classify.output.address}. Master record: {!@subagent.resolveCustomer.output.summary}. Use the request address, else the master record address; when there is none, say so. Call verify_address once with Request {IO:{Inputs:[{AddressElements:{Country:"USA",Locality:[{Value:<city>}],PostalCode:[{Value:<zip>}],AdministrativeDivision:[{Value:<state>}]},PreformattedData:{PostalDeliveryAddressLines:[<street>]}}]}}. Report Status and the standardized address.
+
+- **Actions** (**+ Add action…**): `verify_address`
+- **Limits → Max loops**: `5`
+- **Next step (on exit) → Go to**: `customerDone`
+
+#### Subagent `verifyAddress`
+
+- **Label** Verify Address · **Description** Verifies and standardizes the address from the request.
+- **Reasoning instructions**:
+
+  > Address: {!@generator.classify.output.address}. When it is NONE, say that no address was given. Otherwise call verify_address once with Request {IO:{Inputs:[{AddressElements:{Country:"USA",Locality:[{Value:<city>}],PostalCode:[{Value:<zip>}],AdministrativeDivision:[{Value:<state>}]},PreformattedData:{PostalDeliveryAddressLines:[<street>]}}]}} (Country is the country of the address). Report Status, the standardized address lines and the result details.
+
+- **Actions** (**+ Add action…**): `verify_address`
+- **Limits → Max loops**: `5`
+- **Next step (on exit) → Go to**: `addressDone`
+
+#### Subagent `catalog`
+
+- **Label** Catalog and Data Quality · **Description** Finds governed data assets in CDGC and reads their data quality score.
+- **Reasoning instructions**:
+
+  > When the address {!@generator.classify.output.address} is not NONE, first call verify_address once with Request {IO:{Inputs:[{AddressElements:{Country:"USA",Locality:[{Value:<city>}],PostalCode:[{Value:<zip>}],AdministrativeDivision:[{Value:<state>}]},PreformattedData:{PostalDeliveryAddressLines:[<street>]}}]}} and report Status and the standardized address. Then call search_metadata with knowledgeQuery "{!@generator.classify.output.catalogQuery}" (use "customer" when it is NONE). List up to 8 hits with name and type. Then call get_asset_score for the most relevant data collection or field (its core.identity as id, scheme "internal") and report the score, or say that no score is recorded.
+
+- **Actions** (**+ Add action…**): `search_metadata`, `get_asset_details`, `get_asset_score`, `verify_address`
+- **Limits → Max loops**: `10`
+- **Next step (on exit) → Go to**: `catalogDone`
+
+#### Reply `customerDone`
+
+- **Use expression**, then **Message (expression)**: `"Customer: " + @subagent.resolveCustomer.output.summary + "\nAddress: " + @subagent.customerAddress.output`
+- **Task state**: `TASK_STATE_COMPLETED`
+
+#### Reply `addressDone`
+
+- **Use expression**, then **Message (expression)**: `"Address: " + @subagent.verifyAddress.output`
+- **Task state**: `TASK_STATE_COMPLETED`
+
+#### Reply `catalogDone`
+
+- **Use expression**, then **Message (expression)**: `@subagent.catalog.output`
+- **Task state**: `TASK_STATE_COMPLETED`
+
+![The finished broker flow](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-idmc-data-trust/img/scratch-flow.png)
+
+When you are done, the flow matches the template's flow ([Path 2, Step 4](#step-4-follow-the-broker-flow-agentscript)). The built-in `done` reply isn't used by this use case. The Problems bar shows **echo done is not reachable from the trigger** as a warning, and you can leave it.
+
+### Step 3.8. Validate, deploy and chat
+
+Run **Validate** from the canvas CLI menu and fix anything in the Problems bar. Then follow Path 2 from [Validate and build](#step-5-validate-and-build) onwards: deploy (enter the secrets), wait for the green light, open the chat and send the same prompts. Your network answers like the template, because it is the same network, built by hand.
+
 ## What you learned
 
 - How a deterministic network is built: an AgentScript flow decides every step; the LLM extracts and writes text.
 - How the canvas, the inspector and the code view edit the same YAML.
+- How to build the same network from a blank project with forms and menus only (Path 3).
 - How to validate, build, deploy, chat and trace with Octoloom.
 
 ## Next

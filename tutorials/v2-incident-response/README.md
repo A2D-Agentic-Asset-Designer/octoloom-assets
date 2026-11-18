@@ -8,10 +8,11 @@
 |---|---|---|---|---|
 | 5 | 2 | 1.0, 0.3.0 | 0 | `v2-incident-response` |
 
-There are two ways to use this template:
+There are three ways to use this template:
 
 1. **[Just use it](#path-1-just-use-it)**: create the project, deploy it and chat with it in about 10 minutes.
 2. **[Learn step by step](#path-2-learn-step-by-step)**: the same steps, with what each part of the network does and how Octoloom shows it.
+3. **[Build it from scratch](#path-3-build-it-from-scratch)**: start from a blank project and build the same network yourself, no code, one screenshot per step.
 
 ## Before you start
 
@@ -134,10 +135,251 @@ Under each reply, the **Tracer** icon opens the task in the **Agent Network Trac
 
 The **Share** icon in the chat header opens the Share dialog. **A²D sessions** invites people by email to chat with this deployed broker and brings their passed / failed marks and comments back. **Local portal** generates a small web chat you can run or host anywhere.
 
+## Path 3: Build it from scratch
+
+Here you build the same network yourself, starting from a blank project. Every step uses a form, a menu or a button. You never import the template, and you never type YAML or AgentScript. The names below are the template's names without the `octo_ir2_` prefix. You can use your own names, but keep them consistent.
+
+> The text fields take plain values. Where a value looks like `${group.name}`, type it as shown: it is a **variable** that `exchange.json` declares and that deploy fills in.
+
+### Step 3.1. Create a blank project with a starter broker
+
+Connect Octoloom first, as in [Path 2, Step 1](#step-1-connect-octoloom). Then, on **Home**, click **New Deterministic Network**. In **2 Start from**, choose **Blank** and turn on **Add a starter broker**.
+
+- **Broker name**: `Incident Response Broker`
+- **Name**: `incident-response-scratch` (the Exchange asset id; a different name from the template, so both can live in one org)
+- **Parent folder**: pick a folder, then click **Create blank project**.
+
+![Blank project with a starter broker](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-incident-response/img/scratch-new.png)
+
+The starter broker `incident_response_broker` has an OpenAI LLM connection (`openai_connection`, MuleSoft's published OpenAI LLM) and a flow `brokers/incident-response-broker.agent` with a trigger, one subagent and the built-in `done` reply. The LLM is already done.
+
+### Step 3.2. Add the agents
+
+On the canvas, click **+** (Add to the network) → **Agent** → **Empty**. The new agent opens in the inspector on the right. Fill it in, then repeat for each agent:
+
+![The Add to the network menu with the Agent submenu](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-incident-response/img/scratch-add.png)
+
+- **Incident Triage Agent**
+  - **Identity → Key**: `triage_agent`
+  - **Info → Label**: Incident Triage Agent · **Description**: Correlates alerts and names the likely cause.
+  - **Metadata → Platform**: `AgentForce` (or click its icon under **Agent framework**)
+  - **Interface**: click `a2a` (A2A 1.0). **Agent card (A2A 1.x)**: **Name** Incident Triage Agent, **Description** as above, **Supported interfaces → URL** `https://www.a2d-ai.com/api/platform/56c3a3a9-56e1-4cdc-b9cd-c8868fcc7008/a2a`, Binding `JSONRPC`, Protocol version `1.0`
+- **Network Operations Agent**
+  - **Identity → Key**: `network_agent`
+  - **Info → Label**: Network Operations Agent · **Description**: Diagnoses network and VPN issues.
+  - **Metadata → Platform**: `MuleSoft` (or click its icon under **Agent framework**)
+  - **Interface**: keep `a2a_v03` (A2A 0.3.0). **Agent card (A2A 0.3)**: **Name** Network Operations Agent, **Description** as above, **URL** `https://www.a2d-ai.com/api/platform/4f5e984b-a170-47d7-a58e-23f6ed5cfa07/a2a`
+- **Database Operations Agent**
+  - **Identity → Key**: `database_agent`
+  - **Info → Label**: Database Operations Agent · **Description**: Diagnoses database performance and replication.
+  - **Metadata → Platform**: `Snowflake` (or click its icon under **Agent framework**)
+  - **Interface**: click `a2a` (A2A 1.0). **Agent card (A2A 1.x)**: **Name** Database Operations Agent, **Description** as above, **Supported interfaces → URL** `https://www.a2d-ai.com/api/platform/d26ed478-0c67-4c5b-8efd-636dcfd27db2/a2a`, Binding `JSONRPC`, Protocol version `1.0`
+- **Application Support Agent**
+  - **Identity → Key**: `app_support_agent`
+  - **Info → Label**: Application Support Agent · **Description**: Diagnoses application errors and rollbacks.
+  - **Metadata → Platform**: `Azure` (or click its icon under **Agent framework**)
+  - **Interface**: keep `a2a_v03` (A2A 0.3.0). **Agent card (A2A 0.3)**: **Name** Application Support Agent, **Description** as above, **URL** `https://www.a2d-ai.com/api/platform/8272582f-f9b4-42e8-b5f3-cd27c8751e02/a2a`
+- **Status Page Agent**
+  - **Identity → Key**: `status_page_agent`
+  - **Info → Label**: Status Page Agent · **Description**: Publishes customer-facing status updates.
+  - **Metadata → Platform**: `Vertex` (or click its icon under **Agent framework**)
+  - **Interface**: click `a2a` (A2A 1.0). **Agent card (A2A 1.x)**: **Name** Status Page Agent, **Description** as above, **Supported interfaces → URL** `https://www.a2d-ai.com/api/platform/7ff8f6e8-6ee3-41e0-855c-efbdd7c7c5f2/a2a`, Binding `JSONRPC`, Protocol version `1.0`
+
+![An agent in the inspector](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-incident-response/img/scratch-agent.png)
+
+The card skills are optional. Once the agent has a connection (two steps on), the inspector offers **Read skills from the live agent**, which fills them from the running agent.
+
+### Step 3.3. Add the MCP servers
+
+Click **+** → **MCP server** → **Empty**, then fill in:
+
+- **Service Health Monitoring MCP**: **Key** `monitoring_mcp`, **Label** Service Health Monitoring MCP, **Description** Alerts and service health · **Protocol version** `2025-06-18`. The transport is already Streamable HTTP on `/mcp`.
+- **Incident Ticketing MCP**: **Key** `itsm_mcp`, **Label** Incident Ticketing MCP, **Description** Incident tickets and on-call paging · **Protocol version** `2025-06-18`. The transport is already Streamable HTTP on `/mcp`.
+
+### Step 3.4. Add the connections
+
+A connection is the URL (and authentication) Agent Fabric uses to reach an agent or an MCP server. Click **+** → **Connection** → **Empty** once per agent and MCP server, and fill in:
+
+| Key | Kind | Registry entry → Name | URL |
+|---|---|---|---|
+| `triage_agent_connection` | `a2a` | `triage_agent` | `${triageAgent.url}` |
+| `network_agent_connection` | `a2a` | `network_agent` | `${networkAgent.url}` |
+| `database_agent_connection` | `a2a` | `database_agent` | `${databaseAgent.url}` |
+| `app_support_agent_connection` | `a2a` | `app_support_agent` | `${appSupportAgent.url}` |
+| `status_page_agent_connection` | `a2a` | `status_page_agent` | `${statusPageAgent.url}` |
+| `monitoring_mcp_connection` | `mcp` | `monitoring_mcp` | `${monitoringMcp.url}` |
+| `itsm_mcp_connection` | `mcp` | `itsm_mcp` | `${itsmMcp.url}` |
+
+![A connection in the inspector](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-incident-response/img/scratch-conn.png)
+
+### Step 3.5. Declare the variables
+
+The Problems bar now shows **Variable ${…} is not declared in exchange.json** for each new variable. Click **Add to exchange.json** on each one.
+
+Then open `exchange.json` (it opens as a form) and, under **Variables**, set the defaults:
+
+| Variable | Default |
+|---|---|
+| `triageAgent.url` | `https://www.a2d-ai.com/api/platform/56c3a3a9-56e1-4cdc-b9cd-c8868fcc7008/a2a` |
+| `networkAgent.url` | `https://www.a2d-ai.com/api/platform/4f5e984b-a170-47d7-a58e-23f6ed5cfa07/a2a` |
+| `databaseAgent.url` | `https://www.a2d-ai.com/api/platform/d26ed478-0c67-4c5b-8efd-636dcfd27db2/a2a` |
+| `appSupportAgent.url` | `https://www.a2d-ai.com/api/platform/8272582f-f9b4-42e8-b5f3-cd27c8751e02/a2a` |
+| `statusPageAgent.url` | `https://www.a2d-ai.com/api/platform/7ff8f6e8-6ee3-41e0-855c-efbdd7c7c5f2/a2a` |
+| `monitoringMcp.url` | `https://www.a2d-ai.com/api/platform/f76580a4-c9cf-4e67-a5f9-96a717075626/` |
+| `itsmMcp.url` | `https://www.a2d-ai.com/api/platform/3c7aac35-436f-4c5c-b436-7430d2d254d2/` |
+
+Leave the secret variables (`openai.apiKey`) empty: deploy asks for them and never stores them.
+
+![The exchange.json form with the variables](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-incident-response/img/scratch-vars.png)
+
+Also click **Remove it** on any **declared but not used** variable that the Problems bar shows.
+
+### Step 3.6. Declare the MCP tools
+
+On each MCP server card, click the **Tools** row (or its pencil). Octoloom reads the tool list from the running server: tick the tools below. You can also type a name in **Add a tool by name…**.
+
+- **Service Health Monitoring MCP**: `get_service_health`
+- **Incident Ticketing MCP**: `create_incident`, `page_oncall`
+
+![The Tools row of an MCP server card](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-incident-response/img/scratch-tools.png)
+
+### Step 3.7. Link the agents and MCP servers to the broker
+
+Every agent and MCP card now has a **Broker** row with **Link to Incident Response Broker**. Click it on each card. Octoloom adds the matching actions to the broker flow: one per agent and one per declared MCP tool.
+
+![Link to the broker on the agent and MCP cards](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-incident-response/img/scratch-link.png)
+
+**Link to** also reads the required inputs from the tool schema. In the flow (next step), open **Connections** in the explorer and check that these actions show them under **Inputs** (one per line; type them if they are missing):
+- `create_incident`: `service: string`, `priority: string`
+
+### Step 3.8. Build the broker flow
+
+On the broker card (or in its inspector), click **Open broker flow**. Then set up the flow:
+
+1. **Settings → Language Settings**: on the `default` model, set **Reasoning effort (OpenAI)** to `MINIMAL`.
+2. **Settings → System Messages**: set the instructions to: *You are the incident commander. Classify first, then act. Customer communication only for P1.*
+3. Select the `assistant` subagent and delete it (trash icon). The trigger and the built-in `done` reply stay.
+4. Add the steps below in order. Select the step that comes before, click **Add node**, pick the kind and choose **Empty**, then set its **API name** in **General**. Octoloom wires each new step after the selected one, and you set the exact next step in the inspector.
+
+![Add node in the flow editor](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-incident-response/img/scratch-flow-add.png)
+
+Select the trigger and, under **Go to**, pick `classifyIncident` once that step exists.
+
+#### Generator `classifyIncident`
+
+- **Label** Classify Incident · **Description** Classifies the incident: service, priority and area.
+- **System instructions**:
+
+  > Extract the affected service (for example checkout-api, orders-db, vpn-zurich).
+  > Priority is "p1" when all users or revenue are affected, "p2" when one team or region is affected, else "p3".
+  > Area is "network" for VPN, DNS or connectivity, "database" for databases and replication, otherwise "application".
+
+- **Prompt**:
+
+  > {!@request.payload.message.parts[0].text}
+
+- **Structured output** (**Add field** for each):
+  - `service` (string): Affected service
+  - `priority` (string): Incident priority · **Allowed values** `p1`, `p2`, `p3`
+  - `area` (string): Technical area · **Allowed values** `network`, `database`, `application`
+- **Next step (on exit) → Go to**: `openTicket`
+
+#### Executor `openTicket`
+
+- **Description** Every incident gets a ticket first (no LLM).
+- **Steps (do)**: **Run action**
+  - **Action** `create_incident`
+    - **Bind argument** `service` = `@generator.classifyIncident.output.service`
+    - **Bind argument** `priority` = `@generator.classifyIncident.output.priority`
+- **Next step (on exit) → Go to**: `priorityRouter`
+
+#### Router `priorityRouter`
+
+- **Description** P1 is a major incident; the rest go to the specialist of the area.
+- **Routes** (**+**): **Label** P1 · **When** `@generator.classifyIncident.output.priority == "p1"` · **Go to** `majorIncident`
+- **Routes** (**+**): **Label** Network · **When** `@generator.classifyIncident.output.area == "network"` · **Go to** `network`
+- **Routes** (**+**): **Label** Database · **When** `@generator.classifyIncident.output.area == "database"` · **Go to** `database`
+- **Otherwise → Go to**: `application`
+
+#### Orchestrator `majorIncident`
+
+- **Label** Major Incident · **Description** Pages on-call, triages, fixes and posts a status update.
+- **System instructions**:
+
+  > Page the on-call engineer, check the service health, ask the triage agent for the cause,
+  > ask application support to fix it, then have the status page agent post an update. Summarise the timeline.
+
+- **Reasoning instructions**:
+
+  > P1 on {!@generator.classifyIncident.output.service}. Report: {!@request.payload.message.parts[0].text}
+
+- **Actions** (**+ Add action…**): `page_oncall`, `get_service_health`, `triage_agent`, `app_support_agent`, `status_page_agent`
+- **Limits → Max loops**: `8`
+- **Next step (on exit) → Go to**: `majorDone`
+
+#### Subagent `network`
+
+- **Label** Network · **Description** Network specialist.
+- **Reasoning instructions**:
+
+  > Diagnose {!@generator.classifyIncident.output.service}: {!@request.payload.message.parts[0].text}
+
+- **Actions** (**+ Add action…**): `get_service_health`, `network_agent`
+- **Next step (on exit) → Go to**: `specialistDone`
+
+#### Subagent `database`
+
+- **Label** Database · **Description** Database specialist.
+- **Reasoning instructions**:
+
+  > Diagnose {!@generator.classifyIncident.output.service}: {!@request.payload.message.parts[0].text}
+
+- **Actions** (**+ Add action…**): `get_service_health`, `database_agent`
+- **Next step (on exit) → Go to**: `dbDone`
+
+#### Subagent `application`
+
+- **Label** Application · **Description** Application specialist.
+- **Reasoning instructions**:
+
+  > Diagnose {!@generator.classifyIncident.output.service}: {!@request.payload.message.parts[0].text}
+
+- **Actions** (**+ Add action…**): `get_service_health`, `app_support_agent`
+- **Next step (on exit) → Go to**: `appDone`
+
+#### Reply `majorDone`
+
+- **Use expression**, then **Message (expression)**: `"Major incident on " + @generator.classifyIncident.output.service + ". " + @orchestrator.majorIncident.output`
+- **Task state**: `TASK_STATE_COMPLETED`
+
+#### Reply `specialistDone`
+
+- **Use expression**, then **Message (expression)**: `@generator.classifyIncident.output.service + " (" + @generator.classifyIncident.output.priority + "): " + @subagent.network.output`
+- **Task state**: `TASK_STATE_COMPLETED`
+
+#### Reply `dbDone`
+
+- **Use expression**, then **Message (expression)**: `@generator.classifyIncident.output.service + " (" + @generator.classifyIncident.output.priority + "): " + @subagent.database.output`
+- **Task state**: `TASK_STATE_COMPLETED`
+
+#### Reply `appDone`
+
+- **Use expression**, then **Message (expression)**: `@generator.classifyIncident.output.service + " (" + @generator.classifyIncident.output.priority + "): " + @subagent.application.output`
+- **Task state**: `TASK_STATE_COMPLETED`
+
+![The finished broker flow](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-incident-response/img/scratch-flow.png)
+
+When you are done, the flow matches the template's flow ([Path 2, Step 4](#step-4-follow-the-broker-flow-agentscript)). The built-in `done` reply isn't used by this use case. The Problems bar shows **echo done is not reachable from the trigger** as a warning, and you can leave it.
+
+### Step 3.9. Validate, deploy and chat
+
+Run **Validate** from the canvas CLI menu and fix anything in the Problems bar. Then follow Path 2 from [Validate and build](#step-5-validate-and-build) onwards: deploy (enter the secrets), wait for the green light, open the chat and send the same prompts. Your network answers like the template, because it is the same network, built by hand.
+
 ## What you learned
 
 - How a deterministic network is built: an AgentScript flow decides every step; the LLM extracts and writes text.
 - How the canvas, the inspector and the code view edit the same YAML.
+- How to build the same network from a blank project with forms and menus only (Path 3).
 - How to validate, build, deploy, chat and trace with Octoloom.
 
 ## Next

@@ -8,10 +8,11 @@
 |---|---|---|---|---|
 | 3 | 3 | 0.3.0 | 0 | `v1-it-helpdesk` |
 
-There are two ways to use this template:
+There are three ways to use this template:
 
 1. **[Just use it](#path-1-just-use-it)**: create the project, deploy it and chat with it in about 10 minutes.
 2. **[Learn step by step](#path-2-learn-step-by-step)**: the same steps, with what each part of the network does and how Octoloom shows it.
+3. **[Build it from scratch](#path-3-build-it-from-scratch)**: start from a blank project and build the same network yourself, no code, one screenshot per step.
 
 ## Before you start
 
@@ -122,10 +123,141 @@ Under each reply, the **Tracer** icon opens the task in the **Agent Network Trac
 
 The **Share** icon in the chat header opens the Share dialog. **A²D sessions** invites people by email to chat with this deployed broker and brings their passed / failed marks and comments back. **Local portal** generates a small web chat you can run or host anywhere.
 
+## Path 3: Build it from scratch
+
+Here you build the same network yourself, starting from a blank project. Every step uses a form, a menu or a button. You never import the template, and you never type YAML. The names below are the template's names without the `octo_ih1_` prefix. You can use your own names, but keep them consistent.
+
+> The text fields take plain values. Where a value looks like `${group.name}`, type it as shown: it is a **variable** that `exchange.json` declares and that deploy fills in.
+
+### Step 3.1. Create a blank project with a starter broker
+
+Connect Octoloom first, as in [Path 2, Step 1](#step-1-connect-octoloom). Then, on **Home**, click **New Probabilistic Network**. In **2 Start from**, choose **Blank** and turn on **Add a starter broker**.
+
+- **Broker name**: `it-helpdesk-broker`
+- **Name**: `it-helpdesk-scratch` (the Exchange asset id; a different name from the template, so both can live in one org)
+- **Parent folder**: pick a folder, then click **Create blank project**.
+
+![Blank project with a starter broker](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-it-helpdesk/img/scratch-new.png)
+
+The starter broker is an LLM broker with an OpenAI LLM (`openai` provider, `openai-connection`) and default instructions. The LLM is already done.
+
+### Step 3.2. Add the agents
+
+On the canvas, click **+** (Add to the network) → **Agent** → **Empty**. The new agent opens in the inspector on the right. Fill it in, then repeat for each agent:
+
+![The Add to the network menu with the Agent submenu](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-it-helpdesk/img/scratch-add.png)
+
+- **IT Triage Agent**
+  - **Identity → Key**: `triage-agent`
+  - **Label**: IT Triage Agent · **Description**: Classifies IT problems, sets priority and proposes first steps.
+  - **Metadata → Platform**: `OpenAI` (or click its icon under **Agent framework**)
+  - **Agent card**: **Name** IT Triage Agent, **Description** as above, **URL** `${triageAgent.url}`, **Protocol version** `0.3.0`
+- **Access Request Agent**
+  - **Identity → Key**: `access-request-agent`
+  - **Label**: Access Request Agent · **Description**: Grants and revokes application access and group membership with approvals.
+  - **Metadata → Platform**: `ServiceNow` (or click its icon under **Agent framework**)
+  - **Agent card**: **Name** Access Request Agent, **Description** as above, **URL** `${accessRequestAgent.url}`, **Protocol version** `0.3.0`
+- **Device Support Agent**
+  - **Identity → Key**: `device-support-agent`
+  - **Label**: Device Support Agent · **Description**: Diagnoses laptops and peripherals and arranges repairs or swaps.
+  - **Metadata → Platform**: `MuleSoft` (or click its icon under **Agent framework**)
+  - **Agent card**: **Name** Device Support Agent, **Description** as above, **URL** `${deviceSupportAgent.url}`, **Protocol version** `0.3.0`
+
+![An agent in the inspector](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-it-helpdesk/img/scratch-agent.png)
+
+The card skills are optional. Once the agent has a connection (two steps on), the inspector offers **Read skills from the live agent**, which fills them from the running agent.
+
+### Step 3.3. Add the MCP servers
+
+Click **+** → **MCP server** → **Empty**, then fill in:
+
+- **ITSM MCP**: **Key** `itsm-mcp`, **Label** ITSM MCP, **Description** Incident management. The transport is already Streamable HTTP on `/mcp`.
+- **Monitoring MCP**: **Key** `monitoring-mcp`, **Label** Monitoring MCP, **Description** Service health and known outages. The transport is already Streamable HTTP on `/mcp`.
+- **Knowledge Base MCP**: **Key** `knowledge-base-mcp`, **Label** Knowledge Base MCP, **Description** IT knowledge articles. The transport is already Streamable HTTP on `/mcp`.
+
+### Step 3.4. Add the connections
+
+A connection is the URL (and authentication) Agent Fabric uses to reach an agent or an MCP server. Click **+** → **Connection** → **Empty** once per agent and MCP server, and fill in:
+
+| Key | Kind | Target → Name | URL |
+|---|---|---|---|
+| `itsm-mcp-connection` | `mcp` | `itsm-mcp` | `${itsmMcp.url}` |
+| `monitoring-mcp-connection` | `mcp` | `monitoring-mcp` | `${monitoringMcp.url}` |
+| `knowledge-base-mcp-connection` | `mcp` | `knowledge-base-mcp` | `${knowledgeBaseMcp.url}` |
+| `triage-agent-connection` | `agent` | `triage-agent` | `${triageAgent.url}` |
+| `access-request-agent-connection` | `agent` | `access-request-agent` | `${accessRequestAgent.url}` |
+| `device-support-agent-connection` | `agent` | `device-support-agent` | `${deviceSupportAgent.url}` |
+
+![A connection in the inspector](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-it-helpdesk/img/scratch-conn.png)
+
+### Step 3.5. Declare the variables
+
+The Problems bar now shows **Variable ${…} is not declared in exchange.json** for each new variable. Click **Add to exchange.json** on each one.
+
+Then open `exchange.json` (it opens as a form) and, under **Variables**, set the defaults:
+
+| Variable | Default |
+|---|---|
+| `ingressgw.url` | (your ingress gateway URL) |
+| `itsmMcp.url` | `https://www.a2d-ai.com/api/platform/f5f65633-e17d-47c0-b614-d7938491a0d4/` |
+| `monitoringMcp.url` | `https://www.a2d-ai.com/api/platform/9561493a-b2ee-43ba-8886-a66c16c16c60/` |
+| `knowledgeBaseMcp.url` | `https://www.a2d-ai.com/api/platform/24391eb8-75c8-4a2e-b3b1-1381c9cf4447/` |
+| `triageAgent.url` | `https://www.a2d-ai.com/api/platform/db876bb1-f86f-4835-b40f-97c66079debc/a2a` |
+| `accessRequestAgent.url` | `https://www.a2d-ai.com/api/platform/d1d495b2-e51a-447e-bdb1-4ac7d36c2fe1/a2a` |
+| `deviceSupportAgent.url` | `https://www.a2d-ai.com/api/platform/ba36ab0b-df70-4dd9-bc15-6a17008798cc/a2a` |
+
+Leave the secret variables (`openai.apiKey`) empty: deploy asks for them and never stores them.
+
+![The exchange.json form with the variables](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-it-helpdesk/img/scratch-vars.png)
+
+### Step 3.6. Declare the MCP tools
+
+On each MCP server card, click the **Tools** row (or its pencil). Octoloom reads the tool list from the running server: tick the tools below. You can also type a name in **Add a tool by name…**.
+
+- **ITSM MCP**: `create_incident`, `get_incident`
+- **Monitoring MCP**: `get_service_health`
+- **Knowledge Base MCP**: `search_articles`
+
+![The Tools row of an MCP server card](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-it-helpdesk/img/scratch-tools.png)
+
+### Step 3.7. Give the broker its agents and tools
+
+Select the broker `it-helpdesk-broker`. In the inspector:
+
+1. Click **Agents (0)**. In **Add existing agent…**, pick each agent and click **Add**: `triage-agent`, `access-request-agent`, `device-support-agent`.
+2. Click **MCP servers**. Add each server with **Add existing MCP server…**, then tick its **Allowed tools**:
+   - `itsm-mcp`: `create_incident`, `get_incident`
+   - `monitoring-mcp`: `get_service_health`
+   - `knowledge-base-mcp`: `search_articles`
+
+![The MCP servers of the broker with their allowed tools](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-it-helpdesk/img/scratch-links.png)
+
+### Step 3.8. Write the broker instructions
+
+Back in the broker inspector, open **Instructions and limits**. Replace the default instruction with these entries, one per line:
+
+- You are the IT helpdesk for employees.
+- Before opening an incident, check service health with get_service_health and search the knowledge base with search_articles.
+- Use the Triage agent to classify and prioritise problems, the Access Request agent for permissions and group membership, and the Device Support agent for hardware.
+- Open an incident with create_incident only when no article or known outage explains the problem.
+- Always return the incident or article id to the user.
+
+Set **Max number of loops** `25`, **Max consecutive errors** `3` and **Task timeout (s)** `90`.
+Under **Model parameters → OpenAI**, set **Reasoning effort** to `MINIMAL`. The broker then answers within the gateway timeout.
+
+Optionally, fill the broker's **Agent card (A2A 0.3.0)** description: *Triage and access agents work with ITSM, monitoring and knowledge-base tools to resolve tickets.*
+
+![The broker instructions and limits](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-it-helpdesk/img/scratch-broker.png)
+
+### Step 3.9. Validate, deploy and chat
+
+Run **Validate** from the canvas CLI menu and fix anything in the Problems bar. Then follow Path 2 from [Validate and build](#step-4-validate-and-build) onwards: deploy (enter the secrets), wait for the green light, open the chat and send the same prompts. Your network answers like the template, because it is the same network, built by hand.
+
 ## What you learned
 
 - How a probabilistic network is built: an LLM broker with instructions picks agents and MCP tools.
 - How the canvas, the inspector and the code view edit the same YAML.
+- How to build the same network from a blank project with forms and menus only (Path 3).
 - How to validate, build, deploy, chat and trace with Octoloom.
 
 ## Next
