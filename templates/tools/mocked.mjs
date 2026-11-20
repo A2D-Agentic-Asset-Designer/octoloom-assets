@@ -330,7 +330,7 @@ subagent joinWaitlist:
   on_exit: ->
     transition to @echo.waitlisted
 
-${echo('waitlisted', '"Sold out: " + @subagent.availabilityGate.output.detail + ". " + @subagent.joinWaitlist.output')}`,
+${echo('waitlisted', '"No seats left for " + @generator.extractBooking.output.event_id + " (" + @subagent.availabilityGate.output.detail + "). " + @subagent.joinWaitlist.output')}`,
   },
   'v2-warranty-repair': {
     system: 'You are the repair desk of an electronics brand. Repair free of charge only when the registry says the device is covered.',
@@ -602,7 +602,10 @@ function v2Scenarios(u) {
   let p = 40;
   for (const a of agents) {
     const t = `${a.action}-client`;
-    out.push({ name: `${a.action}: answer`, priority: p++, conditions: [toolAvail(t), lastIs(t)], response: S('{{last_tool_output}}') });
+    // The agent's reply text, fixed per prompt: field paths into a v2 A2A tool output don't resolve in the mock.
+    const reply = (kw) => (u.agents.find((x) => x.key === a.action)?.replies ?? []).find(([k]) => k === kw)?.[1];
+    for (const [kw] of a.cases) if (reply(kw)) out.push({ name: `${a.action}: answer ${kw}`, priority: p++, conditions: [toolAvail(t), lastIs(t), say(kw)], response: S(reply(kw)) });
+    out.push({ name: `${a.action}: answer`, priority: p++, conditions: [toolAvail(t), lastIs(t)], response: S(u.agents.find((x) => x.key === a.action)?.fallback ?? 'Done.') });
     for (const [kw, message] of a.cases) out.push({ name: `${a.action}: call ${kw}`, priority: p++, conditions: [toolAvail(t), say(kw)], response: { kind: 'tool_call', name: t, arguments: { message } } });
     out.push({ name: `${a.action}: other`, priority: p++, conditions: [toolAvail(t)], response: S(hint) });
   }

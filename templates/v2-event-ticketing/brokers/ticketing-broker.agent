@@ -140,4 +140,4 @@ subagent joinWaitlist:
 echo waitlisted:
   kind: "a2a:status_update_event"
   state: "TASK_STATE_COMPLETED"
-  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Sold out: " + @subagent.availabilityGate.output.detail + ". " + @subagent.joinWaitlist.output)]})
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("No seats left for " + @generator.extractBooking.output.event_id + " (" + @subagent.availabilityGate.output.detail + "). " + @subagent.joinWaitlist.output)]})

@@ -320,7 +320,7 @@ Select the trigger and, under **Go to**, pick `extractBooking` once that step ex
 
 #### Reply `waitlisted`
 
-- **Use expression**, then **Message (expression)**: `"Sold out: " + @subagent.availabilityGate.output.detail + ". " + @subagent.joinWaitlist.output`
+- **Use expression**, then **Message (expression)**: `"No seats left for " + @generator.extractBooking.output.event_id + " (" + @subagent.availabilityGate.output.detail + "). " + @subagent.joinWaitlist.output`
 - **Task state**: `TASK_STATE_COMPLETED`
 
 ![The finished broker flow](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-event-ticketing/img/scratch-flow.png)
