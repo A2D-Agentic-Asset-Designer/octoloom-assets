@@ -379,7 +379,7 @@ Run **Validate** from the canvas CLI menu and fix anything in the Problems bar. 
 ## Next
 
 - Previous: [Retail Returns](../v2-retail-returns/README.md)
-- Next: [Field Service Dispatch: governed](../v2-field-service-governed/README.md)
+- Next: [Event Ticketing (fully mocked)](../v2-event-ticketing/README.md)
 - Same use case, governed variant: [Supply Chain Disruption: governed](../v2-supply-chain-governed/README.md)
 - Same use case, secured variant: [Supply Chain Disruption: secured](../v2-supply-chain-secured/README.md)
 - [All tutorials](../README.md)

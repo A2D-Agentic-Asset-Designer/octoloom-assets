@@ -400,7 +400,7 @@ Run **Validate** from the canvas CLI menu and fix anything in the Problems bar. 
 
 ## Next
 
-- Previous: [Supply Chain Disruption](../v2-supply-chain/README.md)
+- Previous: [Warranty Repair (fully mocked)](../v2-warranty-repair/README.md)
 - Next: [IT Incident Response: governed](../v2-incident-response-governed/README.md)
 - Same use case, plain variant: [Field Service Dispatch](../v2-field-service/README.md)
 - [All tutorials](../README.md)

@@ -1,7 +1,9 @@
 // Creates fresh A2D mock assets for every use case (idempotent: skips ids already in a2d-ids.json).
 // Usage: A2D_KEY=... node create-a2d.mjs   (the key is never written anywhere)
 import fs from 'node:fs';
-import { USECASES } from './usecases.mjs';
+import { USECASES as U0 } from './usecases.mjs';
+import { MOCKED_USECASES, llmScenarios } from './mocked.mjs';
+const USECASES = [...U0, ...MOCKED_USECASES];
 
 const BASE = 'https://www.a2d-ai.com/api/platform-mcp/mcp';
 let sid, seq = 1, inited = false;
@@ -67,6 +69,17 @@ for (const u of USECASES) {
     if (rec.project) await call('add_asset_to_project', { project_id: rec.project, asset_type: 'agent_card', asset_id: c.id });
     rec.agents[a.key] = c.id; save();
     console.log('agent', u.id, a.key, a.proto, c.id);
+  }
+  // #285: one A2D LLM mock per fully mocked template; scenarios are re-sent on every run (idempotent).
+  if (u.mocked) {
+    const mock_scenarios = llmScenarios(u);
+    if (!rec.llm) {
+      const r = await call('design_llm_mock', { name: `Octoloom ${u.title.replace(/ \(fully mocked\)$/, '')} LLM`, description: `Scripted OpenAI-compatible LLM for the Octoloom ${u.id} template (fully mocked).`, provider: 'openai', flavor: 'openai', models: ['gpt-5-mini'], auth_mode: 'any_key', mock_scenarios });
+      rec.llm = (r.llm_mock ?? r.mock ?? r).id; save();
+      if (rec.project) await call('add_asset_to_project', { project_id: rec.project, asset_type: 'llm_mock', asset_id: rec.llm }).catch((e) => console.log('llm project skipped:', String(e.message).slice(0, 80)));
+    } else await call('update_llm_mock', { id: rec.llm, mock_scenarios });
+    await call('update_llm_mock', { id: rec.llm, status: 'published' }).catch((e) => console.log('publish skipped:', String(e.message).slice(0, 80)));
+    console.log('llm', u.id, rec.llm, mock_scenarios.length, 'scenarios');
   }
 }
 console.log('done');

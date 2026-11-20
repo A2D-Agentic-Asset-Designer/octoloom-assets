@@ -1,0 +1,58 @@
+{
+  "main": "agent-network.yaml",
+  "name": "hotel-concierge-v1",
+  "classifier": "agent-network",
+  "descriptorVersion": "1.0.0",
+  "apiVersion": "v1",
+  "tags": [
+    "octoloom-example"
+  ],
+  "metadata": {
+    "variables": {
+      "ingressgw": {
+        "url": {
+          "description": "Ingress gateway base URL (the broker is served under it)",
+          "default": "",
+          "secret": false
+        }
+      },
+      "a2dLlm": {
+        "url": {
+          "description": "A2D LLM mock base URL (OpenAI-compatible)",
+          "default": "https://www.a2d-ai.com/api/platform/a16f9106-adbc-4adc-8326-9b137e2e816a/llm/v1",
+          "secret": false
+        },
+        "apiKey": {
+          "description": "A2D LLM mock key (any value works)",
+          "default": "a2d-mock-key",
+          "secret": true
+        }
+      },
+      "reservationsMcp": {
+        "url": {
+          "description": "Reservations MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/3c751b13-687b-4d48-8056-a1da3b243645/",
+          "secret": false
+        }
+      },
+      "spaBookingAgent": {
+        "url": {
+          "description": "Spa Booking Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/da841beb-a82f-4e19-a3e3-1a0b2248e87b/a2a",
+          "secret": false
+        }
+      },
+      "roomServiceAgent": {
+        "url": {
+          "description": "Room Service Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/078e025d-16f6-41f2-adfb-4d0a44d4d2ca/a2a",
+          "secret": false
+        }
+      }
+    }
+  },
+  "dependencies": [],
+  "groupId": "${organizationId}",
+  "assetId": "hotel-concierge-v1",
+  "version": "1.0.0"
+}

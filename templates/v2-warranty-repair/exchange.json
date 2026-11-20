@@ -1,0 +1,58 @@
+{
+  "main": "agent-network.yaml",
+  "name": "warranty-repair-v2",
+  "classifier": "agentic-network",
+  "descriptorVersion": "1.0.0",
+  "apiVersion": "v1",
+  "tags": [
+    "octoloom-example"
+  ],
+  "metadata": {
+    "variables": {
+      "a2dLlm": {
+        "url": {
+          "description": "A2D LLM mock base URL (OpenAI-compatible)",
+          "default": "https://www.a2d-ai.com/api/platform/30cf197e-273b-451b-91fb-e34e1888901e/llm/v1",
+          "secret": false
+        },
+        "apiKey": {
+          "description": "A2D LLM mock key (any value works)",
+          "default": "a2d-mock-key",
+          "secret": true
+        }
+      },
+      "repairAgent": {
+        "url": {
+          "description": "Repair Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/783a4158-1abf-45ee-840d-daa0efb3b37c/a2a",
+          "secret": false
+        }
+      },
+      "notifyAgent": {
+        "url": {
+          "description": "Notification Agent (A2D mock, A2A 1.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/f623e618-a913-4caa-beba-b927c7175abb/a2a",
+          "secret": false
+        }
+      },
+      "quoteAgent": {
+        "url": {
+          "description": "Quote Agent (A2D mock, A2A 1.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/bd36453c-218b-4c2f-b198-94a82fd187ce/a2a",
+          "secret": false
+        }
+      },
+      "deviceRegistryMcp": {
+        "url": {
+          "description": "Device Registry MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/2716466b-4a56-4875-ba58-fe7b10a2f7a5/",
+          "secret": false
+        }
+      }
+    }
+  },
+  "dependencies": [],
+  "groupId": "${organizationId}",
+  "assetId": "warranty-repair-v2",
+  "version": "1.0.0"
+}

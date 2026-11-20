@@ -245,7 +245,7 @@ On each MCP server card, click the **Tools** row (or its pencil). Octoloom reads
 Select the broker `leave-broker`. In the inspector:
 
 1. Click **Agents (0)**. In **Add existing agent…**, pick each agent and click **Add**: `leave-policy-agent`, `payroll-agent`.
-2. Click **MCP servers**. Add each server with **Add existing MCP server…**, then tick its **Allowed tools**:
+2. Click **MCP servers (0)**. Add each server with **Add existing MCP server…**, then tick its **Allowed tools**:
    - `hris-mcp`: `get_leave_balance`, `submit_leave_request`
    - `calendar-mcp`: `check_team_calendar`
 

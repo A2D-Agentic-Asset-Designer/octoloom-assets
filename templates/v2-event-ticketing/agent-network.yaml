@@ -1,0 +1,180 @@
+agentNetwork: 2.0.0
+info:
+  label: Event Ticketing (fully mocked)
+  version: v1
+  description: "Extract the event, check availability, reserve the seats and issue the tickets, or join the waitlist. Fully mocked: the LLM is an A²D LLM mock too, so no OpenAI key is needed."
+registry:
+  agents:
+    octo_et2_ticketing_agent:
+      info:
+        label: Ticketing Agent
+        description: Issues e-tickets for reserved seats.
+      metadata:
+        platform: MuleSoft
+        interfaces:
+          a2a_v03:
+            card:
+              name: Ticketing Agent
+              description: Issues e-tickets for reserved seats.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: issue-tickets
+                  name: Issue Tickets
+                  description: Issue the e-tickets of a reservation.
+                  tags:
+                    - tickets
+                  examples:
+                    - Issue the tickets for EV-501
+              url: https://www.a2d-ai.com/api/platform/7fbe7677-8b25-4d43-b51a-e3169aaa56f9/a2a
+              protocolVersion: 0.3.0
+    octo_et2_waitlist_agent:
+      info:
+        label: Waitlist Agent
+        description: Puts customers on the waitlist of sold-out events.
+      metadata:
+        platform: AgentForce
+        interfaces:
+          a2a:
+            card:
+              name: Waitlist Agent
+              description: Puts customers on the waitlist of sold-out events.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: join-waitlist
+                  name: Join Waitlist
+                  description: Add a customer to a waitlist.
+                  tags:
+                    - waitlist
+                  examples:
+                    - Waitlist for EV-502
+              supportedInterfaces:
+                - url: https://www.a2d-ai.com/api/platform/1c6d5b32-bcdd-418a-959f-2eb48a95917b/a2a
+                  protocolBinding: JSONRPC
+                  protocolVersion: "1.0"
+  mcps:
+    octo_et2_events_mcp:
+      info:
+        label: Events MCP
+        description: Event calendar and availability.
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: check_availability
+            description: Check the free seats of an event.
+            inputSchema:
+              type: object
+              properties:
+                event_id:
+                  type: string
+                  description: Event id, e.g. EV-501
+              required:
+                - event_id
+    octo_et2_booking_mcp:
+      info:
+        label: Booking MCP
+        description: Seat reservations.
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: reserve_seats
+            description: Reserve seats for an event.
+            inputSchema:
+              type: object
+              properties:
+                event_id:
+                  type: string
+                  description: Event id
+                seats:
+                  type: string
+                  description: Number of seats
+              required:
+                - event_id
+                - seats
+  llms:
+    octo_et2_a2d_llm:
+      info:
+        label: A2D LLM mock
+        description: OpenAI-compatible A2D LLM mock with scripted answers
+      metadata:
+        platform: OpenAI
+        models:
+          - gpt-5-mini
+context:
+  connections:
+    ticketing_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_et2_ticketing_agent
+      url: ${ticketingAgent.url}
+    waitlist_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_et2_waitlist_agent
+      url: ${waitlistAgent.url}
+    events_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_et2_events_mcp
+      url: ${eventsMcp.url}
+    booking_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_et2_booking_mcp
+      url: ${bookingMcp.url}
+    openai_connection:
+      kind: llm
+      ref:
+        name: octo_et2_a2d_llm
+      url: ${a2dLlm.url}
+      authentication:
+        kind: apiKey
+        apiKey: ${a2dLlm.apiKey}
+brokers:
+  octo_et2_ticketing_broker:
+    kind: AgentScript
+    implementation: ./brokers/ticketing-broker.agent
+    interfaces:
+      a2a:
+        card:
+          name: Ticketing Broker
+          description: "Extract the event, check availability, reserve the seats and issue the tickets, or join the waitlist. Fully mocked: the LLM is an A²D LLM mock too, so no OpenAI key is needed."
+          version: 1.0.0
+          capabilities:
+            streaming: true
+            pushNotifications: false
+          defaultInputModes:
+            - text/plain
+          defaultOutputModes:
+            - text/plain
+          skills:
+            - id: buy-tickets
+              name: Buy Tickets
+              description: Buy tickets for an event or join its waitlist.
+              tags:
+                - events
+                - ticketing
+              examples:
+                - Two tickets for event EV-501 please
+                - Four seats for EV-502

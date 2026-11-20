@@ -210,7 +210,7 @@ On each MCP server card, click the **Tools** row (or its pencil). Octoloom reads
 Select the broker `intake-broker`. In the inspector:
 
 1. Click **Agents (0)**. In **Add existing agent…**, pick each agent and click **Add**: `triage-nurse-agent`, `scheduling-agent`, `insurance-verification-agent`.
-2. Click **MCP servers**. Add each server with **Add existing MCP server…**, then tick its **Allowed tools**:
+2. Click **MCP servers (0)**. Add each server with **Add existing MCP server…**, then tick its **Allowed tools**:
    - `ehr-mcp`: `lookup_patient`, `record_intake`
 
 ![The MCP servers of the broker with their allowed tools](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-patient-intake/img/scratch-links.png)

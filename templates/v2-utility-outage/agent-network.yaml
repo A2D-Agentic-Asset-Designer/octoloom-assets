@@ -1,0 +1,217 @@
+agentNetwork: 2.0.0
+info:
+  label: Utility Outage (fully mocked)
+  version: v1
+  description: "A known outage gets status updates and a bill credit; an unknown one gets a ticket and a field crew. Three agents, two tool servers. Fully mocked: the LLM is an A²D LLM mock too, so no OpenAI key is needed."
+registry:
+  agents:
+    octo_uo2_comms_agent:
+      info:
+        label: Customer Comms Agent
+        description: Sends outage status updates to customers.
+      metadata:
+        platform: AgentForce
+        interfaces:
+          a2a:
+            card:
+              name: Customer Comms Agent
+              description: Sends outage status updates to customers.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: outage-updates
+                  name: Outage Updates
+                  description: Subscribe a customer to outage updates.
+                  tags:
+                    - comms
+                  examples:
+                    - Updates for ADDR-31
+              supportedInterfaces:
+                - url: https://www.a2d-ai.com/api/platform/b6db9afd-bd96-47e4-be74-3fd2d76070e8/a2a
+                  protocolBinding: JSONRPC
+                  protocolVersion: "1.0"
+    octo_uo2_credit_agent:
+      info:
+        label: Billing Credit Agent
+        description: Applies bill credits for outages.
+      metadata:
+        platform: MuleSoft
+        interfaces:
+          a2a_v03:
+            card:
+              name: Billing Credit Agent
+              description: Applies bill credits for outages.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: outage-credit
+                  name: Outage Credit
+                  description: Apply a bill credit for an outage.
+                  tags:
+                    - billing
+                  examples:
+                    - Credit ADDR-31
+              url: https://www.a2d-ai.com/api/platform/aeee10e9-aca6-4cdd-b357-5565c35e42a3/a2a
+              protocolVersion: 0.3.0
+    octo_uo2_crew_agent:
+      info:
+        label: Crew Dispatch Agent
+        description: Dispatches field crews.
+      metadata:
+        platform: Azure
+        interfaces:
+          a2a:
+            card:
+              name: Crew Dispatch Agent
+              description: Dispatches field crews.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: dispatch-crew
+                  name: Dispatch Crew
+                  description: Send a crew to an address.
+                  tags:
+                    - field
+                  examples:
+                    - Send a crew to ADDR-44
+              supportedInterfaces:
+                - url: https://www.a2d-ai.com/api/platform/30d2929e-8970-4f62-a9c0-6ab74edd014d/a2a
+                  protocolBinding: JSONRPC
+                  protocolVersion: "1.0"
+  mcps:
+    octo_uo2_grid_mcp:
+      info:
+        label: Grid MCP
+        description: Known outages on the grid.
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: get_outage
+            description: Get the known outage at an address.
+            inputSchema:
+              type: object
+              properties:
+                address_id:
+                  type: string
+                  description: Address id, e.g. ADDR-31
+              required:
+                - address_id
+    octo_uo2_field_ticket_mcp:
+      info:
+        label: Field Ticket MCP
+        description: Field service tickets.
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: create_ticket
+            description: Create a field ticket for an address.
+            inputSchema:
+              type: object
+              properties:
+                address_id:
+                  type: string
+                  description: Address id
+                symptom:
+                  type: string
+                  description: What the customer sees
+              required:
+                - address_id
+                - symptom
+  llms:
+    octo_uo2_a2d_llm:
+      info:
+        label: A2D LLM mock
+        description: OpenAI-compatible A2D LLM mock with scripted answers
+      metadata:
+        platform: OpenAI
+        models:
+          - gpt-5-mini
+context:
+  connections:
+    comms_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_uo2_comms_agent
+      url: ${commsAgent.url}
+    credit_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_uo2_credit_agent
+      url: ${creditAgent.url}
+    crew_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_uo2_crew_agent
+      url: ${crewAgent.url}
+    grid_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_uo2_grid_mcp
+      url: ${gridMcp.url}
+    field_ticket_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_uo2_field_ticket_mcp
+      url: ${fieldTicketMcp.url}
+    openai_connection:
+      kind: llm
+      ref:
+        name: octo_uo2_a2d_llm
+      url: ${a2dLlm.url}
+      authentication:
+        kind: apiKey
+        apiKey: ${a2dLlm.apiKey}
+brokers:
+  octo_uo2_outage_broker:
+    kind: AgentScript
+    implementation: ./brokers/outage-broker.agent
+    interfaces:
+      a2a:
+        card:
+          name: Outage Broker
+          description: "A known outage gets status updates and a bill credit; an unknown one gets a ticket and a field crew. Three agents, two tool servers. Fully mocked: the LLM is an A²D LLM mock too, so no OpenAI key is needed."
+          version: 1.0.0
+          capabilities:
+            streaming: true
+            pushNotifications: false
+          defaultInputModes:
+            - text/plain
+          defaultOutputModes:
+            - text/plain
+          skills:
+            - id: report-outage
+              name: Report an Outage
+              description: Report a power outage at an address.
+              tags:
+                - utilities
+                - outage
+              examples:
+                - No power at ADDR-31 since this morning
+                - The lights flicker at ADDR-44

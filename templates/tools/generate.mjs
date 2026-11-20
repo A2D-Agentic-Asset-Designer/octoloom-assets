@@ -6,10 +6,18 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { USECASES } from './usecases.mjs';
-import { FLOWS } from './flows.mjs';
-import { TRY } from './tryit.mjs';
+import { USECASES as USECASES0 } from './usecases.mjs';
+import { FLOWS as FLOWS0 } from './flows.mjs';
+import { TRY as TRY0 } from './tryit.mjs';
+import { MOCKED_USECASES, MOCKED_FLOWS, MOCKED_TRY } from './mocked.mjs';
 
+// #285: fully mocked templates (LLM on an A2D LLM mock too) come from mocked.mjs.
+const USECASES = [...USECASES0, ...MOCKED_USECASES];
+const FLOWS = { ...FLOWS0, ...MOCKED_FLOWS };
+const TRY = { ...TRY0, ...MOCKED_TRY };
+const A2D_MOCK_KEY = 'a2d-mock-key';
+// The A2D LLM mock: URL and placeholder key are exchange.json variables, no Exchange dependency (#284).
+const a2dLlmVars = (u) => ({ a2dLlm: { url: { description: 'A2D LLM mock base URL (OpenAI-compatible)', default: `https://www.a2d-ai.com/api/platform/${ids[u.id].llm}/llm/v1`, secret: false }, apiKey: { description: 'A2D LLM mock key (any value works)', default: A2D_MOCK_KEY, secret: true } } });
 const YAML = await import(pathToFileURL(process.argv[2] ?? 'yaml').href).catch(() => import('yaml'));
 const here = path.dirname(new URL(import.meta.url).pathname);
 const out = path.resolve(here, '..');
@@ -66,6 +74,7 @@ function exchange(u, vars, deps) {
   }, null, 2) + '\n';
 }
 
+const OPENAI_DEP = { groupId: AF, assetId: 'openai', version: '1.0.0', classifier: 'llm-metadata', packaging: 'zip' };
 const policyDeps = (used) => [...new Map(used.map((p) => [p.assetId, p])).values()].map((p) => ({ classifier: 'schema', packaging: 'zip', groupId: AF, assetId: p.assetId, version: p.version }));
 
 // ─────────────────────────────── v1 (Probabilistic) ───────────────────────────────
@@ -73,7 +82,7 @@ function v1(u, technical, secured) {
   const rec = ids[u.id];
   const R = (k) => `${u.prefix}_${k}`;
   const b = R(u.broker.key);
-  const vars = { ingressgw: { url: { description: 'Ingress gateway base URL (the broker is served under it)', default: '', secret: false } }, openai: { apiKey: { description: 'OpenAI API key (secret, injected at deploy time)', default: '', secret: true } }, ...(secured ? LLM_GW : {}) };
+  const vars = { ingressgw: { url: { description: 'Ingress gateway base URL (the broker is served under it)', default: '', secret: false } }, ...(u.mocked ? a2dLlmVars(u) : { openai: { apiKey: { description: 'OpenAI API key (secret, injected at deploy time)', default: '', secret: true } } }), ...(secured ? LLM_GW : {}) };
   const used = [];
   const pol = (p) => (used.push(p), { ref: { name: p.assetId, namespace: AF }, configuration: p.configuration });
   const net = {
@@ -92,9 +101,9 @@ function v1(u, technical, secured) {
         },
       },
     },
-    llmProviders: { [R('openai')]: { label: 'OpenAI', description: 'OpenAI LLM provider', metadata: { platform: 'OpenAI', models: [MODEL] } } },
+    llmProviders: { [R('openai')]: u.mocked ? { label: 'A2D LLM mock', description: 'OpenAI-compatible A2D LLM mock with scripted answers', metadata: { platform: 'OpenAI', models: [MODEL] } } : { label: 'OpenAI', description: 'OpenAI LLM provider', metadata: { platform: 'OpenAI', models: [MODEL] } } },
     connections: {
-      'openai-connection': { kind: 'llm', ref: { name: R('openai') }, spec: { url: secured ? '${llmGateway.url}/' : 'https://api.openai.com/v1/', configuration: { apiKey: '${openai.apiKey}', timeout: 600000 } } },
+      'openai-connection': { kind: 'llm', ref: { name: R('openai') }, spec: u.mocked ? { url: '${a2dLlm.url}/', configuration: { apiKey: '${a2dLlm.apiKey}', timeout: 600000 } } : { url: secured ? '${llmGateway.url}/' : 'https://api.openai.com/v1/', configuration: { apiKey: '${openai.apiKey}', timeout: 600000 } } },
     },
     mcpServers: {},
     agents: {},
@@ -122,7 +131,7 @@ function v2(u, technical, secured) {
   const R = (k) => `${u.prefix}_${k}`;
   const b = R(u.broker.key);
   const file = u.broker.key.replace(/_/g, '-');
-  const vars = { openai: { apiKey: { description: 'OpenAI API key (secret, injected at deploy time)', default: '', secret: true } }, ...(secured ? LLM_GW : {}) };
+  const vars = { ...(u.mocked ? a2dLlmVars(u) : { openai: { apiKey: { description: 'OpenAI API key (secret, injected at deploy time)', default: '', secret: true } } }), ...(secured ? LLM_GW : {}) };
   const used = [];
   const decl = {};
   const bind = (key, p) => (used.push(p), (decl[key] = { ref: { name: p.assetId, namespace: AF }, configuration: p.configuration }), { ref: { name: key } });
@@ -130,7 +139,7 @@ function v2(u, technical, secured) {
   const net = {
     agentNetwork: '2.0.0',
     info: { label: `${u.title}${technical ? ' (governed)' : secured ? ' (secured)' : ''}`, version: 'v1', description: u.summary },
-    registry: { agents: {}, mcps: {}, llms: { [R('openai')]: { info: { label: 'OpenAI' }, metadata: { platform: 'OpenAI', models: [MODEL] } } } },
+    registry: { agents: {}, mcps: {} },
     context: { connections: {} },
     brokers: {},
   };
@@ -150,7 +159,12 @@ function v2(u, technical, secured) {
     vars[v] = { url: { description: `${m.name} (A2D mock) base URL`, default: `${A2D}/${rec.mcps[m.key]}/`, secret: false } };
     net.context.connections[`${m.key}_connection`] = { kind: 'mcp', ref: { name: R(m.key) }, url: `\${${v}.url}`, ...(secured ? { authentication: secAuth(SEC(i + 1), v, vars), policies: { outbound: [bind('log_upstream', POL.logOut)] } } : {}), ...(technical ? { policies: { inbound: i % 2 === 0 ? [bind('mcp_pii', POL.mcpPii), bind('mcp_schema', POL.mcpSchema)] : [bind('mcp_pii', POL.mcpPii), inline(POL.headers([{ key: 'x-octoloom-source', value: u.slug }]))] } } : {}) };
   }
-  net.context.connections.openai_connection = { kind: 'llm', ref: { name: R('openai') }, url: secured ? '${llmGateway.url}' : 'https://api.openai.com/v1', authentication: { kind: 'apiKey', apiKey: '${openai.apiKey}' } };
+  // v2 references MuleSoft's published openai LLM (llm-metadata dependency): publish creates no LLM asset (octoloom#156).
+  if (u.mocked) {
+    // #285: the project's own LLM on the A2D LLM mock (registry.llms), no Exchange llm-metadata dependency.
+    net.registry.llms = { [R('a2d_llm')]: { info: { label: 'A2D LLM mock', description: 'OpenAI-compatible A2D LLM mock with scripted answers' }, metadata: { platform: 'OpenAI', models: [MODEL] } } };
+    net.context.connections.openai_connection = { kind: 'llm', ref: { name: R('a2d_llm') }, url: '${a2dLlm.url}', authentication: { kind: 'apiKey', apiKey: '${a2dLlm.apiKey}' } };
+  } else net.context.connections.openai_connection = { kind: 'llm', ref: { name: 'openai', namespace: AF }, url: secured ? '${llmGateway.url}' : 'https://api.openai.com/v1', authentication: { kind: 'apiKey', apiKey: '${openai.apiKey}' } };
   net.brokers[b] = { kind: 'AgentScript', implementation: `./brokers/${file}.agent`, interfaces: { a2a: { card: { name: u.broker.name, description: u.summary, version: '1.0.0', capabilities: { streaming: true, pushNotifications: false }, defaultInputModes: ['text/plain'], defaultOutputModes: ['text/plain'], skills: skills(u.broker.skills) }, ...(technical || secured ? { policies: { inbound: [bind('rate_limit', POL.rateLimit(30))] } } : {}) } } };
   if (Object.keys(decl).length) net.context.policies = decl;
 
@@ -159,7 +173,7 @@ function v2(u, technical, secured) {
     : `  ${k}:\n    target: "mcp://${a.mcp}_connection"\n    kind: "mcp:tool"\n    tool_name: "${a.tool}"${a.inputs ? `\n    inputs:\n${Object.entries(a.inputs).map(([n, t]) => `      ${n}: ${t}`).join('\n')}` : ''}`).join('\n');
   const agent = `# @dialect: AGENTFABRIC=1.0
 # ${u.title}: ${u.summary}
-# Upstreams are A2D mocks; see README.md for test prompts.
+# Upstreams${u.mocked ? ' and the LLM' : ''} are A2D mocks; see README.md for test prompts.
 
 system:
   instructions: "${f.system.replace(/"/g, "'")}"
@@ -186,7 +200,7 @@ trigger ${camel(u.broker.key)}Trigger:
 
 ${f.body.trim()}
 `;
-  return { files: { 'agent-network.yaml': dump(net), 'exchange.json': exchange(u, vars, policyDeps(used)), [`brokers/${file}.agent`]: agent }, policies: [...new Set(used.map((p) => p.assetId))] };
+  return { files: { 'agent-network.yaml': dump(net), 'exchange.json': exchange(u, vars, [...(u.mocked ? [] : [OPENAI_DEP]), ...policyDeps(used)]), [`brokers/${file}.agent`]: agent }, policies: [...new Set(used.map((p) => p.assetId))] };
 }
 
 function readme(u, t, technical, policies, secured, exchangeJson) {
@@ -209,24 +223,24 @@ ${u.summary}
 - Agents: ${u.agents.map((a) => `${a.name} (A2A ${a.proto}, ${a.platform})`).join(', ')}
 - MCP servers: ${u.mcps.map((m) => `${m.name} (${m.tools.map((x) => x.name).join(', ')})`).join('; ')}
 ${technical ? `- Policies (Agent Fabric built-ins): ${policies.join(', ')}. They are declared in agent-network.yaml and listed as \`schema\` dependencies in exchange.json.\n` : ''}${secured ? `- Secured: every agent and MCP connection authenticates (Basic or Client ID enforcement, alternating). User names and client ids are variables, passwords and client secrets are secret variables asked for at deploy time. The LLM URL is the variable \`llmGateway.url\` (api.openai.com by default, or your LLM gateway).${v1 ? '' : ' Upstream calls are logged with the outbound Message Logging policy.'} Policies: ${policies.join(', ')}.\n` : ''}
-All agents and MCP servers are public A2D mocks, so the network runs without any other system. No credentials are stored in this template.
+${u.mocked ? 'Fully mocked: the agents, the MCP servers **and the LLM** are public A2D mocks, so the network runs without an OpenAI key or any other system. The LLM mock answers the prompts below with scripted tool calls and replies; any other prompt gets a short hint. No credentials are stored in this template.' : 'All agents and MCP servers are public A2D mocks, so the network runs without any other system. No credentials are stored in this template.'}
 
 ## Deploy in 3 steps
 
 1. **Setup & Connect**: connect Agent Fabric (connected app client ID and secret, organization). A²D is not needed: the mock URLs are already the defaults in \`exchange.json\`.
 2. ${ask.length ? `In \`exchange.json\`, fill in ${ask.map((x) => `${code(x.key)} (${x.description.replace(/\s*\(.*\)$/, '').toLowerCase()})`).join(', ')}. ` : ''}In **Projects & Deploy**, click **Deploy** on this project (or **Build & Deploy** in the editor) and pick your gateway. Octoloom asks for each secret variable; nothing you type is stored:
-${secrets.map((x) => `   - ${code(x.key)}: ${x.key === 'openai.apiKey' ? 'your OpenAI API key (required)' : x.description.replace(/\s*\(.*\)$/, '')}${x.key === 'openai.apiKey' ? '' : ' (any value works with the A²D mocks)'}`).join('\n')}
-3. When the status light turns green (**Deployed and running**), click **Open chat** and paste a prompt below. The **ANT** icon under a reply opens the task in the Agent Network Tracer, with each agent and tool call.
+${secrets.map((x) => `   - ${code(x.key)}: ${x.key === 'openai.apiKey' ? 'your OpenAI API key (required)' : x.key === 'a2dLlm.apiKey' ? 'the A²D LLM mock key: keep the default, any value works' : x.description.replace(/\s*\(.*\)$/, '')}${x.key === 'openai.apiKey' || x.key === 'a2dLlm.apiKey' ? '' : ' (any value works with the A²D mocks)'}`).join('\n')}
+3. When the status light turns green (**Deployed and running**), click **Open chat** and paste a prompt below. The **Tracer** icon under a reply opens the task in the Agent Network Tracer, with each agent and tool call.
 
 ## Try it
 
 ${[...tries, ...gov].map((x) => `- **${x.p}**${x.see ? `\n  - You should see: ${x.see}` : ''}`).join('\n')}
-${v1 ? '\nThe broker is probabilistic: the LLM picks the agents and tools, so the wording and the order of the calls can change between runs. The ids and numbers come from the mocks and stay the same.\n' : '\nThe broker is deterministic: the branches are fixed in the flow in `brokers/` (open the `.agent` file to see them). The LLM only reads the ids from your prompt and writes the reply text, so the same input takes the same branch.\n'}`;
+${u.mocked ? `\nThe LLM is an A²D LLM mock: it answers the prompts above with the same tool calls and replies every time (${v1 ? 'the broker is probabilistic, but its LLM is scripted' : 'the flow in `brokers/` decides the branches, the mock fills in the LLM steps'}). Swap \`a2dLlm.url\` for a real OpenAI-compatible endpoint to let a real model drive it.\n` : v1 ? '\nThe broker is probabilistic: the LLM picks the agents and tools, so the wording and the order of the calls can change between runs. The ids and numbers come from the mocks and stay the same.\n' : '\nThe broker is deterministic: the branches are fixed in the flow in `brokers/` (open the `.agent` file to see them). The LLM only reads the ids from your prompt and writes the reply text, so the same input takes the same branch.\n'}`;
 }
 
 const index = [];
 for (const u of USECASES) {
-  for (const mode of ['plain', 'governed', ...(u.secured ? ['secured'] : [])]) {
+  for (const mode of u.mocked ? ['plain'] : ['plain', 'governed', ...(u.secured ? ['secured'] : [])]) {
     const technical = mode === 'governed';
     const secured = mode === 'secured';
     const id = mode === 'plain' ? u.id : `${u.id}-${mode}`;
@@ -246,7 +260,7 @@ for (const u of USECASES) {
       id, version: u.version, category: mode === 'plain' ? 'usecase' : 'technical', title: mode === 'plain' ? u.title : `${u.title}: ${mode}`,
       summary: technical ? `${u.summary} Adds built-in policies: ${r.policies.join(', ')}.` : secured ? `${u.summary} Secured: authenticated connections (Basic, Client ID enforcement) with secret variables, the LLM behind a gateway URL${u.version === 'v2' ? ', outbound message logging' : ''}.` : u.summary,
       agents: u.agents.length, mcps: u.mcps.length, protocols: [...new Set(u.agents.map((a) => a.proto))], policies: r.policies,
-      files: Object.keys(r.files).concat('README.md'), assetId: t.slug, prefix,
+      files: Object.keys(r.files).concat('README.md'), assetId: t.slug, prefix, ...(u.mocked ? { mocked: true } : {}),
     });
   }
 }

@@ -1,0 +1,172 @@
+schemaVersion: 1.0.0
+label: Hotel Concierge (fully mocked)
+brokers:
+  octo_hc1_concierge-broker:
+    card:
+      protocolVersion: 0.3.0
+      name: octo_hc1_concierge-broker
+      description: "A concierge broker books the spa and room service for hotel guests after a reservation lookup. Fully mocked: the LLM is an A²D LLM mock too, so no OpenAI key is needed."
+      url: ${ingressgw.url}/octo_hc1_concierge-broker
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+        stateTransitionHistory: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: guest-request
+          name: Guest Request
+          description: Handle spa, room service and stay questions for a hotel guest.
+          tags:
+            - hospitality
+          examples:
+            - Book a spa massage for room 412 tomorrow at 10:00
+            - Room 415 wants breakfast in the room at 07:30
+    spec:
+      llm:
+        ref:
+          name: octo_hc1_openai
+        configuration:
+          model: gpt-5-mini
+          openAI:
+            reasoningEffort: MINIMAL
+      instructions:
+        - You are the concierge of a hotel.
+        - Always look up the reservation for the room number in the request first (for example room 412).
+        - Use the Spa Booking agent for spa and wellness requests and the Room Service agent for food and drinks in the room.
+        - Answer with the booking or order reference and the time.
+      links:
+        - agent:
+            ref:
+              name: octo_hc1_spa-booking-agent
+        - agent:
+            ref:
+              name: octo_hc1_room-service-agent
+      tools:
+        - mcp:
+            ref:
+              name: octo_hc1_reservations-mcp
+            allowed:
+              - get_reservation
+      maxNumberOfLoops: 25
+      maxConsecutiveErrors: 3
+      taskTimeoutSecs: 90
+llmProviders:
+  octo_hc1_openai:
+    label: A2D LLM mock
+    description: OpenAI-compatible A2D LLM mock with scripted answers
+    metadata:
+      platform: OpenAI
+      models:
+        - gpt-5-mini
+connections:
+  openai-connection:
+    kind: llm
+    ref:
+      name: octo_hc1_openai
+    spec:
+      url: ${a2dLlm.url}/
+      configuration:
+        apiKey: ${a2dLlm.apiKey}
+        timeout: 600000
+  reservations-mcp-connection:
+    kind: mcp
+    ref:
+      name: octo_hc1_reservations-mcp
+    spec:
+      url: ${reservationsMcp.url}
+  spa-booking-agent-connection:
+    kind: agent
+    ref:
+      name: octo_hc1_spa-booking-agent
+    spec:
+      url: ${spaBookingAgent.url}
+  room-service-agent-connection:
+    kind: agent
+    ref:
+      name: octo_hc1_room-service-agent
+    spec:
+      url: ${roomServiceAgent.url}
+mcpServers:
+  octo_hc1_reservations-mcp:
+    label: Reservations MCP
+    description: Hotel reservations by room.
+    metadata:
+      transport:
+        kind: streamableHttp
+        path: /mcp
+      tools:
+        - name: get_reservation
+          description: Get the reservation of a room.
+          inputSchema:
+            type: object
+            properties:
+              room:
+                type: string
+                description: Room number, e.g. 412
+            required:
+              - room
+agents:
+  octo_hc1_spa-booking-agent:
+    label: Spa Booking Agent
+    description: Books spa and wellness treatments for hotel guests.
+    metadata:
+      platform: AgentForce
+      protocol: a2a
+    card:
+      name: Spa Booking Agent
+      description: Books spa and wellness treatments for hotel guests.
+      url: ${spaBookingAgent.url}
+      protocolVersion: 0.3.0
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: book-spa
+          name: Book Spa
+          description: Book a spa treatment for a guest.
+          tags:
+            - spa
+          examples:
+            - Book a massage for room 412
+  octo_hc1_room-service-agent:
+    label: Room Service Agent
+    description: Takes food and drink orders delivered to the room.
+    metadata:
+      platform: MuleSoft
+      protocol: a2a
+    card:
+      name: Room Service Agent
+      description: Takes food and drink orders delivered to the room.
+      url: ${roomServiceAgent.url}
+      protocolVersion: 0.3.0
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: order-room-service
+          name: Order Room Service
+          description: Order food or drinks to a room.
+          tags:
+            - room-service
+          examples:
+            - Breakfast for room 415 at 07:30

@@ -1,0 +1,267 @@
+schemaVersion: 1.0.0
+label: Fleet Maintenance (fully mocked)
+brokers:
+  octo_fm1_fleet-broker:
+    card:
+      protocolVersion: 0.3.0
+      name: octo_fm1_fleet-broker
+      description: "A fleet broker checks telematics, orders parts, books the workshop and finds a replacement truck: two agents, four tool servers. Fully mocked: the LLM is an A²D LLM mock too, so no OpenAI key is needed."
+      url: ${ingressgw.url}/octo_fm1_fleet-broker
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+        stateTransitionHistory: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: fleet-request
+          name: Fleet Request
+          description: Repairs, warranty and fuel budgets for fleet vehicles.
+          tags:
+            - fleet
+          examples:
+            - TRK-77 reports brake wear, get it fixed
+            - Is TRK-77 still under warranty?
+    spec:
+      llm:
+        ref:
+          name: octo_fm1_openai
+        configuration:
+          model: gpt-5-mini
+          openAI:
+            reasoningEffort: MINIMAL
+      instructions:
+        - You keep a delivery fleet on the road.
+        - For a repair, read the vehicle status first (for example TRK-77), check the part, book a workshop slot and ask the Dispatch agent for a replacement vehicle.
+        - Use the Warranty agent for warranty questions and the fuel tools for fuel budgets.
+        - Answer with the references and dates.
+      links:
+        - agent:
+            ref:
+              name: octo_fm1_dispatch-agent
+        - agent:
+            ref:
+              name: octo_fm1_warranty-agent
+      tools:
+        - mcp:
+            ref:
+              name: octo_fm1_telematics-mcp
+            allowed:
+              - get_vehicle_status
+        - mcp:
+            ref:
+              name: octo_fm1_parts-mcp
+            allowed:
+              - check_part
+        - mcp:
+            ref:
+              name: octo_fm1_workshop-mcp
+            allowed:
+              - book_slot
+        - mcp:
+            ref:
+              name: octo_fm1_fuel-mcp
+            allowed:
+              - get_fuel_card
+      maxNumberOfLoops: 25
+      maxConsecutiveErrors: 3
+      taskTimeoutSecs: 90
+llmProviders:
+  octo_fm1_openai:
+    label: A2D LLM mock
+    description: OpenAI-compatible A2D LLM mock with scripted answers
+    metadata:
+      platform: OpenAI
+      models:
+        - gpt-5-mini
+connections:
+  openai-connection:
+    kind: llm
+    ref:
+      name: octo_fm1_openai
+    spec:
+      url: ${a2dLlm.url}/
+      configuration:
+        apiKey: ${a2dLlm.apiKey}
+        timeout: 600000
+  telematics-mcp-connection:
+    kind: mcp
+    ref:
+      name: octo_fm1_telematics-mcp
+    spec:
+      url: ${telematicsMcp.url}
+  parts-mcp-connection:
+    kind: mcp
+    ref:
+      name: octo_fm1_parts-mcp
+    spec:
+      url: ${partsMcp.url}
+  workshop-mcp-connection:
+    kind: mcp
+    ref:
+      name: octo_fm1_workshop-mcp
+    spec:
+      url: ${workshopMcp.url}
+  fuel-mcp-connection:
+    kind: mcp
+    ref:
+      name: octo_fm1_fuel-mcp
+    spec:
+      url: ${fuelMcp.url}
+  dispatch-agent-connection:
+    kind: agent
+    ref:
+      name: octo_fm1_dispatch-agent
+    spec:
+      url: ${dispatchAgent.url}
+  warranty-agent-connection:
+    kind: agent
+    ref:
+      name: octo_fm1_warranty-agent
+    spec:
+      url: ${warrantyAgent.url}
+mcpServers:
+  octo_fm1_telematics-mcp:
+    label: Telematics MCP
+    description: Live vehicle status.
+    metadata:
+      transport:
+        kind: streamableHttp
+        path: /mcp
+      tools:
+        - name: get_vehicle_status
+          description: Get the status and alerts of a vehicle.
+          inputSchema:
+            type: object
+            properties:
+              vehicle_id:
+                type: string
+                description: Vehicle id, e.g. TRK-77
+            required:
+              - vehicle_id
+  octo_fm1_parts-mcp:
+    label: Parts MCP
+    description: Spare parts stock.
+    metadata:
+      transport:
+        kind: streamableHttp
+        path: /mcp
+      tools:
+        - name: check_part
+          description: Check the stock of a part for a vehicle.
+          inputSchema:
+            type: object
+            properties:
+              vehicle_id:
+                type: string
+                description: Vehicle id
+              part:
+                type: string
+                description: Part name
+            required:
+              - vehicle_id
+              - part
+  octo_fm1_workshop-mcp:
+    label: Workshop MCP
+    description: Workshop slots.
+    metadata:
+      transport:
+        kind: streamableHttp
+        path: /mcp
+      tools:
+        - name: book_slot
+          description: Book a workshop slot for a vehicle.
+          inputSchema:
+            type: object
+            properties:
+              vehicle_id:
+                type: string
+                description: Vehicle id
+              date:
+                type: string
+                description: Date, YYYY-MM-DD
+            required:
+              - vehicle_id
+              - date
+  octo_fm1_fuel-mcp:
+    label: Fuel MCP
+    description: Fuel cards and budgets.
+    metadata:
+      transport:
+        kind: streamableHttp
+        path: /mcp
+      tools:
+        - name: get_fuel_card
+          description: Get the fuel card and budget of a vehicle.
+          inputSchema:
+            type: object
+            properties:
+              vehicle_id:
+                type: string
+                description: Vehicle id
+            required:
+              - vehicle_id
+agents:
+  octo_fm1_dispatch-agent:
+    label: Dispatch Agent
+    description: Plans routes and replacement vehicles.
+    metadata:
+      platform: MuleSoft
+      protocol: a2a
+    card:
+      name: Dispatch Agent
+      description: Plans routes and replacement vehicles.
+      url: ${dispatchAgent.url}
+      protocolVersion: 0.3.0
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: replace-vehicle
+          name: Replace Vehicle
+          description: Find a replacement vehicle for a route.
+          tags:
+            - dispatch
+          examples:
+            - Find a replacement for TRK-77
+  octo_fm1_warranty-agent:
+    label: Warranty Agent
+    description: Knows the warranty terms of every vehicle.
+    metadata:
+      platform: Snowflake
+      protocol: a2a
+    card:
+      name: Warranty Agent
+      description: Knows the warranty terms of every vehicle.
+      url: ${warrantyAgent.url}
+      protocolVersion: 0.3.0
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: check-warranty
+          name: Check Warranty
+          description: Check the warranty of a vehicle.
+          tags:
+            - warranty
+          examples:
+            - Is TRK-77 under warranty?

@@ -247,7 +247,7 @@ On each MCP server card, click the **Tools** row (or its pencil). Octoloom reads
 Select the broker `travel-expense-broker`. In the inspector:
 
 1. Click **Agents (0)**. In **Add existing agent…**, pick each agent and click **Add**: `travel-booking-agent`, `policy-advisor-agent`, `visa-agent`, `expense-audit-agent`, `reimbursement-agent`.
-2. Click **MCP servers**. Add each server with **Add existing MCP server…**, then tick its **Allowed tools**:
+2. Click **MCP servers (0)**. Add each server with **Add existing MCP server…**, then tick its **Allowed tools**:
    - `flights-mcp`: `search_flights`
    - `hotels-mcp`: `search_hotels`
    - `expense-mcp`: `create_expense_report`
@@ -286,7 +286,7 @@ Run **Validate** from the canvas CLI menu and fix anything in the Problems bar. 
 ## Next
 
 - Previous: [Procurement Assistant](../v1-procurement/README.md)
-- Next: [Customer Service Broker: governed](../v1-customer-service-governed/README.md)
+- Next: [Fleet Maintenance (fully mocked)](../v1-fleet-maintenance/README.md)
 - Same use case, governed variant: [Travel & Expense: governed](../v1-travel-expense-governed/README.md)
 - [All tutorials](../README.md)
 

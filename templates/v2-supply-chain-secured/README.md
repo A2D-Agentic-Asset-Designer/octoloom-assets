@@ -21,7 +21,7 @@ All agents and MCP servers are public A2D mocks, so the network runs without any
    - `shipmentsMcp.clientSecret`: Client secret (any value works with the A²D mocks)
    - `inventoryMcp.password`: Password (any value works with the A²D mocks)
    - `supplierMcp.clientSecret`: Client secret (any value works with the A²D mocks)
-3. When the status light turns green (**Deployed and running**), click **Open chat** and paste a prompt below. The **ANT** icon under a reply opens the task in the Agent Network Tracer, with each agent and tool call.
+3. When the status light turns green (**Deployed and running**), click **Open chat** and paste a prompt below. The **Tracer** icon under a reply opens the task in the Agent Network Tracer, with each agent and tool call.
 
 ## Try it
 

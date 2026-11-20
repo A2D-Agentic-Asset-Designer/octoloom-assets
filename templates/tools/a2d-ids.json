@@ -192,5 +192,80 @@
       "monitoring_mcp": "f76580a4-c9cf-4e67-a5f9-96a717075626",
       "itsm_mcp": "3c7aac35-436f-4c5c-b436-7430d2d254d2"
     }
+  },
+  "v1-hotel-concierge": {
+    "project": null,
+    "agents": {
+      "spa-booking-agent": "da841beb-a82f-4e19-a3e3-1a0b2248e87b",
+      "room-service-agent": "078e025d-16f6-41f2-adfb-4d0a44d4d2ca"
+    },
+    "mcps": {
+      "reservations-mcp": "3c751b13-687b-4d48-8056-a1da3b243645"
+    },
+    "llm": "a16f9106-adbc-4adc-8326-9b137e2e816a"
+  },
+  "v1-library-services": {
+    "project": null,
+    "agents": {
+      "holds-agent": "7d0ba84c-7885-41da-ae73-04856e41d1bb",
+      "events-agent": "440d6653-af85-4673-a741-e3cbed29c968"
+    },
+    "mcps": {
+      "members-mcp": "310f9554-6afd-4317-a988-d127916162c5",
+      "loans-mcp": "d36da069-20df-4d9a-b7ef-d0d4bf8b9376",
+      "catalog-mcp": "1230b66d-12f8-4c14-8946-8b3bcac9c0b3"
+    },
+    "llm": "481c1eeb-aee4-4564-8aea-ab3bfa0cf437"
+  },
+  "v1-fleet-maintenance": {
+    "project": null,
+    "agents": {
+      "dispatch-agent": "96b57f4c-e1b8-4e17-ad3f-ce3fa13183aa",
+      "warranty-agent": "15aff66a-3290-40de-bda6-0aef81a72d70"
+    },
+    "mcps": {
+      "telematics-mcp": "f3770ec2-ebc5-4422-9f38-765cea1af443",
+      "parts-mcp": "824ab59b-70b8-47e5-9f13-1f00e76ed915",
+      "workshop-mcp": "894fc5b4-5682-41f5-bd2f-60e4328cb6cc",
+      "fuel-mcp": "7049ba43-0e1f-4d5b-aa00-c6c8e8e385c1"
+    },
+    "llm": "7044ccde-ce42-4a54-b123-db2e9bb98587"
+  },
+  "v2-event-ticketing": {
+    "project": null,
+    "agents": {
+      "ticketing_agent": "7fbe7677-8b25-4d43-b51a-e3169aaa56f9",
+      "waitlist_agent": "1c6d5b32-bcdd-418a-959f-2eb48a95917b"
+    },
+    "mcps": {
+      "events_mcp": "7809cb1b-39b8-41cf-aaaf-e0f2ff2838ed",
+      "booking_mcp": "155023bf-2dc9-4e61-9020-6874a24c608c"
+    },
+    "llm": "31e90ff0-fafc-4029-9933-c5002fa9f2ea"
+  },
+  "v2-warranty-repair": {
+    "project": null,
+    "agents": {
+      "repair_agent": "783a4158-1abf-45ee-840d-daa0efb3b37c",
+      "notify_agent": "f623e618-a913-4caa-beba-b927c7175abb",
+      "quote_agent": "bd36453c-218b-4c2f-b198-94a82fd187ce"
+    },
+    "mcps": {
+      "device_registry_mcp": "2716466b-4a56-4875-ba58-fe7b10a2f7a5"
+    },
+    "llm": "30cf197e-273b-451b-91fb-e34e1888901e"
+  },
+  "v2-utility-outage": {
+    "project": null,
+    "agents": {
+      "comms_agent": "b6db9afd-bd96-47e4-be74-3fd2d76070e8",
+      "credit_agent": "aeee10e9-aca6-4cdd-b357-5565c35e42a3",
+      "crew_agent": "30d2929e-8970-4f62-a9c0-6ab74edd014d"
+    },
+    "mcps": {
+      "grid_mcp": "0162bf7a-b628-4631-974f-e2ae3737ecda",
+      "field_ticket_mcp": "6195b27b-2993-4800-98ce-c789473c1bf2"
+    },
+    "llm": "95a3d68c-3353-453d-9d4b-1d6ebec98e49"
   }
 }

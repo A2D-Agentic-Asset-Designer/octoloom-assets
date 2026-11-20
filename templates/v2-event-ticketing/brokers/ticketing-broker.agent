@@ -1,0 +1,143 @@
+# @dialect: AGENTFABRIC=1.0
+# Event Ticketing (fully mocked): Extract the event, check availability, reserve the seats and issue the tickets, or join the waitlist. Fully mocked: the LLM is an A²D LLM mock too, so no OpenAI key is needed.
+# Upstreams and the LLM are A2D mocks; see README.md for test prompts.
+
+system:
+  instructions: "You are the box office of a concert hall. Reserve seats only when the event has free seats."
+
+config:
+  agent_name: "ticketing-broker"
+  default_llm: @llm.default
+
+llm:
+  default:
+    target: "llm://openai_connection"
+    kind: "OpenAI"
+    model: "gpt-5-mini"
+    reasoning_effort: "MINIMAL"
+
+actions:
+  check_availability:
+    target: "mcp://events_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "check_availability"
+  reserve_seats:
+    target: "mcp://booking_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "reserve_seats"
+    inputs:
+      event_id: string
+      seats: string
+  ticketing_agent:
+    target: "a2a://ticketing_agent_connection"
+    kind: "a2a:send_message"
+  waitlist_agent:
+    target: "a2a://waitlist_agent_connection"
+    kind: "a2a:send_message"
+
+trigger ticketingBrokerTrigger:
+  kind: "a2a"
+  target: "brokers://octo_et2_ticketing_broker/a2a"
+  on_message: ->
+    transition to @generator.extractBooking
+
+# Step 1: one LLM call turns the request into an event id and a seat count.
+generator extractBooking:
+  description: "Extracts the event id and the number of seats."
+  label: "Extract Booking"
+  system:
+    instructions: |
+      Extract the event id (for example EV-501) and the number of seats from the message.
+      Use "UNKNOWN" when no event id is present.
+  prompt: ->
+    | {!@request.payload.message.parts[0].text}
+  outputs:
+    properties:
+      event_id:
+        type: "string"
+        description: "Event id, e.g. EV-501, or UNKNOWN"
+      seats:
+        type: "string"
+        description: "Number of seats"
+  on_exit: ->
+    transition to @subagent.availabilityGate
+
+# Step 2: a gate. The subagent calls the Events MCP and classifies the answer.
+subagent availabilityGate:
+  description: "Checks the free seats with the Events MCP."
+  label: "Availability Gate"
+  system:
+    instructions: |
+      Call the availability tool for the event and report whether seats are free.
+      Set available to "yes" only when the tool returns available true.
+  reasoning:
+    instructions: ->
+      | Event: {!@generator.extractBooking.output.event_id}. Request: {!@request.payload.message.parts[0].text}
+    actions:
+      check: @actions.check_availability
+    max_number_of_loops: 3
+    outputs:
+      properties:
+        available:
+          type: "string"
+          description: "Whether seats are free"
+          enum:
+            - "yes"
+            - "no"
+        detail:
+          type: "string"
+          description: "Availability detail from the tool"
+  on_exit: ->
+    transition to @router.availabilityRouter
+
+router availabilityRouter:
+  description: "Free seats are reserved and ticketed; sold-out events go to the waitlist."
+  routes:
+    - target: @executor.reserveSeats
+      when: @subagent.availabilityGate.output.available == "yes"
+      label: "Available"
+  otherwise:
+    target: @subagent.joinWaitlist
+
+# Step 3a: no LLM. The seats are reserved with bound arguments only.
+executor reserveSeats:
+  description: "Reserves the seats."
+  do: ->
+    run @actions.reserve_seats
+      with event_id = @generator.extractBooking.output.event_id
+      with seats = @generator.extractBooking.output.seats
+  on_exit: ->
+    transition to @subagent.issueTickets
+
+subagent issueTickets:
+  description: "Issues the e-tickets through the Ticketing agent."
+  label: "Issue Tickets"
+  reasoning:
+    instructions: ->
+      | Issue the e-tickets for event {!@generator.extractBooking.output.event_id}, {!@generator.extractBooking.output.seats} seats. Request: {!@request.payload.message.parts[0].text}
+    actions:
+      tickets: @actions.ticketing_agent
+  on_exit: ->
+    transition to @echo.booked
+
+echo booked:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Booked " + @generator.extractBooking.output.seats + " seats for " + @generator.extractBooking.output.event_id + ". " + @subagent.issueTickets.output)]})
+
+# Step 3b: sold out. The Waitlist agent takes over.
+subagent joinWaitlist:
+  description: "Puts the customer on the waitlist."
+  label: "Join Waitlist"
+  reasoning:
+    instructions: ->
+      | Event {!@generator.extractBooking.output.event_id} has no free seats: {!@subagent.availabilityGate.output.detail}. Add the customer to the waitlist. Request: {!@request.payload.message.parts[0].text}
+    actions:
+      waitlist: @actions.waitlist_agent
+  on_exit: ->
+    transition to @echo.waitlisted
+
+echo waitlisted:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Sold out: " + @subagent.availabilityGate.output.detail + ". " + @subagent.joinWaitlist.output)]})

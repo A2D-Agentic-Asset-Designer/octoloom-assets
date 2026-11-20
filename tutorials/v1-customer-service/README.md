@@ -222,7 +222,7 @@ On each MCP server card, click the **Tools** row (or its pencil). Octoloom reads
 Select the broker `customer-service-broker`. In the inspector:
 
 1. Click **Agents (0)**. In **Add existing agent…**, pick each agent and click **Add**: `order-status-agent`, `returns-agent`, `billing-agent`, `loyalty-agent`.
-2. Click **MCP servers**. Add each server with **Add existing MCP server…**, then tick its **Allowed tools**:
+2. Click **MCP servers (0)**. Add each server with **Add existing MCP server…**, then tick its **Allowed tools**:
    - `crm-mcp`: `get_customer`, `create_case`, `list_cases`
 
 ![The MCP servers of the broker with their allowed tools](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-customer-service/img/scratch-links.png)

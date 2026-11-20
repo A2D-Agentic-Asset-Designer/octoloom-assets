@@ -1,0 +1,58 @@
+{
+  "main": "agent-network.yaml",
+  "name": "event-ticketing-v2",
+  "classifier": "agentic-network",
+  "descriptorVersion": "1.0.0",
+  "apiVersion": "v1",
+  "tags": [
+    "octoloom-example"
+  ],
+  "metadata": {
+    "variables": {
+      "a2dLlm": {
+        "url": {
+          "description": "A2D LLM mock base URL (OpenAI-compatible)",
+          "default": "https://www.a2d-ai.com/api/platform/31e90ff0-fafc-4029-9933-c5002fa9f2ea/llm/v1",
+          "secret": false
+        },
+        "apiKey": {
+          "description": "A2D LLM mock key (any value works)",
+          "default": "a2d-mock-key",
+          "secret": true
+        }
+      },
+      "ticketingAgent": {
+        "url": {
+          "description": "Ticketing Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/7fbe7677-8b25-4d43-b51a-e3169aaa56f9/a2a",
+          "secret": false
+        }
+      },
+      "waitlistAgent": {
+        "url": {
+          "description": "Waitlist Agent (A2D mock, A2A 1.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/1c6d5b32-bcdd-418a-959f-2eb48a95917b/a2a",
+          "secret": false
+        }
+      },
+      "eventsMcp": {
+        "url": {
+          "description": "Events MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/7809cb1b-39b8-41cf-aaaf-e0f2ff2838ed/",
+          "secret": false
+        }
+      },
+      "bookingMcp": {
+        "url": {
+          "description": "Booking MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/155023bf-2dc9-4e61-9020-6874a24c608c/",
+          "secret": false
+        }
+      }
+    }
+  },
+  "dependencies": [],
+  "groupId": "${organizationId}",
+  "assetId": "event-ticketing-v2",
+  "version": "1.0.0"
+}

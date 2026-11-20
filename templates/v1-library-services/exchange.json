@@ -1,0 +1,72 @@
+{
+  "main": "agent-network.yaml",
+  "name": "library-services-v1",
+  "classifier": "agent-network",
+  "descriptorVersion": "1.0.0",
+  "apiVersion": "v1",
+  "tags": [
+    "octoloom-example"
+  ],
+  "metadata": {
+    "variables": {
+      "ingressgw": {
+        "url": {
+          "description": "Ingress gateway base URL (the broker is served under it)",
+          "default": "",
+          "secret": false
+        }
+      },
+      "a2dLlm": {
+        "url": {
+          "description": "A2D LLM mock base URL (OpenAI-compatible)",
+          "default": "https://www.a2d-ai.com/api/platform/481c1eeb-aee4-4564-8aea-ab3bfa0cf437/llm/v1",
+          "secret": false
+        },
+        "apiKey": {
+          "description": "A2D LLM mock key (any value works)",
+          "default": "a2d-mock-key",
+          "secret": true
+        }
+      },
+      "membersMcp": {
+        "url": {
+          "description": "Members MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/310f9554-6afd-4317-a988-d127916162c5/",
+          "secret": false
+        }
+      },
+      "loansMcp": {
+        "url": {
+          "description": "Loans MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/d36da069-20df-4d9a-b7ef-d0d4bf8b9376/",
+          "secret": false
+        }
+      },
+      "catalogMcp": {
+        "url": {
+          "description": "Library Catalog MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/1230b66d-12f8-4c14-8946-8b3bcac9c0b3/",
+          "secret": false
+        }
+      },
+      "holdsAgent": {
+        "url": {
+          "description": "Holds Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/7d0ba84c-7885-41da-ae73-04856e41d1bb/a2a",
+          "secret": false
+        }
+      },
+      "eventsAgent": {
+        "url": {
+          "description": "Events Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/440d6653-af85-4673-a741-e3cbed29c968/a2a",
+          "secret": false
+        }
+      }
+    }
+  },
+  "dependencies": [],
+  "groupId": "${organizationId}",
+  "assetId": "library-services-v1",
+  "version": "1.0.0"
+}

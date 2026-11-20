@@ -1,0 +1,65 @@
+{
+  "main": "agent-network.yaml",
+  "name": "utility-outage-v2",
+  "classifier": "agentic-network",
+  "descriptorVersion": "1.0.0",
+  "apiVersion": "v1",
+  "tags": [
+    "octoloom-example"
+  ],
+  "metadata": {
+    "variables": {
+      "a2dLlm": {
+        "url": {
+          "description": "A2D LLM mock base URL (OpenAI-compatible)",
+          "default": "https://www.a2d-ai.com/api/platform/95a3d68c-3353-453d-9d4b-1d6ebec98e49/llm/v1",
+          "secret": false
+        },
+        "apiKey": {
+          "description": "A2D LLM mock key (any value works)",
+          "default": "a2d-mock-key",
+          "secret": true
+        }
+      },
+      "commsAgent": {
+        "url": {
+          "description": "Customer Comms Agent (A2D mock, A2A 1.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/b6db9afd-bd96-47e4-be74-3fd2d76070e8/a2a",
+          "secret": false
+        }
+      },
+      "creditAgent": {
+        "url": {
+          "description": "Billing Credit Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/aeee10e9-aca6-4cdd-b357-5565c35e42a3/a2a",
+          "secret": false
+        }
+      },
+      "crewAgent": {
+        "url": {
+          "description": "Crew Dispatch Agent (A2D mock, A2A 1.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/30d2929e-8970-4f62-a9c0-6ab74edd014d/a2a",
+          "secret": false
+        }
+      },
+      "gridMcp": {
+        "url": {
+          "description": "Grid MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/0162bf7a-b628-4631-974f-e2ae3737ecda/",
+          "secret": false
+        }
+      },
+      "fieldTicketMcp": {
+        "url": {
+          "description": "Field Ticket MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/6195b27b-2993-4800-98ce-c789473c1bf2/",
+          "secret": false
+        }
+      }
+    }
+  },
+  "dependencies": [],
+  "groupId": "${organizationId}",
+  "assetId": "utility-outage-v2",
+  "version": "1.0.0"
+}

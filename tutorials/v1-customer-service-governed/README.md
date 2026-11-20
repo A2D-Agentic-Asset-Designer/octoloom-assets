@@ -237,7 +237,7 @@ On each MCP server card, click the **Tools** row (or its pencil). Octoloom reads
 Select the broker `customer-service-broker`. In the inspector:
 
 1. Click **Agents (0)**. In **Add existing agent…**, pick each agent and click **Add**: `order-status-agent`, `returns-agent`, `billing-agent`, `loyalty-agent`.
-2. Click **MCP servers**. Add each server with **Add existing MCP server…**, then tick its **Allowed tools**:
+2. Click **MCP servers (0)**. Add each server with **Add existing MCP server…**, then tick its **Allowed tools**:
    - `crm-mcp`: `get_customer`, `create_case`, `list_cases`
 
 ![The MCP servers of the broker with their allowed tools](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-customer-service-governed/img/scratch-links.png)
@@ -300,7 +300,7 @@ Run **Validate** from the canvas CLI menu and fix anything in the Problems bar. 
 
 ## Next
 
-- Previous: [Travel & Expense](../v1-travel-expense/README.md)
+- Previous: [Library Services (fully mocked)](../v1-library-services/README.md)
 - Next: [Employee Onboarding: governed](../v1-employee-onboarding-governed/README.md)
 - Same use case, plain variant: [Customer Service Broker](../v1-customer-service/README.md)
 - [All tutorials](../README.md)

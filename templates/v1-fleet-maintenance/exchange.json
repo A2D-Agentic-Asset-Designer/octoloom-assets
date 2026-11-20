@@ -1,0 +1,79 @@
+{
+  "main": "agent-network.yaml",
+  "name": "fleet-maintenance-v1",
+  "classifier": "agent-network",
+  "descriptorVersion": "1.0.0",
+  "apiVersion": "v1",
+  "tags": [
+    "octoloom-example"
+  ],
+  "metadata": {
+    "variables": {
+      "ingressgw": {
+        "url": {
+          "description": "Ingress gateway base URL (the broker is served under it)",
+          "default": "",
+          "secret": false
+        }
+      },
+      "a2dLlm": {
+        "url": {
+          "description": "A2D LLM mock base URL (OpenAI-compatible)",
+          "default": "https://www.a2d-ai.com/api/platform/7044ccde-ce42-4a54-b123-db2e9bb98587/llm/v1",
+          "secret": false
+        },
+        "apiKey": {
+          "description": "A2D LLM mock key (any value works)",
+          "default": "a2d-mock-key",
+          "secret": true
+        }
+      },
+      "telematicsMcp": {
+        "url": {
+          "description": "Telematics MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/f3770ec2-ebc5-4422-9f38-765cea1af443/",
+          "secret": false
+        }
+      },
+      "partsMcp": {
+        "url": {
+          "description": "Parts MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/824ab59b-70b8-47e5-9f13-1f00e76ed915/",
+          "secret": false
+        }
+      },
+      "workshopMcp": {
+        "url": {
+          "description": "Workshop MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/894fc5b4-5682-41f5-bd2f-60e4328cb6cc/",
+          "secret": false
+        }
+      },
+      "fuelMcp": {
+        "url": {
+          "description": "Fuel MCP (A2D mock) base URL",
+          "default": "https://www.a2d-ai.com/api/platform/7049ba43-0e1f-4d5b-aa00-c6c8e8e385c1/",
+          "secret": false
+        }
+      },
+      "dispatchAgent": {
+        "url": {
+          "description": "Dispatch Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/96b57f4c-e1b8-4e17-ad3f-ce3fa13183aa/a2a",
+          "secret": false
+        }
+      },
+      "warrantyAgent": {
+        "url": {
+          "description": "Warranty Agent (A2D mock, A2A 0.3.0) URL",
+          "default": "https://www.a2d-ai.com/api/platform/15aff66a-3290-40de-bda6-0aef81a72d70/a2a",
+          "secret": false
+        }
+      }
+    }
+  },
+  "dependencies": [],
+  "groupId": "${organizationId}",
+  "assetId": "fleet-maintenance-v1",
+  "version": "1.0.0"
+}

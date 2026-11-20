@@ -173,7 +173,7 @@ def tutorial(t, m, nxt, prev):
     text = open(os.path.join(m['dir'], 'agent-network.yaml')).read()
     L = []
     L += [f"# Tutorial: {t['title']}", '',
-          f"[All tutorials](../README.md) · [Getting started](../getting-started.md) · {STYLE[v]} network ({'Agent Network 2.0, AgentScript' if v=='v2' else 'Agent Network 1.0, LLM broker'}) · {'Use case' if t['category']=='usecase' else 'Technical'}{'' if var=='plain' else ' · ' + var.upper() if var=='idmc' else ' · ' + var}", '',
+          f"[All tutorials](../README.md) · [Getting started](../getting-started.md) · {STYLE[v]} network ({'Agent Network 2.0, AgentScript' if v=='v2' else 'Agent Network 1.0, LLM broker'}) · {'Use case' if t['category']=='usecase' else 'Technical'}{' · fully mocked' if t.get('mocked') else ''}{'' if var=='plain' else ' · ' + var.upper() if var=='idmc' else ' · ' + var}", '',
           f"> {t['summary']}", '',
           f"| Agents | MCP servers | A2A | Policies | Template id |", '|---|---|---|---|---|',
           f"| {t['agents']} | {t['mcps']} | {', '.join(t['protocols'])} | {len(t['policies'])} | `{tid}` |", '',
@@ -182,13 +182,13 @@ def tutorial(t, m, nxt, prev):
           '2. **[Learn step by step](#path-2-learn-step-by-step)**: the same steps, with what each part of the network does and how Octoloom shows it.',
           '3. **[Build it from scratch](#path-3-build-it-from-scratch)**: start from a blank project and build the same network yourself, no code, one screenshot per step.', '',
           '## Before you start', '',
-          '- VS Code with **Octoloom for Agent Fabric** installed (Marketplace), version 0.9.25 or later.',
+          '- VS Code with **Octoloom for Agent Fabric** installed (Marketplace), version ' + ('0.9.27' if t.get('mocked') else '0.9.25') + ' or later.',
           '- An Anypoint organization with Agent Fabric, a connected app (client ID and secret), an environment and a Flex gateway.',
-          '- An OpenAI API key (or an OpenAI-compatible LLM gateway).',
+          ('- No OpenAI key: the LLM is an A²D LLM mock as well (`a2dLlm.url`), with scripted answers for the Try it prompts.' if t.get('mocked') else '- An OpenAI API key (or an OpenAI-compatible LLM gateway).'),
           ]
     if var == 'idmc':
         L.append('- An Informatica IDMC org with the four shared MCP services and an IDMC MCP client (see the template README, *IDMC setup*).')
-    L += ['- Nothing else: ' + ('all agents and MCP servers are public A²D mocks, so the network runs without any other system.' if var != 'idmc' else 'the IDMC MCP servers are called with OAuth 2.0 client credentials.'), '',
+    L += ['- Nothing else: ' + (('all agents, MCP servers and the LLM are public A²D mocks, so the network runs without any other system or key.' if t.get('mocked') else 'all agents and MCP servers are public A²D mocks, so the network runs without any other system.') if var != 'idmc' else 'the IDMC MCP servers are called with OAuth 2.0 client credentials.'), '',
           '## Path 1: Just use it', '',
           '1. **Home → Start → New ' + STYLE[v] + ' Network.** In the dialog pick **' + ('Technical' if t['category']=='technical' else 'Use cases') + '**, then the card **' + t['title'].replace(': governed','') + '**' + (' (the one with the policies chip)' if var=='governed' else '') + '. Choose a folder and click **Create**.',
           '2. **Deploy.** ' + clean(re.sub(r'^\d\. ', '', next((l for l in rp.get('Deploy in 3 steps', '').splitlines() if l.startswith('2.')), 'In Projects & Deploy, click Deploy.'))).strip()]
@@ -254,7 +254,7 @@ def tutorial(t, m, nxt, prev):
     n += 1
     L += [f'### Step {n}. Chat with the broker', '',
           'Click **Open chat** on the deployment box. On the left is the network (the cards light up as they are called), and on the right is the conversation with its task states. Paste the prompts one at a time:', '',
-          img(tid, 'chat', f'{t["title"]} in the broker chat'), '', '*The reply in the screenshot is an illustration: it shows what the broker answers. The real wording changes from run to run.*', '', '| Prompt | You should see |', '|---|---|']
+          img(tid, 'chat', f'{t["title"]} in the broker chat'), '', ('*The LLM is a scripted A²D LLM mock, so the broker gives the same answer every time; the ids in the table are checked by a live deploy.*' if t.get('mocked') else '*The reply in the screenshot is an illustration: it shows what the broker answers. The real wording changes from run to run.*'), '', '| Prompt | You should see |', '|---|---|']
     for p in tp: L.append(f"| `{p['prompt']}` | {p['see'].replace('|', '/')} |")
     L += ['', clean(next((l for l in reversed(m['readme'].splitlines()) if l.startswith('The broker is')), '')), '']
     n += 1
@@ -279,7 +279,7 @@ def tutorial(t, m, nxt, prev):
     L += ['- [All tutorials](../README.md)', '', '---', f'Generated from the `{tid}` template (Octoloom `media/templates/{tid}`). Screenshots use fake data.', '']
     return '\n'.join(L)
 
-ORDER_KEY = lambda t: ({'usecase': 0, 'technical': 1}[t['category']], {'plain': 0, 'governed': 1, 'secured': 2, 'idmc': 3}[variant(t)], t['title'])
+ORDER_KEY = lambda t: ({'usecase': 0, 'technical': 1}[t['category']], 1 if t.get('mocked') else 0, {'plain': 0, 'governed': 1, 'secured': 2, 'idmc': 3}[variant(t)], t['title'])
 
 def index_md():
     L = ['# Octoloom tutorials', '',
@@ -287,13 +287,13 @@ def index_md():
          '1. **Just use it**: import the template from **New Project**, deploy it and chat with it.',
          '2. **Learn step by step**: the same project, explained part by part (canvas, AgentScript flow, policies, deploy, chat, Tracer), with screenshots.',
          '3. **Build it from scratch**: start from a blank project and build the same network with forms, menus and buttons only (no code), one screenshot per step.', '',
-         'New to Octoloom? Start with **[Getting started](getting-started.md)**, then pick a template. A good learning order is the smallest ones first: *Retail Returns* (deterministic) and *Customer Service* (probabilistic), then their governed and secured variants.', '']
+         'New to Octoloom? Start with **[Getting started](getting-started.md)**, then pick a template. A good learning order is the smallest ones first: *Retail Returns* (deterministic) and *Customer Service* (probabilistic), then their governed and secured variants. No OpenAI key yet? The **Fully mocked** ones (*Hotel Concierge*, *Event Ticketing* and four more) use an A²D LLM mock, so you can deploy and chat with only an Anypoint org.', '']
     for v in ('v1', 'v2'):
         L += [f"## {STYLE[v]} networks ({'Agent Network 1.0' if v=='v1' else 'Agent Network 2.0, AgentScript'})", '',
               'An LLM broker reads its instructions and picks agents and MCP tools.' if v=='v1' else 'AgentScript flows decide every step: routers, gates, executors.', '',
               '| Tutorial | Kind | Agents | MCP | Policies |', '|---|---|---|---|---|']
         for t in sorted([x for x in INDEX if x['version'] == v], key=ORDER_KEY):
-            k = {'plain': 'Use case' if t['category']=='usecase' else 'Technical', 'governed': 'Governed', 'secured': 'Secured', 'idmc': 'IDMC'}[variant(t)]
+            k = 'Fully mocked' if t.get('mocked') else {'plain': 'Use case' if t['category']=='usecase' else 'Technical', 'governed': 'Governed', 'secured': 'Secured', 'idmc': 'IDMC'}[variant(t)]
             L.append(f"| [{t['title']}]({t['id']}/README.md) | {k} | {t['agents']} | {t['mcps']} | {len(t['policies'])} |")
         L.append('')
     L += ['---', 'The tutorials are generated from the bundled templates with `tutorials/tools/build.py` and updated when the templates change. Screenshots use fake data.', '']

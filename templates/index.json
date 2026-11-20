@@ -847,6 +847,138 @@
       ],
       "assetId": "incident-response-secured-v2",
       "prefix": "octo_ir2s"
+    },
+    {
+      "id": "v1-hotel-concierge",
+      "version": "v1",
+      "category": "usecase",
+      "title": "Hotel Concierge (fully mocked)",
+      "summary": "A concierge broker books the spa and room service for hotel guests after a reservation lookup. Fully mocked: the LLM is an A²D LLM mock too, so no OpenAI key is needed.",
+      "agents": 2,
+      "mcps": 1,
+      "protocols": [
+        "0.3.0"
+      ],
+      "policies": [],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "README.md"
+      ],
+      "assetId": "hotel-concierge-v1",
+      "prefix": "octo_hc1",
+      "mocked": true
+    },
+    {
+      "id": "v1-library-services",
+      "version": "v1",
+      "category": "usecase",
+      "title": "Library Services (fully mocked)",
+      "summary": "A library broker answers member, loan, catalog and event questions with two agents and three tool servers. Fully mocked: the LLM is an A²D LLM mock too, so no OpenAI key is needed.",
+      "agents": 2,
+      "mcps": 3,
+      "protocols": [
+        "0.3.0"
+      ],
+      "policies": [],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "README.md"
+      ],
+      "assetId": "library-services-v1",
+      "prefix": "octo_ls1",
+      "mocked": true
+    },
+    {
+      "id": "v1-fleet-maintenance",
+      "version": "v1",
+      "category": "usecase",
+      "title": "Fleet Maintenance (fully mocked)",
+      "summary": "A fleet broker checks telematics, orders parts, books the workshop and finds a replacement truck: two agents, four tool servers. Fully mocked: the LLM is an A²D LLM mock too, so no OpenAI key is needed.",
+      "agents": 2,
+      "mcps": 4,
+      "protocols": [
+        "0.3.0"
+      ],
+      "policies": [],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "README.md"
+      ],
+      "assetId": "fleet-maintenance-v1",
+      "prefix": "octo_fm1",
+      "mocked": true
+    },
+    {
+      "id": "v2-event-ticketing",
+      "version": "v2",
+      "category": "usecase",
+      "title": "Event Ticketing (fully mocked)",
+      "summary": "Extract the event, check availability, reserve the seats and issue the tickets, or join the waitlist. Fully mocked: the LLM is an A²D LLM mock too, so no OpenAI key is needed.",
+      "agents": 2,
+      "mcps": 2,
+      "protocols": [
+        "0.3.0",
+        "1.0"
+      ],
+      "policies": [],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "brokers/ticketing-broker.agent",
+        "README.md"
+      ],
+      "assetId": "event-ticketing-v2",
+      "prefix": "octo_et2",
+      "mocked": true
+    },
+    {
+      "id": "v2-warranty-repair",
+      "version": "v2",
+      "category": "usecase",
+      "title": "Warranty Repair (fully mocked)",
+      "summary": "Check the device warranty: covered repairs are booked and confirmed, the others get a quote. Three agents, one tool server. Fully mocked: the LLM is an A²D LLM mock too, so no OpenAI key is needed.",
+      "agents": 3,
+      "mcps": 1,
+      "protocols": [
+        "0.3.0",
+        "1.0"
+      ],
+      "policies": [],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "brokers/repair-broker.agent",
+        "README.md"
+      ],
+      "assetId": "warranty-repair-v2",
+      "prefix": "octo_wr2",
+      "mocked": true
+    },
+    {
+      "id": "v2-utility-outage",
+      "version": "v2",
+      "category": "usecase",
+      "title": "Utility Outage (fully mocked)",
+      "summary": "A known outage gets status updates and a bill credit; an unknown one gets a ticket and a field crew. Three agents, two tool servers. Fully mocked: the LLM is an A²D LLM mock too, so no OpenAI key is needed.",
+      "agents": 3,
+      "mcps": 2,
+      "protocols": [
+        "1.0",
+        "0.3.0"
+      ],
+      "policies": [],
+      "files": [
+        "agent-network.yaml",
+        "exchange.json",
+        "brokers/outage-broker.agent",
+        "README.md"
+      ],
+      "assetId": "utility-outage-v2",
+      "prefix": "octo_uo2",
+      "mocked": true
     }
   ]
 }

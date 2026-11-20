@@ -261,6 +261,12 @@ def path3(t, m, img, n0=1):
           ('The starter broker is an LLM broker with an OpenAI LLM (`openai` provider, `openai-connection`) and default instructions. The LLM is already done.' if v == 'v1'
            else f"The starter broker `{bk}` has an OpenAI LLM connection (`openai_connection`, MuleSoft's published OpenAI LLM) and a flow `{flow[0]}` with a trigger, one subagent and the built-in `done` reply. The LLM is already done."), '']
 
+    if t.get('mocked'):
+        step('Switch the LLM to the A²D LLM mock')
+        L += ["This template needs no OpenAI key: its LLM is an **A²D LLM mock** with scripted answers. Open the **Asset Palette** (Octoloom side bar), pick the **A²D** tab and the **LLMs** filter, then drag **Octoloom " + t['title'].replace(' (fully mocked)', '') + " LLM** onto the broker card.", '',
+              ('- It adds the project LLM ' + ('(`llmProviders`)' if v == 'v1' else '(`registry.llms`)') + ' and a connection to the mock URL with the placeholder key `a2d-mock-key`, and switches the broker to the mock\'s first model. No Exchange dependency is added.'),
+              "- Rename the variable group to `a2dLlm` in `exchange.json` (the template uses `${a2dLlm.url}` and `${a2dLlm.apiKey}`), and remove the starter OpenAI connection and its `openai` variables.", '']
+
     if ag:
         step('Add the agents')
         L += ['On the canvas, click **+** (Add to the network) → **Agent** → **Empty**. The new agent opens in the inspector on the right. Fill it in, then repeat for each agent:', '',

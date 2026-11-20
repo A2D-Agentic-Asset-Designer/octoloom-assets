@@ -1,0 +1,188 @@
+agentNetwork: 2.0.0
+info:
+  label: Warranty Repair (fully mocked)
+  version: v1
+  description: "Check the device warranty: covered repairs are booked and confirmed, the others get a quote. Three agents, one tool server. Fully mocked: the LLM is an A²D LLM mock too, so no OpenAI key is needed."
+registry:
+  agents:
+    octo_wr2_repair_agent:
+      info:
+        label: Repair Agent
+        description: Books warranty repairs with courier pickup.
+      metadata:
+        platform: MuleSoft
+        interfaces:
+          a2a_v03:
+            card:
+              name: Repair Agent
+              description: Books warranty repairs with courier pickup.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: book-repair
+                  name: Book Repair
+                  description: Book a warranty repair.
+                  tags:
+                    - repair
+                  examples:
+                    - Book a repair for SN-1001
+              url: https://www.a2d-ai.com/api/platform/783a4158-1abf-45ee-840d-daa0efb3b37c/a2a
+              protocolVersion: 0.3.0
+    octo_wr2_notify_agent:
+      info:
+        label: Notification Agent
+        description: Sends confirmations by SMS and email.
+      metadata:
+        platform: Vertex
+        interfaces:
+          a2a:
+            card:
+              name: Notification Agent
+              description: Sends confirmations by SMS and email.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: notify-owner
+                  name: Notify Owner
+                  description: Confirm a repair to the owner.
+                  tags:
+                    - notify
+                  examples:
+                    - Confirm RP-1001
+              supportedInterfaces:
+                - url: https://www.a2d-ai.com/api/platform/f623e618-a913-4caa-beba-b927c7175abb/a2a
+                  protocolBinding: JSONRPC
+                  protocolVersion: "1.0"
+    octo_wr2_quote_agent:
+      info:
+        label: Quote Agent
+        description: Quotes repairs outside warranty.
+      metadata:
+        platform: AgentForce
+        interfaces:
+          a2a:
+            card:
+              name: Quote Agent
+              description: Quotes repairs outside warranty.
+              version: 1.0.0
+              capabilities:
+                pushNotifications: false
+              defaultInputModes:
+                - application/json
+                - text/plain
+              defaultOutputModes:
+                - application/json
+                - text/plain
+              skills:
+                - id: quote-repair
+                  name: Quote Repair
+                  description: Quote a paid repair.
+                  tags:
+                    - quote
+                  examples:
+                    - Quote a battery for SN-2002
+              supportedInterfaces:
+                - url: https://www.a2d-ai.com/api/platform/bd36453c-218b-4c2f-b198-94a82fd187ce/a2a
+                  protocolBinding: JSONRPC
+                  protocolVersion: "1.0"
+  mcps:
+    octo_wr2_device_registry_mcp:
+      info:
+        label: Device Registry MCP
+        description: Registered devices and their warranty.
+      metadata:
+        protocolVersion: "2025-06-18"
+        transport:
+          kind: streamableHttp
+          path: /mcp
+        tools:
+          - name: check_warranty
+            description: Check the warranty of a device by serial number.
+            inputSchema:
+              type: object
+              properties:
+                serial:
+                  type: string
+                  description: Serial number, e.g. SN-1001
+              required:
+                - serial
+  llms:
+    octo_wr2_a2d_llm:
+      info:
+        label: A2D LLM mock
+        description: OpenAI-compatible A2D LLM mock with scripted answers
+      metadata:
+        platform: OpenAI
+        models:
+          - gpt-5-mini
+context:
+  connections:
+    repair_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_wr2_repair_agent
+      url: ${repairAgent.url}
+    notify_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_wr2_notify_agent
+      url: ${notifyAgent.url}
+    quote_agent_connection:
+      kind: a2a
+      ref:
+        name: octo_wr2_quote_agent
+      url: ${quoteAgent.url}
+    device_registry_mcp_connection:
+      kind: mcp
+      ref:
+        name: octo_wr2_device_registry_mcp
+      url: ${deviceRegistryMcp.url}
+    openai_connection:
+      kind: llm
+      ref:
+        name: octo_wr2_a2d_llm
+      url: ${a2dLlm.url}
+      authentication:
+        kind: apiKey
+        apiKey: ${a2dLlm.apiKey}
+brokers:
+  octo_wr2_repair_broker:
+    kind: AgentScript
+    implementation: ./brokers/repair-broker.agent
+    interfaces:
+      a2a:
+        card:
+          name: Repair Broker
+          description: "Check the device warranty: covered repairs are booked and confirmed, the others get a quote. Three agents, one tool server. Fully mocked: the LLM is an A²D LLM mock too, so no OpenAI key is needed."
+          version: 1.0.0
+          capabilities:
+            streaming: true
+            pushNotifications: false
+          defaultInputModes:
+            - text/plain
+          defaultOutputModes:
+            - text/plain
+          skills:
+            - id: repair-device
+              name: Repair a Device
+              description: Repair a device under warranty or get a quote.
+              tags:
+                - repair
+                - warranty
+              examples:
+                - My laptop SN-1001 has a flickering screen
+                - SN-2002 has a swollen battery

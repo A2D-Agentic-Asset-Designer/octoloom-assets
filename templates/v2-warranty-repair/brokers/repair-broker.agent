@@ -1,0 +1,141 @@
+# @dialect: AGENTFABRIC=1.0
+# Warranty Repair (fully mocked): Check the device warranty: covered repairs are booked and confirmed, the others get a quote. Three agents, one tool server. Fully mocked: the LLM is an A²D LLM mock too, so no OpenAI key is needed.
+# Upstreams and the LLM are A2D mocks; see README.md for test prompts.
+
+system:
+  instructions: "You are the repair desk of an electronics brand. Repair free of charge only when the registry says the device is covered."
+
+config:
+  agent_name: "repair-broker"
+  default_llm: @llm.default
+
+llm:
+  default:
+    target: "llm://openai_connection"
+    kind: "OpenAI"
+    model: "gpt-5-mini"
+    reasoning_effort: "MINIMAL"
+
+actions:
+  check_warranty:
+    target: "mcp://device_registry_mcp_connection"
+    kind: "mcp:tool"
+    tool_name: "check_warranty"
+  repair_agent:
+    target: "a2a://repair_agent_connection"
+    kind: "a2a:send_message"
+  notify_agent:
+    target: "a2a://notify_agent_connection"
+    kind: "a2a:send_message"
+  quote_agent:
+    target: "a2a://quote_agent_connection"
+    kind: "a2a:send_message"
+
+trigger repairBrokerTrigger:
+  kind: "a2a"
+  target: "brokers://octo_wr2_repair_broker/a2a"
+  on_message: ->
+    transition to @generator.extractDevice
+
+# Step 1: one LLM call turns the request into a serial number and an issue.
+generator extractDevice:
+  description: "Extracts the serial number and the issue."
+  label: "Extract Device"
+  system:
+    instructions: |
+      Extract the serial number (for example SN-1001) and a short issue from the message.
+      Use "UNKNOWN" when no serial number is present.
+  prompt: ->
+    | {!@request.payload.message.parts[0].text}
+  outputs:
+    properties:
+      serial:
+        type: "string"
+        description: "Serial number, e.g. SN-1001, or UNKNOWN"
+      issue:
+        type: "string"
+        description: "Short description of the issue"
+  on_exit: ->
+    transition to @subagent.warrantyGate
+
+# Step 2: a gate. The subagent calls the Device Registry MCP and classifies the answer.
+subagent warrantyGate:
+  description: "Checks the warranty with the Device Registry MCP."
+  label: "Warranty Gate"
+  system:
+    instructions: |
+      Call the warranty tool for the serial number and report whether the device is covered.
+      Set covered to "yes" only when the tool returns covered true.
+  reasoning:
+    instructions: ->
+      | Serial: {!@generator.extractDevice.output.serial}. Request: {!@request.payload.message.parts[0].text}
+    actions:
+      check: @actions.check_warranty
+    max_number_of_loops: 3
+    outputs:
+      properties:
+        covered:
+          type: "string"
+          description: "Whether the device is under warranty"
+          enum:
+            - "yes"
+            - "no"
+        detail:
+          type: "string"
+          description: "Warranty detail from the tool"
+  on_exit: ->
+    transition to @router.warrantyRouter
+
+router warrantyRouter:
+  description: "Covered devices get a free repair and a confirmation; the others get a quote."
+  routes:
+    - target: @subagent.bookRepair
+      when: @subagent.warrantyGate.output.covered == "yes"
+      label: "Covered"
+  otherwise:
+    target: @subagent.quoteRepair
+
+# Step 3a: book the repair, then confirm it to the owner.
+subagent bookRepair:
+  description: "Books the warranty repair through the Repair agent."
+  label: "Book Repair"
+  reasoning:
+    instructions: ->
+      | Book a warranty repair for {!@generator.extractDevice.output.serial}: {!@generator.extractDevice.output.issue}. Request: {!@request.payload.message.parts[0].text}
+    actions:
+      repair: @actions.repair_agent
+  on_exit: ->
+    transition to @subagent.notifyOwner
+
+subagent notifyOwner:
+  description: "Confirms the repair through the Notification agent."
+  label: "Notify Owner"
+  reasoning:
+    instructions: ->
+      | Confirm the repair of {!@generator.extractDevice.output.serial} to the owner. Request: {!@request.payload.message.parts[0].text}
+    actions:
+      notify: @actions.notify_agent
+  on_exit: ->
+    transition to @echo.repairBooked
+
+echo repairBooked:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Under warranty (" + @subagent.warrantyGate.output.detail + "). " + @subagent.bookRepair.output + " " + @subagent.notifyOwner.output)]})
+
+# Step 3b: not covered. The Quote agent prices the repair.
+subagent quoteRepair:
+  description: "Quotes a paid repair."
+  label: "Quote Repair"
+  reasoning:
+    instructions: ->
+      | {!@generator.extractDevice.output.serial} is not covered: {!@subagent.warrantyGate.output.detail}. Quote a paid repair for: {!@generator.extractDevice.output.issue}. Request: {!@request.payload.message.parts[0].text}
+    actions:
+      quote: @actions.quote_agent
+  on_exit: ->
+    transition to @echo.quoted
+
+echo quoted:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_COMPLETED"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Not covered: " + @subagent.warrantyGate.output.detail + ". " + @subagent.quoteRepair.output)]})

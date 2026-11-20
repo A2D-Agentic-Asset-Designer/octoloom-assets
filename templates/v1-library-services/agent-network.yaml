@@ -1,0 +1,230 @@
+schemaVersion: 1.0.0
+label: Library Services (fully mocked)
+brokers:
+  octo_ls1_library-broker:
+    card:
+      protocolVersion: 0.3.0
+      name: octo_ls1_library-broker
+      description: "A library broker answers member, loan, catalog and event questions with two agents and three tool servers. Fully mocked: the LLM is an A²D LLM mock too, so no OpenAI key is needed."
+      url: ${ingressgw.url}/octo_ls1_library-broker
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+        stateTransitionHistory: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: library-help
+          name: Library Help
+          description: Loans, holds and events for library members.
+          tags:
+            - library
+          examples:
+            - Which loans does member M-310 have?
+            - Place a hold on Dune for member M-310
+    spec:
+      llm:
+        ref:
+          name: octo_ls1_openai
+        configuration:
+          model: gpt-5-mini
+          openAI:
+            reasoningEffort: MINIMAL
+      instructions:
+        - You help members of a public library.
+        - Look up the member (for example M-310) before you answer questions about their loans.
+        - Search the catalog before you ask the Holds agent to place a hold, and use the Events agent for workshops and events.
+        - Answer with titles, due dates and references.
+      links:
+        - agent:
+            ref:
+              name: octo_ls1_holds-agent
+        - agent:
+            ref:
+              name: octo_ls1_events-agent
+      tools:
+        - mcp:
+            ref:
+              name: octo_ls1_members-mcp
+            allowed:
+              - get_member
+        - mcp:
+            ref:
+              name: octo_ls1_loans-mcp
+            allowed:
+              - get_loans
+        - mcp:
+            ref:
+              name: octo_ls1_catalog-mcp
+            allowed:
+              - search_books
+      maxNumberOfLoops: 25
+      maxConsecutiveErrors: 3
+      taskTimeoutSecs: 90
+llmProviders:
+  octo_ls1_openai:
+    label: A2D LLM mock
+    description: OpenAI-compatible A2D LLM mock with scripted answers
+    metadata:
+      platform: OpenAI
+      models:
+        - gpt-5-mini
+connections:
+  openai-connection:
+    kind: llm
+    ref:
+      name: octo_ls1_openai
+    spec:
+      url: ${a2dLlm.url}/
+      configuration:
+        apiKey: ${a2dLlm.apiKey}
+        timeout: 600000
+  members-mcp-connection:
+    kind: mcp
+    ref:
+      name: octo_ls1_members-mcp
+    spec:
+      url: ${membersMcp.url}
+  loans-mcp-connection:
+    kind: mcp
+    ref:
+      name: octo_ls1_loans-mcp
+    spec:
+      url: ${loansMcp.url}
+  catalog-mcp-connection:
+    kind: mcp
+    ref:
+      name: octo_ls1_catalog-mcp
+    spec:
+      url: ${catalogMcp.url}
+  holds-agent-connection:
+    kind: agent
+    ref:
+      name: octo_ls1_holds-agent
+    spec:
+      url: ${holdsAgent.url}
+  events-agent-connection:
+    kind: agent
+    ref:
+      name: octo_ls1_events-agent
+    spec:
+      url: ${eventsAgent.url}
+mcpServers:
+  octo_ls1_members-mcp:
+    label: Members MCP
+    description: Library members.
+    metadata:
+      transport:
+        kind: streamableHttp
+        path: /mcp
+      tools:
+        - name: get_member
+          description: Get a library member.
+          inputSchema:
+            type: object
+            properties:
+              member_id:
+                type: string
+                description: Member id, e.g. M-310
+            required:
+              - member_id
+  octo_ls1_loans-mcp:
+    label: Loans MCP
+    description: Current loans per member.
+    metadata:
+      transport:
+        kind: streamableHttp
+        path: /mcp
+      tools:
+        - name: get_loans
+          description: List the current loans of a member.
+          inputSchema:
+            type: object
+            properties:
+              member_id:
+                type: string
+                description: Member id
+            required:
+              - member_id
+  octo_ls1_catalog-mcp:
+    label: Library Catalog MCP
+    description: The library catalog.
+    metadata:
+      transport:
+        kind: streamableHttp
+        path: /mcp
+      tools:
+        - name: search_books
+          description: Search the catalog by title.
+          inputSchema:
+            type: object
+            properties:
+              title:
+                type: string
+                description: Title or part of it
+            required:
+              - title
+agents:
+  octo_ls1_holds-agent:
+    label: Holds Agent
+    description: Places and manages holds on books that are on loan.
+    metadata:
+      platform: Azure
+      protocol: a2a
+    card:
+      name: Holds Agent
+      description: Places and manages holds on books that are on loan.
+      url: ${holdsAgent.url}
+      protocolVersion: 0.3.0
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: place-hold
+          name: Place Hold
+          description: Place a hold on a title for a member.
+          tags:
+            - holds
+          examples:
+            - Place a hold on Dune for M-310
+  octo_ls1_events-agent:
+    label: Events Agent
+    description: Knows the library workshops and events.
+    metadata:
+      platform: AgentForce
+      protocol: a2a
+    card:
+      name: Events Agent
+      description: Knows the library workshops and events.
+      url: ${eventsAgent.url}
+      protocolVersion: 0.3.0
+      version: 1.0.0
+      capabilities:
+        streaming: false
+        pushNotifications: false
+      defaultInputModes:
+        - application/json
+        - text/plain
+      defaultOutputModes:
+        - application/json
+        - text/plain
+      skills:
+        - id: list-events
+          name: List Events
+          description: List upcoming workshops and events.
+          tags:
+            - events
+          examples:
+            - Which workshops are on next week?

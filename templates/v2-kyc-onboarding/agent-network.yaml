@@ -142,14 +142,6 @@ registry:
               required:
                 - applicant_id
                 - reason
-  llms:
-    octo_ko2_openai:
-      info:
-        label: OpenAI
-      metadata:
-        platform: OpenAI
-        models:
-          - gpt-5-mini
 context:
   connections:
     kyc_analyst_agent_connection:
@@ -180,7 +172,8 @@ context:
     openai_connection:
       kind: llm
       ref:
-        name: octo_ko2_openai
+        name: openai
+        namespace: 68ef9520-24e9-4cf2-b2f5-620025690913
       url: https://api.openai.com/v1
       authentication:
         kind: apiKey

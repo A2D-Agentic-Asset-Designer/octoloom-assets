@@ -226,7 +226,7 @@ On each MCP server card, click the **Tools** row (or its pencil). Octoloom reads
 Select the broker `procurement-broker`. In the inspector:
 
 1. Click **Agents (0)**. In **Add existing agent…**, pick each agent and click **Add**: `supplier-risk-agent`, `sourcing-agent`.
-2. Click **MCP servers**. Add each server with **Add existing MCP server…**, then tick its **Allowed tools**:
+2. Click **MCP servers (0)**. Add each server with **Add existing MCP server…**, then tick its **Allowed tools**:
    - `catalog-mcp`: `search_catalog`
    - `budget-mcp`: `check_budget`
    - `supplier-registry-mcp`: `get_supplier`
