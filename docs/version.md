@@ -8,9 +8,7 @@
 
 Everyone who suggested or built a change. A change counts for the person who filed the request and for the person who implemented it; a change without a request is credited to its implementer.
 
-<div class="ol-stats"><div class="ol-stat"><b>202</b><span>Amir Khan</span></div><div class="ol-stat"><b>21</b><span>George Jeffcock</span></div><div class="ol-stat"><b>2</b><span>Burak Tas</span></div><div class="ol-stat"><b>1</b><span>Tommaso Bolis</span></div></div>
-
-[Amir Khan](https://github.com/amirkhan-ak-sf) · [George Jeffcock](https://github.com/jeffcock) · [Burak Tas](https://github.com/burak-tas) · [Tommaso Bolis](https://github.com/tommasobolis)
+[Amir Khan](https://github.com/amirkhan-ak-sf) · [Gabriel Bustos Sölch](https://github.com/gabrielmule) · [George Jeffcock](https://github.com/jeffcock) · [Burak Tas](https://github.com/burak-tas) · [Tommaso Bolis](https://github.com/tommasobolis)
 
 ## 0.9.28
 
@@ -557,11 +555,11 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
 
 - **Branch guards**. New CI checks: PRs into develop must come from a `<type>/N-slug` work branch. A direct push to develop or main fails a check and opens an alert issue. Only develop may be PR'd into main. No change to the extension's behaviour.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Meet the Octoloomies**. A team section with photos, LinkedIn links and roles on the Marketplace page, plus quick links at the top of the page.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.6.8
@@ -570,7 +568,7 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
 
 - **Contributor skills**. A new golden rule: no feature is good enough if it breaks the UX. New skills for the canvas, component sizing (minimize / open, collapse / expand), templates, guides and Explain, deploy and publish, and governance and rulesets. No change to the extension's behaviour.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.6.7
@@ -582,11 +580,11 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
     - **Recently built:** the 5 agent network projects built last on this machine.
     - **Your statistics:** local stat cards for workspaces, network projects and the Probabilistic / Deterministic ratio, brokers, agents, MCP servers, Exchange and A²D assets (A2A + MCP), policies in networks, deployments, publishes and the top 3 LLM providers.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Templates live test**. All 33 templates build and 29 of them deployed to a live org. The test found no template bugs. Some chat tests failed because the org's gateway was down (502).
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.6.6
@@ -595,15 +593,15 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
 
 - **More templates**. There are now 35 New Project examples. The five new use cases are HR leave and patient intake (v1), and supply chain disruption, KYC / AML onboarding and IT incident response (v2). Each comes plain and governed. A new **secured** technical variant authenticates every agent and MCP connection (Basic or Client ID enforcement, alternating). User names and client ids are variables, and passwords and client secrets are secret variables with no default. The LLM URL is the variable `llmGateway.url`. The broker is rate limited, and v2 upstream calls are logged with outbound Message Logging. All upstreams are new public A²D mocks. The Technical tab subtitle mentions secured connections.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Component and instruction templates**. New flow patterns: Error handling, Retry once then fail, Human in the loop (ask for details) and Guardrail check (rejected), plus a Rejected reply. New instruction templates: Error handling, Retry, Ask the user when details are missing, and Guardrail screen. All of them are checked with the agent-network CLI build. The CLI requires every path to end in a terminal state, so human-in-the-loop replies complete with a question instead of pausing with input required. Explain: new Patterns entry, and the Reply entry is updated. Sub-menus now stay inside the window.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Screenshot harness: `@json:` references and new specs `new-project` and `agent-patterns`.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.6.5
@@ -612,7 +610,7 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
 
 - **Pre-deploy checks**. Build stops when a v2 broker's `implementation` file does not exist (and says when the file is in the project root instead). Before deploy, when Agent Fabric is connected, Octoloom checks the org for what the CLI only reports after publishing: an `exchange.json` dependency the org can't read, a registry key that is already an Exchange asset of another project, and a connection key that is already an API instance in the environment. Findings go to the *Agent Network CLI* output with a fix; deploy asks *Deploy anyway* or *Cancel*. Your own earlier deploys are not flagged, and a failed lookup never blocks. New Explain entry (tooltip on the Deploy button).
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.6.4
@@ -621,7 +619,7 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
 
 - **Fix: MCP connection URLs.** The Agent Fabric runtime always adds the MCP server's `metadata.transport.path` (for example `/mcp`) to the connection URL, so a URL that already ends with `/mcp` makes the broker call `…/mcp/mcp` and find no tools. The Problems panel and the code view now warn about such a URL (resolved from the `exchange.json` defaults). Test connection calls exactly the URL the runtime calls, so it no longer passes on a URL that fails after deploy. The MCP connection template's example URL is now the server base (`https://example.com/`). Explain updated.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.6.3
@@ -630,7 +628,7 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
 
 - **Fix: Fix all on governance** no longer ends with "N findings are still reported after the fix". The P4A MCP tool rules (tool hints, closed input, output schema) are written for MCP server specs, and the governance CLI reports them for every tool in `agent-network.yaml`, whatever it declares, so their fixes can never clear a finding. Fix all now applies only the fixes the ruleset confirms (its count is what it clears). Those MCP tool findings keep a secondary Fix with a note, and the warning appears only for unexpected findings. Explain and README updated; new screenshot spec `governance-fix-all`.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.6.2
@@ -639,11 +637,11 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
 
 - **Setup & Connect** (new side bar view, first in the Octoloom side bar): Appearance (theme), Connections (Agent Fabric, A²D, P4A) and Tooling (Node.js, Java, anypoint-cli-v4, agent-network plugin, Install missing tools) moved here from Projects & Deploy. The order is now Setup & Connect, Projects & Deploy, Asset Palette. Setup & Connect starts collapsed and opens by itself only when no folder is open or the workspace has no projects yet. It has its own Explain entry.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Docs: the A²D API key is created in **A2D > Settings > Organization Settings > API Keys** (README, the Connect to A²D prompt and the 401 error).
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.6.1
@@ -652,7 +650,7 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
 
 - **Fix: v1 `agent-network.yaml` opens the Octoloom canvas again** when Anypoint Code Builder is installed. ACB closed the Octoloom canvas and opened its own canvas plus the YAML text for v1 (probabilistic) networks. Clicking the file on a project card, in the explorer or from a link now keeps the Octoloom canvas. Only tabs that ACB opens in the first seconds are closed; *Open as text*, *Reopen Editor With…* and tabs you already had open are left alone. New setting `agentNetwork.keepOctoloomCanvas` (default on) turns this off.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.6.0
@@ -661,31 +659,31 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
 
 - **Governance, layout**: the Rulesets and Conformance columns can be resized (drag the splitter) and hidden (chevron in the column header; show them again from the canvas header). Widths and visibility are kept per panel.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Governance, Anypoint-style conformance** in the IDE: a Design time card, "N issues from M rules", one expandable row per rule (scope chip, ruleset, severity pill) or per component, severity filter, Expand / Collapse all. New center tabs: **Governed services** (conformance and identified issues cards, services table) and **Configuration** (scope card and expandable rulesets with a "Rule Name & Description | Severity" table). The workspace report starts with a summary of every project.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Fix / Fix all**: findings that can be fixed without guessing your data get a Fix button. The fix writes only keys from the v1 / v2 agent network reference: card capabilities, protocolVersion, name, description, URL / supportedInterfaces, v2 broker `interfaces.a2a.authorization.allowAnonymousAccess: false`, streamableHttp transport, allowed tools, tool annotations / closed input / output schema, and inline secrets moved to secret exchange.json variables. The change goes through the editor (Undo with Ctrl/Cmd+Z), the file is saved and the project is validated again. Inferred values are marked "review". Findings that need a decision (which policy, provider or URL) keep the copyable suggestion. A finding the ruleset still reports after its fix is marked, and its fix is not offered again.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **HTML report** redesigned in the Anypoint API Governance style: header with conformance chip, Governed Services / Configuration tabs, conformance and identified issues cards, services table, per-service sections with expandable rules and findings, and a Configuration tab with the rulesets and their rules. No scripts; prints with every section open.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Network reference: tool `annotations` (title, readOnlyHint, destructiveHint, idempotentHint, openWorldHint) and v2 broker `interfaces.a2a.authorization` (principal, allowAnonymousAccess) are known to the code view and the checks.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Known limitation: with governance plugin 1.1.3, P4A MCP server rulesets may keep reporting tool findings for MCP servers declared in agent-network.yaml after the fix (they read MCP server specs).
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - README and Marketplace screenshots updated for the new governance views and report.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.5.0
@@ -701,23 +699,23 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
     - Shield buttons in Projects (per project and in the Projects header) and two commands: *Governance: Validate Against Rulesets* and *Governance: Workspace Report*.
     - **Local compliance check only**: the selection and the results are kept in VS Code workspace storage, never in the project. Build, publish and deploy do not read them. Reports are saved in Octoloom's storage by default, and you get a warning if you save one inside a project folder. Nothing is created or published in your org or in P4A.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Minimize to icons**: *Minimize all* on the network canvas and the broker flow shrinks every card to its icon and name (or one card at a time); auto layout packs them and the view fits the new layout. Saved with the canvas layout, not in YAML or `.agent` files.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Broker flow, actions**: executors and subagents / orchestrators can run both MCP tools and A2A agents (per the AgentScript reference). The action picker now groups the actions by kind with an explanation and suggests the bindings (`with message = ...` for A2A, tool inputs for MCP). New check: an executor that runs an A2A action without `with message = ...` (executors do not slot-fill).
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Chat**: in the mini canvas, the Agents and MCP Servers boxes share the width 50/50 and fill the space when the panel is resized.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - README: new Governance and Minimize sections with screenshots, commands and known limitations.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.4.6
@@ -726,7 +724,7 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
 
 - README, Known limitations: running brokers that call an LLM locally fails with CLI plugin 1.5.0 (OpenAI returns 401 because it gets a placeholder key). The entry gives the cause, the manual workarounds tried locally (none worked) and what was tested, and recommends Deploy for LLM brokers. The old note that local run was "not available yet" is removed.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.4.5
@@ -740,11 +738,11 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
     - updated **Projects & Deploy** screenshot (filter chips, + for new projects, tooling versions);
     - canvas minimap toggle mentioned.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - No functional changes since 0.4.2.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.4.2
@@ -757,23 +755,23 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
     - **Autocomplete** (as you type, or Ctrl+Space) from the reference: keys for the current level (keys already present are left out), values such as connection `kind`, authentication kinds, transport kinds, `inputFormat` and platforms, `ref.name` from the registry / connections, `${group.var}` from exchange.json. In `.agent` files: section and node headers, keys per node kind, `transition to` / `run` / `with` / `set`, `@generator.…` / `@actions.…` / `@llm.…` references to what is in the file, `target:` URIs from the network's connections (`llm://`, `mcp://`, `a2a://`, `brokers://…/a2a`), MCP `tool_name`s and echo `TASK_STATE_*` values.
     - **Format** (Shift+Alt+F): re-indents to 2 spaces per level. YAML is re-written by the YAML library; AgentScript keeps block text relative. Files already in the reference layout do not change.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Canvas**: the minimap can be hidden and shown again (map button in the zoom bar); the choice is kept.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Projects**: the list has filter chips (All, Deployed, Running locally, Draft, with counts), running projects come first, and *New project* (deterministic / probabilistic) moved behind a **+** in the section header. It shows automatically when there are no projects.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Projects**: the `.deployment/` folder written by Run locally is no longer picked up as a second project with the same name.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Chat**: in the mini canvas, the LLM box spans the full width under Agents and MCP.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.4.1
@@ -782,19 +780,19 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
 
 - LLMs (v2): new **Input format** field (`openai`, `anthropic`, `gemini`). With it, LLM connections can use OAuth 2.0 client credentials (JWT bearer token for an LLM gateway) and the other kinds listed under *Supported authentication*.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Problems: an LLM connection whose kind the LLM does not accept is flagged before the build (CLI error 3060), as are an invalid input format and an input format without authentication kinds (3062).
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Build: when an LLM connection uses a kind other than apiKey and its LLM has no input format or does not list the kind, Octoloom adds them first (only for OpenAI, Azure OpenAI, Gemini and Anthropic platforms). API key setups are not changed.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - README: new, sharper screenshots (zoomed in, 2x) and sections on project templates (use cases / technical) and LLM authentication.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.4.0
@@ -803,19 +801,19 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
 
 - **OAuth 2.0 client credentials**: the LLM's *Supported authentication → Default configuration* now lists the attribute names for each kind and shows an example (Microsoft Entra ID token URL, `bodyEncoding: form`, scope). The connection form explains *Token URL*, *Body encoding* and *Scopes*.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **OAuth provider presets**: with *OAuth 2.0 client credentials* selected, *Fill in for…* writes the authentication block for Microsoft Entra ID, Okta, Auth0, Keycloak, Salesforce, Amazon Cognito, PingOne, Anypoint connected apps or any other OAuth 2.0 provider. It sets the token URL, body encoding and scopes, using `${provider.var}` placeholders, and declares those variables in exchange.json. The client secret is a secret variable with no default. *Setup steps for…* shows what to do at the provider (app registration, secret, role or scope), with a link to the provider's docs. For an existing block, Octoloom recognizes the provider from the token URL.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Test connectivity** applies the LLM's `defaultConfiguration` under the connection's authentication, the same way the CLI does. Token errors now come with a hint, for example "set Body encoding to form" when Entra ID reports a missing `grant_type`, or "check the client secret".
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Agent editor**: `key: -> transition to …` written on one line is shown as an error, because the CLI rejects it. Editing the block, or running Build, rewrites it in block form.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.3.6
@@ -829,15 +827,15 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
     - Second status light per project (square): starting, running locally, stopped or failed, with the CLI's progress or failure reason. A local box lists the `http://localhost:<port>/<broker>/` URLs, with copy and chat buttons. A notification shows when the brokers answer.
     - The stop icon (or **Stop Local Run**) sends Ctrl+C to the run-local terminal; the CLI then stops the containers. Without a terminal it runs `stop-local`.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Broker chat**: a *Deployed / Local* switch for v2 networks chats with the broker running locally. Each target keeps its own conversation.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Known limitation** (agent-fabric plugin 1.5.0): the local egress gateway does not forward LLM API keys, so OpenAI answers 401 and brokers that call an LLM fail with "An internal error occurred". The chat shows a hint when this happens. The containers, the agent card and the broker endpoint itself work.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.3.5
@@ -851,25 +849,25 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
     - **Agents** (A2A 1.0 or 0.3.0) and **MCP servers** (streamable HTTP or SSE).
     - Each template adds its variables to exchange.json. Secrets get no default value, so deploy asks for them.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Built-in *JWT Validation* and *Message Logging* policies now start with a configuration the policy schema accepts (the build failed with "Error while trying to validate policies").
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Broker chat**, left canvas:
     - Every box expands (chevron) to show its details: description, A2A version, platform, URL and authentication; skills of the broker and the agents; tools of MCP servers (tools a v1 broker may not call are struck through); models of LLMs and the model the broker uses.
     - LLM boxes show the provider logo (OpenAI, Gemini, Bedrock, Salesforce, gateway) instead of a generic icon. The broker box has a neutral grey border.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - `.agent` editor: selecting a connection (edge) no longer breaks the view ("Cannot lerp prop className").
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - New Project dialog: the parent folder is never inside an existing project. It defaults to the last parent folder used (or the workspace folder); a folder inside a project is replaced by the folder that contains that project, and creating inside a project is refused.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.3.0
@@ -878,11 +876,11 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
 
 - **Deployment status lights** on each project in *Projects & Deploy*: grey not deployed, green deployed and running, red stopped or failed. A broker counts as running when it serves its agent card through the gateway.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Deployments are remembered** across restarts: environment, gateway, asset version and the URL of every broker (`<gateway URL>/<broker>/`, with the gateway URL read from Gateway Manager). Projects deployed before this version are found in API Manager. *Forget* removes the record without undeploying.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Broker chat**: a new window with a read-only canvas on the left and a chat with the deployed broker on the right. It includes skill shortcuts from the live agent card, task state, timing, and the raw JSON-RPC request and response. Conversations keep their context, and *input required* tasks continue. A2A 0.3.0 (v1) and 1.0 (v2). Open it from the chat icon next to a deployed broker URL, or with *Chat with Deployed Broker*.
     - The network on the left is boxed per broker: each broker box holds its agents, MCP servers and LLM, with the policies on each connection. Items no broker uses are listed separately.
@@ -890,51 +888,51 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
     - Probabilistic (v1, A2A 0.3.0) brokers answered every chat message with HTTP 503: the JSON-RPC id is now sent as a string.
     - Fixed "Something went wrong rendering this view" after sending a message.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - `.agent` editor *Preview* works with v1 and v2 brokers: the A2A version (0.3.0 or 1.0) is read from the agent card, with a retry in the other version when the broker refuses it. The broker URL defaults to the deployed one, conversations keep their context, and each reply shows protocol, task state, HTTP status and time. v2 brokers used to refuse every Preview message ("Unsupported A2A version").
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - After a successful deploy, a notification offers *Open chat* and *Copy URL*.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - New v2 projects from templates prefix their connection keys with the project name. API Manager uses the connection key as the instance id, and two projects with the same keys failed to deploy into one environment (HTTP 409 "API instance already exists").
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - New Project dialog: agent, MCP and policy chips are readable in dark mode.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **New Project dialog**: choose the style, then *Blank*, *Use cases* or *Technical*. 20 templates (10 per style); v1 uses A2A 0.3.0 only, v2 mixes A2A 1.0 and 0.3.0. Each network has 2–5 agents and 1–5 MCP servers, all public A²D mocks, and a README with test prompts. *Technical* variants add built-in Agent Fabric policies (rate limiting, header injection, MCP / A2A PII detection, MCP schema validation, A2A prompt decorator). Templates come from the public octoloom-assets repository, with a bundled offline copy. No credentials are included: set `openai.apiKey` at deploy time. On creation the template's asset prefix, asset id and group id are replaced with your project name and organization.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - `.agent` editor: **component templates** in a multi-level menu (+ Step, *Add node* or right-click): templates per node type plus patterns such as *Logical case selection*, *Check, then act* and *Extract, then run a tool*. Templates that need actions are disabled until the file has them.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - New generators, subagents and orchestrators get an `on_exit` to the final reply (the Agent Fabric build requires it). Transitions are written on two lines.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Instruction templates**: an *Insert template* picker on system and reasoning instructions and on v1 broker instructions.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Guides**: a short tour per canvas (Probabilistic, Deterministic, `.agent`) that highlights each area, with *Don't show again*. **Explain** shows what the selected component does, when to use it and examples.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Canvas: a node's type can no longer be changed after creation; connections can be deleted and drawn by dragging from a port.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Built-in policy list: policies the CLI already applies to every connection (tracing, telemetry, MCP support, A2A card policies, user context) are no longer offered. References to Agent Fabric policies carry their namespace.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.2.1
@@ -947,7 +945,7 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
     - Problems shows an error for every broker or agent card with another or no protocol version, and for agents whose protocol is not `a2a`. Build, Publish and Deploy stop with an error while any of these remain.
     - Broker cards without a protocol version get 0.3.0 before the build.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.2.0
@@ -956,31 +954,31 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
 
 - Problems: a warning when an LLM provider has no model assigned (`metadata.models`) or when a broker uses a model its provider does not list. Calls through the gateway fail with HTTP 503 in that case. New LLM providers list `gpt-5-mini`, the broker default.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Deploy passes every exchange.json variable that has a value (the default, or what you typed in the deploy dialog) to the CLI as `--property`, so the CLI no longer asks for values you already provided. Secret values are only set in the terminal's environment: the typed command shows `$OCTOLOOM_P0`, never the value. The CLI still asks for variables without any value.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - *Test connectivity* for v1 LLM connections sends the API key from `spec.configuration.apiKey`.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Deploy, Publish, Undeploy, Unpublish and Setup gateways run in an interactive VS Code terminal. You can answer CLI prompts there, for example values for variables without a default during deploy. Credentials are passed through the environment, never on the command line. Build still writes to the *Agent Network CLI* output.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - v1 networks: an error when two brokers share the same card name (the CLI build fails on it).
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - *Test connectivity* for MCP servers adds the server's transport path (for example `/mcp`) to the connection URL, as the gateway does. The live tool list uses the same URL.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Publish and Deploy build the project first. Build stops with an error toast if the build fails.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Before every build Octoloom repairs what the Agent Fabric CLI rejects and logs each fix in the *Agent Network CLI* output:
     - v1 LLM connections: the API key moves from `spec.authentication` to `spec.configuration.apiKey`. Agent and MCP connections lose a stray `spec.configuration`.
@@ -990,27 +988,27 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
     - `.agent` flows: one-line `on_message: -> transition to …` is split onto two lines.
     - A missing exchange.json is created from the network's variables.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - New `.agent` broker flows use the two-line transition syntax.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - v1 connection form: *Configuration* appears only on LLM connections, *Authentication* only on agent and MCP connections.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - MCP servers declare tools as name, description and input schema. To limit which tools a broker may call, use *Allowed tools* on the broker.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - The component inspector lists only the `${…}` variables that the component and its connections use.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - New icons for agent-network.yaml, exchange.json and `.agent` broker flows, in the editor tabs and in the editor headers.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.1.6
@@ -1019,15 +1017,15 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
 
 - *exchange.json* on the canvas always opens the project's exchange.json next to agent-network.yaml. If it is missing, Octoloom creates a valid exchange.json with a variable for every `${…}` the network uses (URLs, API keys and secrets flagged as secret). Variables used by the network but missing in an existing exchange.json are added. An exchange.json that is not valid JSON can be replaced by the template (the old file is kept as `exchange.json.bak`).
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Projects on the Octoloom home: Build, Publish, Deploy, Setup gateways, Undeploy and Unpublish are compact icons, aligned bottom right (hover for the name).
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Marketplace page: new screenshots, including the A²D palette and the policy picker with P4A policies.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.1.5
@@ -1036,19 +1034,19 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
 
 - Checkboxes (capabilities, *Supports authenticated extended card*, …) sit on the same line as their label.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - The policy picker only lists policies for the selected component type (A2A agent, MCP server, LLM, broker), with a link to show the others. Org and P4A policies are classified from their name and description.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Agent cards without skills: *Read skills from the live agent* fills skills, capabilities and modes from the agent's `/.well-known/agent-card.json`. Adding an agent from Exchange or A²D now reads the live card too when the published card has no skills.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - The connectivity test of a v1 agent connection checks the A2A agent card (it only checked HTTP before).
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.1.4
@@ -1057,19 +1055,19 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
 
 - One place for policies: the inspector's *Policies* section (with the policy picker) replaces the raw policy lists in the connection and broker forms.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Policy configuration is edited as fields (text, number, yes/no, lists, groups) with suggested settings for the built-in policies; a JSON view is still available and resizes in both directions.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - v1 broker: the LLM provider and model are set only under *LLM provider*; the former *Behaviour* section is now *Instructions and limits* (instructions, loops, errors, timeout, optional model parameters). Linked agents and MCP servers are edited through the *Agents* / *MCP servers* buttons.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - The connectivity test sits next to the connection (after the URL and authentication of a connection, under *Connections* for other components).
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.1.3
@@ -1078,43 +1076,43 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
 
 - **Policies** for v1 and v2: apply them to brokers and connections from the inspector. Pick from the built-in Agent Fabric policies, your organization's Exchange policies or the **P4A catalog**. Octoloom adds the `exchange.json` dependency (classifier `schema`). Cards show the policies that are applied.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **P4A connection** (personal access token, stored in SecretStorage): a P4A policy that is not yet in your Agent Fabric org is deployed there through the P4A MCP server, after you confirm.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Header Injection editor** for custom headers next to OAuth, for example a `client_id` header that client ID enforcement requires.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Connectivity test** for brokers, agents, MCP servers, LLMs and connections: MCP initialize and tools/list, the A2A agent card, LLM `/models`. Uses the connection's auth, OAuth client credentials included.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Inline editing on cards**: allowed MCP tools, URL, LLM platform, broker limits. Click a card to open the inspector, and drag the inspector's edge to resize it.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Allowed tools** (v1) is a multi-select, with the tool list read from Exchange or the live MCP server.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Deterministic brokers** show the agents and MCP servers they use by section, and *Link* / *Unlink* adds or removes the actions in the `.agent` flow.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Renaming a broker, agent or connection updates its references, including the `.agent` flows.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - LLM provider logos in the inspector header and in the broker flow LLM list.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Fixed: deleting the *Done* node of a flow crashed the editor. Start and *Done* nodes can no longer be deleted.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.1.2
@@ -1123,7 +1121,7 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
 
 - Issues, repository and homepage links now point to the public octoloom-assets repository.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.1.1
@@ -1132,19 +1130,19 @@ Versioning: minor releases are 0.9.x from now on, until 1.0.0.
 
 - Agent Fabric assets dropped on the canvas are referenced and declared as `exchange.json` dependencies (`agent-metadata` / `mcp-metadata`) for v1 and v2, instead of being copied into the network. Removing one also removes its dependency.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - The Problems panel warns about references that are neither declared nor dependencies (build error 3009).
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - New Agent Fabric logo.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Marketplace screenshots now load from a public host.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 
 ## 0.1.0
@@ -1155,40 +1153,40 @@ First release of **Octoloom for Agent Fabric**.
 
 - Visual canvases for `agent-network.yaml`: Probabilistic (v1) and Deterministic (v2).
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Broker flow editor for `brokers/*.agent` (AgentScript).
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Form editor for `exchange.json`.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Asset palette with Agent Fabric (Exchange) and A²D assets, drag and drop onto the canvas, and card or row layouts.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Origin tags (A²D / Agent Fabric) and agent framework detection with a picker.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - LLM provider logos (OpenAI, Gemini, Amazon Bedrock, Salesforce) and Omni gateway detection from the URL.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - LLM provider and model picker for brokers, for both v1 and v2.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Collapse cards, fold sections, and hide or show connected cards (including a broker's LLM).
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Build, publish, deploy, undeploy, unpublish and gateway setup through anypoint-cli-v4, with automatic install of Node.js, Java 17 and the CLI plugin.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - Light, dark and auto themes.
 
-    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Gabriel Bustos Sölch](https://github.com/gabrielmule), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>

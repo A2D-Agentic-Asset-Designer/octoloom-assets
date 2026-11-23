@@ -7,7 +7,12 @@ import json, os, re, subprocess, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CACHE = os.path.join(HERE, 'contributors.json')
-NAMES = {'amirkhan-ak-sf': 'Amir Khan', 'jeffcock': 'George Jeffcock', 'burak-tas': 'Burak Tas', 'tommasobolis': 'Tommaso Bolis'}
+NAMES = {'amirkhan-ak-sf': 'Amir Khan', 'jeffcock': 'George Jeffcock', 'burak-tas': 'Burak Tas', 'tommasobolis': 'Tommaso Bolis', 'gabrielmule': 'Gabriel Bustos Sölch'}
+EARLY = ['gabrielmule', 'amirkhan-ak-sf']  # every change before 0.7.0
+
+
+def vt(v):
+    return tuple(int(x) for x in re.findall(r'\d+', v)[:3])
 DEFAULT = 'amirkhan-ak-sf'
 BOTS = {'claude', 'github-actions', 'dependabot'}
 
@@ -58,6 +63,10 @@ def contributors(text, cache):
     return logins or [DEFAULT]
 
 
+def who(v, it, cache):
+    return EARLY if vt(v) < (0, 7, 0) else contributors(it['text'] + ' '.join(it['sub']), cache)
+
+
 def parse(changelog):
     vers, cur, item = [], None, None
     for line in open(changelog).read().splitlines():
@@ -94,15 +103,13 @@ def page(repo, released):
     everyone = {}
     for v in vers:
         for it in v['items']:
-            for l in contributors(it['text'] + ' '.join(it['sub']), cache): everyone[l] = everyone.get(l, 0) + 1
+            for l in who(v['v'], it, cache): everyone[l] = everyone.get(l, 0) + 1
     o = ['<span class="ol-pill">Version</span>', '', '# Version history', '',
          f'<p class="lede">Every Octoloom release from the very first, newest first: what changed, in plain words, and who made it happen. '
          f'<b>{len(vers)} versions</b>, <b>{sum(len(v["items"]) for v in vers)} changes</b>.</p>', '',
          '## Contributors', '',
          'Everyone who suggested or built a change. A change counts for the person who filed the request and for the person who implemented it; '
          'a change without a request is credited to its implementer.', '',
-         '<div class="ol-stats">' + ''.join(f'<div class="ol-stat"><b>{n}</b><span>{NAMES.get(l, l)}</span></div>'
-                                         for l, n in sorted(everyone.items(), key=lambda x: -x[1])) + '</div>', '',
          ' · '.join(person(l) for l, _ in sorted(everyone.items(), key=lambda x: -x[1])), '']
     for v in vers:
         tag = v['v']
@@ -113,7 +120,7 @@ def page(repo, released):
         for p in v['intro']: o += [clean(p), '']
         if not v['items']: continue
         for it in v['items']:
-            by = ', '.join(person(l) for l in contributors(it['text'] + ' '.join(it['sub']), cache))
+            by = ', '.join(person(l) for l in who(v['v'], it, cache))
             o.append(f'- {clean(it["text"])}')
             for sub in it['sub']: o.append(f'    - {clean(sub)}')
             o += ['', f'    <span class="ol-by">:material-account-heart-outline: {by}</span>', '']
