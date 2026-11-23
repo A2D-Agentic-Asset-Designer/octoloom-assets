@@ -38,7 +38,7 @@ theme:
     - navigation.instant
     - content.tabs.link
   font:
-    text: Inter
+    text: Play
     code: JetBrains Mono
 extra_css:
   - assets/extra.css
@@ -46,7 +46,7 @@ extra_javascript:
   - assets/marketplace.js
 extra:
   version: "0.9.28"
-  installs: "125"
+  installs: "129"
   marketplace: https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom
   social:
     - icon: material/microsoft-visual-studio-code

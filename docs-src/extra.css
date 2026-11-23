@@ -12,6 +12,8 @@
   --md-default-bg-color: #111316; --md-accent-fg-color: #61a8ff; --md-typeset-a-color: #61a8ff;
   --ol-border: #2a2d33; --ol-soft: #181b20; --ol-muted: #9aa3ae;
 }
+/* font: Play (Google Fonts via the theme), like docs.donkey-kit.dev */
+.md-nav { font-size: .66rem; }
 /* header */
 .md-header { color: var(--md-primary-bg-color); border-bottom: 1px solid var(--ol-border); box-shadow: none !important; }
 .md-header__button.md-logo img { height: 2rem; }
@@ -40,11 +42,11 @@
 .md-nav--primary .md-nav__item .md-nav__link--active { background: color-mix(in srgb, var(--ol-blue) 9%, transparent); border-radius: 6px; padding: .2rem .5rem; margin-left: -.5rem; }
 .md-nav__title { box-shadow: none !important; }
 /* typography */
-.md-typeset { font-size: .78rem; line-height: 1.75; }
-.md-typeset h1 { font-weight: 800; color: var(--md-default-fg-color); font-size: 2.1rem; letter-spacing: -.02em; margin-bottom: .6rem; }
-.md-typeset h2 { font-weight: 700; letter-spacing: -.01em; border-top: 1px solid var(--ol-border); padding-top: 1.4rem; margin-top: 2.2rem; }
-.md-typeset h3 { font-weight: 700; }
-.md-typeset .lede { font-size: .9rem; color: var(--ol-muted); }
+.md-typeset { font-size: .7rem; line-height: 1.6; }  /* 14px, like docs.donkey-kit.dev */
+.md-typeset h1 { font-weight: 700; color: var(--md-default-fg-color); font-size: 1.5rem; letter-spacing: -.01em; margin-bottom: .6rem; }
+.md-typeset h2 { font-weight: 700; font-size: 1.1rem; letter-spacing: 0; border-top: 1px solid var(--ol-border); padding-top: 1.4rem; margin-top: 2.2rem; }
+.md-typeset h3 { font-weight: 700; font-size: .9rem; }
+.md-typeset .lede { font-size: .8rem; color: var(--ol-muted); }
 .md-typeset .lede strong { color: var(--md-default-fg-color); }
 .ol-pill { display: inline-block; font-size: .6rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ol-blue);
   border: 1px solid color-mix(in srgb, var(--ol-blue) 40%, transparent); background: color-mix(in srgb, var(--ol-blue) 8%, transparent);

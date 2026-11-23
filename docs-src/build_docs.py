@@ -676,7 +676,7 @@ theme:
     - navigation.instant
     - content.tabs.link
   font:
-    text: Inter
+    text: Play
     code: JetBrains Mono
 extra_css:
   - assets/extra.css

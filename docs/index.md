@@ -17,9 +17,9 @@ Octoloom turns <code>agent-network.yaml</code> and AgentScript <code>.agent</cod
 deploys them with the Anypoint CLI and lets you chat with the deployed broker and trace every call. Meet Loomi, the octopus who weaves your agents together.</p>
 
 <div class="ol-stats">
-<a class="ol-stat" href="https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom"><b class="ol-installs" data-fallback="125">125</b><span>Marketplace installs</span></a>
+<a class="ol-stat" href="https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom"><b class="ol-installs" data-fallback="129">129</b><span>Marketplace installs</span></a>
 <a class="ol-stat" href="https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom&ssr=false#review-details"><b><span class="ol-rating">5.0</span> ★</b><span><span class="ol-ratings">3</span> ratings</span></a>
-<div class="ol-stat"><b class="ol-version">0.9.27</b><span>Latest version</span></div>
+<div class="ol-stat"><b class="ol-version">0.9.28</b><span>Latest version</span></div>
 <a class="ol-stat" href="catalog/index.md"><b>43</b><span>Templates (20 v1 · 23 v2)</span></a>
 <a class="ol-stat" href="tutorials/index.md"><b>43</b><span>Tutorials</span></a>
 </div>
@@ -102,7 +102,7 @@ deploys them with the Anypoint CLI and lets you chat with the deployed broker an
 
     ---
 
-    Search **Octoloom** in the Extensions view, or open the Marketplace page. Version 0.9.27, 125 installs.
+    Search **Octoloom** in the Extensions view, or open the Marketplace page. Version 0.9.28, 129 installs.
 
 -   :material-rocket-launch: **[Getting started](getting-started.md)**
 
