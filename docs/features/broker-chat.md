@@ -1,21 +1,120 @@
+<span class="ol-pill">Chat and observe</span>
+
 # Broker chat
 
-Click the chat icon next to a deployed broker URL in the project's deployment box, or run **Chat with Deployed Broker**.
+<p class="lede"><strong>Talk to a deployed (or locally running) broker over A2A, next to the read-only network, the trace of each reply and the Agent Network Tracer.</strong> Test a broker the way your users call it, and see every agent, MCP and LLM call it made.</p>
 
-![Broker chat: network on the left, conversation with task states on the right](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/screenshots/chat.png)
+!!! info "Where to find it"
+    Projects & Deploy → **Chat** on a deployment · *Octoloom: Chat*
+
+<figure markdown>
+![Chat with live progress updates](../assets/ui/chat-progress-annot-light.webp#only-light){ loading=lazy }
+![Chat with live progress updates](../assets/ui/chat-progress-annot-dark.webp#only-dark){ loading=lazy }
+<figcaption>Chat with live progress updates</figcaption>
+</figure>
+
+| # | Control | What it does |
+|---|---|---|
+| <span class="ol-n">1</span> | **Collapse the left side** | Collapse the left side (the chat keeps the space) |
+| <span class="ol-n">2</span> | **Network** | The agent network (read-only) |
+| <span class="ol-n">3</span> | **The trace of a reply** | The trace of a reply: pick the trace icon under a deployed reply |
+| <span class="ol-n">4</span> | **Deployed and running · Sandbox / example** | Deployed and running · Sandbox / example-gateway |
+| <span class="ol-n">5</span> | **Check status** | Ask Agent Fabric for the deployment status |
+| <span class="ol-n">6</span> | **Full screen** | Full screen: the network takes the whole panel |
+| <span class="ol-n">7</span> | **Collapse card** | Collapse or expand the card body |
+| <span class="ol-n">8</span> | **Auto layout** | Arrange the cards automatically |
+| <span class="ol-n">9</span> | **Minimize all components to their icons** | Minimize all components to their icons (click an icon to open or minimize one) |
+| <span class="ol-n">10</span> | **Zoom out** | Zoom the canvas out |
+| <span class="ol-n">11</span> | **48%** | Reset to 100% |
+| <span class="ol-n">12</span> | **Zoom in** | Zoom the canvas in |
+| <span class="ol-n">13</span> | **Fit to screen** | Fit all cards into the view |
+| <span class="ol-n">14</span> | **Hide the minimap** | Show or hide the minimap |
+| <span class="ol-n">15</span> | **Running** | Show only the running deployments |
+| <span class="ol-n">16</span> | **Deployed** | The broker deployed to your gateway |
+| <span class="ol-n">17</span> | **Local** | The broker running on this machine (Run locally, Docker) |
+| <span class="ol-n">18</span> | **Use another URL** | Chat with a broker at a different URL |
+| <span class="ol-n">19</span> | **Copy URL** | Copy the broker URL |
+| <span class="ol-n">20</span> | **Authentication** | Authentication: none |
+| <span class="ol-n">21</span> | **Show raw JSON for every reply** | Show the raw A2A JSON under each reply |
+| <span class="ol-n">22</span> | **New conversation** | New conversation (new context) |
+| <span class="ol-n">23</span> | **Share this broker** | Share this broker: A²D sessions (invite people by email, see their feedback here) or a web chat app (opens a dialog) |
+| <span class="ol-n">24</span> | **Full height** | Full height: the chat takes the whole panel |
+| <span class="ol-n">25</span> | **Collapse the chat** | Collapse the chat (the left side keeps the space) |
+| <span class="ol-n">26</span> | **JSON** | Show the JSON source |
+| <span class="ol-n">27</span> | **Copy** | Copy answer |
+| <span class="ol-n">28</span> | **Trace of this reply on the left** | Trace of this reply on the left: every call, in order, with its duration (spans arrive about 20 s after the reply) |
+
+## How to use it
+
+1. Pick **Deployed** or **Local** and the broker.
+2. Type a message, or click a skill chip. With **Live** on, progress updates appear while the broker works.
+3. Under a reply, click the **trace** icon to see every call, or the **Tracer** icon to open the task.
+4. Use **Authentication** if the broker needs credentials, **Share** to invite testers.
+
+## More screenshots
+
+<figure markdown>
+![The trace of a reply: every call in order, one failed](../assets/ui/chat-trace-light.webp#only-light){ loading=lazy }
+![The trace of a reply: every call in order, one failed](../assets/ui/chat-trace-dark.webp#only-dark){ loading=lazy }
+<figcaption>The trace of a reply: every call in order, one failed</figcaption>
+</figure>
+
+<figure markdown>
+![A reply as a sequence diagram](../assets/ui/chat-network-sequence-light.webp#only-light){ loading=lazy }
+![A reply as a sequence diagram](../assets/ui/chat-network-sequence-dark.webp#only-dark){ loading=lazy }
+<figcaption>A reply as a sequence diagram</figcaption>
+</figure>
+
+<figure markdown>
+![The network, read-only, in the chat](../assets/ui/chat-network-light.webp#only-light){ loading=lazy }
+![The network, read-only, in the chat](../assets/ui/chat-network-dark.webp#only-dark){ loading=lazy }
+<figcaption>The network, read-only, in the chat</figcaption>
+</figure>
+
+<figure markdown>
+![Authentication: user sign-in suggested by JWT Validation](../assets/ui/chat-auth-light.webp#only-light){ loading=lazy }
+![Authentication: user sign-in suggested by JWT Validation](../assets/ui/chat-auth-dark.webp#only-dark){ loading=lazy }
+<figcaption>Authentication: user sign-in suggested by JWT Validation</figcaption>
+</figure>
+
+<figure markdown>
+![Share: A²D sessions with results](../assets/ui/chat-share-a2d-light.webp#only-light){ loading=lazy }
+![Share: A²D sessions with results](../assets/ui/chat-share-a2d-dark.webp#only-dark){ loading=lazy }
+<figcaption>Share: A²D sessions with results</figcaption>
+</figure>
+
+<figure markdown>
+![Share: local portal](../assets/ui/chat-share-web-light.webp#only-light){ loading=lazy }
+![Share: local portal](../assets/ui/chat-share-web-dark.webp#only-dark){ loading=lazy }
+<figcaption>Share: local portal</figcaption>
+</figure>
+
+<figure markdown>
+![Span colours and legend](../assets/ui/chat-trace-colors-light.webp#only-light){ loading=lazy }
+![Span colours and legend](../assets/ui/chat-trace-colors-dark.webp#only-dark){ loading=lazy }
+<figcaption>Span colours and legend</figcaption>
+</figure>
+
+<figure markdown>
+![The chat in a narrow tab](../assets/ui/chat-narrow-light.webp#only-light){ loading=lazy }
+![The chat in a narrow tab](../assets/ui/chat-narrow-dark.webp#only-dark){ loading=lazy }
+<figcaption>The chat in a narrow tab</figcaption>
+</figure>
+
+## In detail
+
+Click the chat icon next to a deployed broker URL in the project's deployment box, or run **Chat with Deployed Broker**.
 
 - **Left**: a read-only view of the network, one box per broker with its agents, MCP servers and LLM. Click a broker to chat with it. The chevron on a box shows its details: description, URL, skills (broker and agents), tools (MCP servers) and models (LLMs).
 - **Right**: the chat. Start with a skill example from the agent card or type a message. Each answer shows the task state (completed, needs input, failed), the HTTP status and the time taken. **JSON** shows the raw request and response; the `{}` button shows them for every answer.
 - **Working, not stuck.** While the broker works, its bubble says so and counts the seconds; after 10 s it adds *Still working, not stuck*. A v2 broker (A2A 1.0) streams its status updates, and the bubble lists each one with its time, the state in plain words (*Received*, *Working*, *Needs your input*) and the broker's own message, e.g. *17:59:24 Working Looking up the practitioner record...*. The red **Live** button left of Send turns the stream on or off. v1 brokers (A2A 0.3) answer in one go (no streaming, no task lookup), so Live is greyed out there and the bubble shows the time only.
 
-  ![Waiting bubble with the broker's status updates and the Live button next to Send](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/screenshots/chat-progress.png)
-- Follow-ups keep the conversation context. When the broker asks for more input, the next message continues the same task.
+  - Follow-ups keep the conversation context. When the broker asks for more input, the next message continues the same task.
 - v2 networks have a **Deployed / Local** switch: *Local* chats with the broker started by **Run locally**.
 - The deployed URL is used by default. The pencil button sets another URL for this chat, for example a broker deployed elsewhere.
 - **Collapse** a part fully and expand it back: the chevron at the left of the network bar folds the left side (network or trace) to a thin rail, and the chevron at the end of the chat header folds the chat. Click the rail to expand it. The Agent Network Tracer collapses to its header with its own chevron. The choice is kept.
 
-  ![Chat with the left side collapsed to a rail: the chat and the Agent Network Tracer keep the space](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/screenshots/chat-fold.png)
-- The **full height** button (last icon in the chat header) gives the whole panel to the conversation and hides the network and the Tracer. Press it again to bring them back. The choice is kept.
+  - The **full height** button (last icon in the chat header) gives the whole panel to the conversation and hides the network and the Tracer. Press it again to bring them back. The choice is kept.
 
 #### Trace of a reply
 
@@ -23,17 +122,11 @@ A deployed reply has two icons next to **Copy**. The **trace** icon (a pulse lin
 
 The **legend** above the waterfall names each colour: Broker, Agent, LLM, MCP, Router, Other and Error (only the kinds in that trace). Click a name to pick your own colour for it; **Reset colours** brings back the defaults. Your colours are kept on this machine only.
 
-![Trace of one chat reply: a waterfall of every call the broker made, with the selected span's details](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/screenshots/chat-trace.png)
-
 #### Agent Network View
 
 The **Network** tab shows the whole network read-only, drawn like the network canvas: brokers, agents, MCP servers, LLMs, connections and policies. Click a broker to chat with it. Cards can be dragged, minimized and collapsed, and **Minimize all** and **Auto layout** are at the top left. The canvas fits its section and refits when the section is resized; the zoom bar zooms by hand. The maximize icon in the left header shows the network, the sequence or the trace **full screen**, like the chat's and the Tracer's own full-screen buttons. The layout is kept per project and never changes the project files.
 
 After you pick a reply (with the trace icon, or from a task in the Agent Network Tracer), the Network tab shows that reply as a **sequence diagram**. You, the broker, and every agent, MCP server and LLM it called each get a lifeline, with one request arrow and one response arrow per call, numbered **(1), (2), …** in time order. The diagram fits its section, and has its own zoom bar. Click an arrow to see the call's span facts and the log lines with what was sent and what came back. Gateway router hops and Mule flow spans are folded into the call above them. The network icon in the header goes back to the whole canvas. This view uses the same trace lookup as the waterfall. The loaded trace is kept while the chat is open, so switching between Network and Trace doesn't load it again. The refresh icon in the section header does.
-
-![Agent Network View: the whole network, read-only, next to the chat](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/screenshots/chat-network.png)
-
-![Agent Network View: one reply as a sequence of calls, with the request and response of the selected call](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/screenshots/chat-network-sequence.png)
 
 - One row per span, nested by parent span id: the gateway request, the broker, LLM calls, A2A calls to agents and MCP tool calls. Each bar sits on a shared time axis and is coloured like its box on the canvas. Errors are red.
 - Click a span to see its kind, entity, status, HTTP code, duration, start offset and ids.
@@ -44,8 +137,6 @@ After you pick a reply (with the trace icon, or from a task in the Agent Network
 #### Authentication
 
 Brokers behind a gateway policy (JWT Validation, Client ID Enforcement, Basic) or with anonymous access off answer the chat with HTTP 401 or 403. The **shield** button in the chat header opens **Authentication** for the selected broker (deployed and local are set separately). The method that the broker's inbound policies suggest is preselected.
-
-![Chat authentication: user sign-in for a broker behind JWT Validation](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/screenshots/chat-auth.png)
 
 | Method | Sends |
 |---|---|
@@ -64,7 +155,7 @@ Secrets, passwords and tokens are stored in VS Code Secret Storage on your machi
 
 ## Buttons and components
 
-The same text as the in-app **Explain** button (click the floating info button, then the item).
+The same text as the in-app **Explain** button (click the floating **i**, then the item).
 
 ### Broker chat
 
@@ -72,7 +163,7 @@ Talk to a deployed broker (or one running locally) the way a client would: send 
 
 **When to use it:** After a deploy or a local run, to try the network end to end before anyone else uses it.
 
-**Examples:**
+**Examples and details:**
 
 - Pick the broker at the top of the chat, type a question and press Enter
 - Skills of the broker appear as chips above the message box; click one to start from it
@@ -87,7 +178,7 @@ The Network tab of the chat, read-only. With no reply picked it is the whole net
 
 **When to use it:** To see how the network is built while you chat, and to follow one reply hop by hop: who called whom, what was sent, what came back and how long it took.
 
-**Examples:**
+**Examples and details:**
 
 - The canvas always fits its section, also when you drag the splitter or resize the panel; zoom with the bar at the bottom (Fit brings the fitted view back). The sequence has the same zoom bar: Fit follows the section, your own zoom is kept per project
 - Full screen (the maximize icon in the left header) gives the whole panel to the network, the sequence or the trace; the chat and the Tracer come back with the same icon
@@ -104,7 +195,7 @@ The distributed trace of one deployed chat reply, shown on the left of the chat 
 
 **When to use it:** After a reply, to see which calls the broker made for that message, in what order, how long each took and which one failed. It needs a deployed, running broker: local runs have no spans.
 
-**Examples:**
+**Examples and details:**
 
 - Trace icon (pulse line, no text) under a deployed reply: shows that reply's trace on the left. The Tracer icon next to it opens the task in the Agent Network Tracer
 - Open a task in the Agent Network Tracer's task list: its spans show here too, so the list drives this view
@@ -121,7 +212,7 @@ How the broker chat authenticates to a broker behind a gateway policy (JWT Valid
 
 **When to use it:** The chat answers HTTP 401 or 403, or the broker policies ask for credentials. The method the policies suggest is preselected.
 
-**Examples:**
+**Examples and details:**
 
 - Bearer token: paste an access token (JWT) you already have
 - User sign-in: authorization code + PKCE in your browser. Register http://127.0.0.1:33418/callback (public client / native) at Entra ID, Okta, Auth0 or Keycloak. Tokens refresh by themselves; Sign out forgets them
@@ -138,7 +229,7 @@ The Share icon in the broker chat header, after New conversation, opens the Shar
 
 **When to use it:** When colleagues should chat with a broker without VS Code or Octoloom, and you can't install a Slack or Teams app: run it here to try it, then deploy the folder to any Node host or container service. Everyone who chats uses the same broker credentials, so share the passcode only with people who may see what the broker returns.
 
-**Examples:**
+**Examples and details:**
 
 - Chat with incident_broker, click Share in the chat header, then Local portal: the form has that broker and its Anypoint URL
 - incident_broker → "Incident Assistant": Generate portal, copy the passcode, Run locally, open http://localhost:3000
@@ -160,7 +251,7 @@ When Octoloom cannot load from Agent Fabric, A²D, P4A, Headless IDMC or an MCP 
 
 **When to use it:** When the Assets palette shows an error or a partial failure (for example IDMC composite MCP servers), before asking anyone for help.
 
-**Examples:**
+**Examples and details:**
 
 - ENOTFOUND mcp.dm-xx…: the host does not resolve: check the pod or region and your VPN
 - HTTP 401 with error.message "Invalid session": connect again in Setup & Connect

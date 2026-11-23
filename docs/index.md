@@ -8,27 +8,101 @@ hide:
 
 ![Loomi, the Octoloom octopus](assets/loomi.png){ .hero-logo }
 
+<span class="ol-pill">VS Code extension for MuleSoft Agent Fabric</span>
+
 # Octoloom for Agent Fabric
 
-**Design, govern, deploy and observe MuleSoft Agent Fabric agent networks, visually, in VS Code.**
+<p class="lede"><strong>Design, govern, deploy and observe agent networks, visually, in VS Code.</strong>
+Octoloom turns <code>agent-network.yaml</code> and AgentScript <code>.agent</code> flows into canvases, checks them with governance rulesets on your machine,
+deploys them with the Anypoint CLI and lets you chat with the deployed broker and trace every call. Meet Loomi, the octopus who weaves your agents together.</p>
 
-[Get it on the Marketplace](https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom){ .md-button .md-button--primary }
+<div class="ol-stats">
+<a class="ol-stat" href="https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom"><b class="ol-installs" data-fallback="125">125</b><span>Marketplace installs</span></a>
+<a class="ol-stat" href="https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom&ssr=false#review-details"><b><span class="ol-rating">5.0</span> ★</b><span><span class="ol-ratings">3</span> ratings</span></a>
+<div class="ol-stat"><b class="ol-version">0.9.27</b><span>Latest version</span></div>
+<a class="ol-stat" href="catalog/index.md"><b>43</b><span>Templates (20 v1 · 23 v2)</span></a>
+<a class="ol-stat" href="tutorials/index.md"><b>43</b><span>Tutorials</span></a>
+</div>
+
+[Install from the Marketplace](https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom){ .md-button .md-button--primary }
 [Getting started](getting-started.md){ .md-button }
-[Tutorials](tutorials/index.md){ .md-button }
-
-<small>Version 0.9.27</small>
+[Features](features/index.md){ .md-button }
+[Templates](catalog/index.md){ .md-button }
 
 </div>
 
-Octoloom is a visual editor for **Agent Fabric** network projects (`agent-network.yaml`, `brokers/*.agent`, `exchange.json`). Meet **Loomi**, the Octoloom octopus: each of his arms stands for one asset, A2A agents from any framework, MCP servers and LLM providers. The *loom* is where you weave them into a network that a broker orchestrates.
+![The deterministic network canvas with the inspector](assets/ui/network-v2-light.webp#only-light)
+![The deterministic network canvas with the inspector](assets/ui/network-v2-dark.webp#only-dark)
 
-You can still open the YAML; Octoloom keeps it valid while you work on a canvas.
+## Tour of Octoloom
 
-![Deterministic network canvas with the inspector](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/screenshots/network-v2.png)
+<div class="grid cards" markdown>
+
+-   **[Start from a template](features/new-project-from-templates.md)**
+
+    ![Start from a template](assets/ui/new-project-light.webp){ loading=lazy }
+
+    43 ready-to-run networks, every upstream mocked.
+
+-   **[Design on the canvas](features/network-canvas-agent-network-yaml.md)**
+
+    ![Design on the canvas](assets/ui/network-v2-light.webp){ loading=lazy }
+
+    Brokers, agents, MCP servers and LLMs as cards; the YAML stays in sync.
+
+-   **[Write broker flows](features/broker-flow-editor-brokers-agent.md)**
+
+    ![Write broker flows](assets/ui/agent-flow-light.webp){ loading=lazy }
+
+    AgentScript flows: steps, branches, replies and live progress.
+
+-   **[Govern locally](features/governance-rulesets-for-brokers-agents-and-mcp-servers.md)**
+
+    ![Govern locally](assets/ui/governance-light.webp){ loading=lazy }
+
+    Rulesets from Agent Fabric, P4A and your org, with Fix all.
+
+-   **[Build, publish, deploy](features/projects-deploy.md)**
+
+    ![Build, publish, deploy](assets/ui/projects-deploy-light.webp){ loading=lazy }
+
+    Validate, build, publish to Exchange and deploy to your gateways.
+
+-   **[Chat and trace](features/broker-chat.md)**
+
+    ![Chat and trace](assets/ui/chat-progress-light.webp){ loading=lazy }
+
+    Talk to the broker over A2A and see every call it made.
+
+-   **[Agent Network Tracer](features/agent-network-tracer.md)**
+
+    ![Agent Network Tracer](assets/ui/tracer-light.webp){ loading=lazy }
+
+    The path each task took through the flow, from the logs.
+
+-   **[Coverage map](features/coverage-map.md)**
+
+    ![Coverage map](assets/ui/coverage-map-light.webp){ loading=lazy }
+
+    Policy, auth and governance coverage of every network.
+
+-   **[Setup & Connect](features/setup-connect.md)**
+
+    ![Setup & Connect](assets/ui/setup-connect-light.webp){ loading=lazy }
+
+    Connections, CLI tools and theme in one place.
+
+</div>
 
 ## Where to start
 
 <div class="grid cards" markdown>
+
+-   :material-microsoft-visual-studio-code: **[Install from the VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom)**
+
+    ---
+
+    Search **Octoloom** in the Extensions view, or open the Marketplace page. Version 0.9.27, 125 installs.
 
 -   :material-rocket-launch: **[Getting started](getting-started.md)**
 
@@ -40,7 +114,7 @@ You can still open the YAML; Octoloom keeps it valid while you work on a canvas.
 
     ---
 
-    One per template (43), each with three paths: *Just use it*, *Learn step by step* and *Build it from scratch*.
+    One per template, each with three paths: *Just use it*, *Learn step by step* and *Build it from scratch*.
 
 -   :material-view-grid: **[Templates](catalog/index.md)**
 
@@ -48,17 +122,11 @@ You can still open the YAML; Octoloom keeps it valid while you work on a canvas.
 
     Ready-to-run agent networks: use cases, governed, secured, fully mocked and Informatica IDMC.
 
--   :material-book-open-variant: **[Features](features/index.md)**
-
-    ---
-
-    Every view of Octoloom, what it does and how to use it, with screenshots.
-
 -   :material-gesture-tap-button: **[UI reference](reference/index.md)**
 
     ---
 
-    Every button, card, canvas and panel: what it is, when to use it, examples. The same texts as the in-app **Explain** button.
+    Every button, card, canvas and panel on a screenshot, with what it does. The same texts as the in-app **Explain** button.
 
 -   :material-robot: **[Skills for your AI assistant](skills/index.md)**
 

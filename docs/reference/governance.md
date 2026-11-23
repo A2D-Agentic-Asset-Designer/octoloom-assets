@@ -1,6 +1,30 @@
+<span class="ol-pill">UI reference</span>
+
 # Governance
 
-Local compliance checks with rulesets.
+<p class="lede">Local compliance checks with rulesets.</p>
+
+<figure markdown>
+![Governance: rulesets, the project canvas and findings](../assets/ui/governance-annot-light.webp#only-light){ loading=lazy }
+![Governance: rulesets, the project canvas and findings](../assets/ui/governance-annot-dark.webp#only-dark){ loading=lazy }
+<figcaption>Governance: rulesets, the project canvas and findings</figcaption>
+</figure>
+
+| # | Control | What it does |
+|---|---|---|
+| <span class="ol-n">1</span> | **Project** | Project settings |
+| <span class="ol-n">2</span> | **Workspace report** | Open the HTML report of all findings |
+| <span class="ol-n">3</span> | **Reload the ruleset catalogs and projects** | Read the rulesets and projects again |
+| <span class="ol-n">4</span> | **Hide the rulesets** | Hide the rulesets column |
+| <span class="ol-n">5</span> | **Add a ruleset YAML file** | Use a local ruleset file |
+| <span class="ol-n">6</span> | **Canvas** | Show the canvas |
+| <span class="ol-n">7</span> | **Governed services** | The services the rulesets checked |
+| <span class="ol-n">8</span> | **Configuration** | Deployment settings: environment, gateway, variables |
+| <span class="ol-n">9</span> | **Validate** | Select at least one ruleset |
+| <span class="ol-n">10</span> | **Report** | Save an HTML report of this project |
+| <span class="ol-n">11</span> | **Show details** | Show the full details |
+| <span class="ol-n">12</span> | **Hide the findings** | Hide the findings column |
+| <span class="ol-n">13</span> | **Explain anything** | Explain anything: click, then click any object (the guided tour starts from here too). Drag to move; double-click to reset its place |
 
 ## Governance
 
@@ -8,7 +32,7 @@ Checks a project against governance rulesets with the Anypoint CLI (anypoint-cli
 
 **When to use it:** Before you publish or deploy, or to check a project against your company standards.
 
-**Examples:**
+**Examples and details:**
 
 - Select "Agent Network Best Practices" (Agent Fabric) and press Validate
 - Click a marked component to see only its findings, then Open on canvas to edit it
@@ -25,7 +49,7 @@ A ruleset is a governance profile (YAML) of rules with a severity. Octoloom list
 
 **When to use it:** Choose the rulesets that match the standards of the project. Combine several: findings name the rule and the ruleset.
 
-**Examples:**
+**Examples and details:**
 
 - Agent Network Best Practices: agent card fields, broker authorization, MCP transport, inline secrets
 - P4A MCP Server Safety: tool side-effect hints, closed input schemas, declared auth
@@ -38,8 +62,14 @@ The workspace report lists every agent network project in the workspace: conform
 
 **When to use it:** Reviews, audits, or sharing the state of all projects with your team.
 
-**Examples:**
+**Examples and details:**
 
 - Workspace report → Validate all → Workspace report (HTML)
 - Project → Report: one project only
 - Open a project from the report to fix its findings
+
+<figure markdown>
+![Real findings with Fix all](../assets/ui/governance-fix-all-light.webp#only-light){ loading=lazy }
+![Real findings with Fix all](../assets/ui/governance-fix-all-dark.webp#only-dark){ loading=lazy }
+<figcaption>Real findings with Fix all</figcaption>
+</figure>

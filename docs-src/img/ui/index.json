@@ -1,0 +1,1892 @@
+{
+ "welcome": {
+  "size": "1400,1250",
+  "themes": [
+   "dark",
+   "light"
+  ],
+  "controls": [
+   {
+    "n": 1,
+    "title": "",
+    "text": "Open folder…"
+   },
+   {
+    "n": 2,
+    "title": "",
+    "text": "Projects & Deploy"
+   },
+   {
+    "n": 3,
+    "title": "",
+    "text": "Setup & Connect"
+   },
+   {
+    "n": 4,
+    "title": "Open the Getting started tutorial on GitHub",
+    "text": "Getting started"
+   },
+   {
+    "n": 5,
+    "title": "Open the list of template tutorials on GitHub",
+    "text": "All template tutorials"
+   },
+   {
+    "n": 6,
+    "title": "Open the folder in this window",
+    "text": "Open folder"
+   },
+   {
+    "n": 7,
+    "title": "Open the coverage map: policies, governance, authentication and where the assets of every agent network come from",
+    "text": "Coverage map"
+   },
+   {
+    "n": 8,
+    "title": "Explain anything: click, then click any object (the guided tour starts from here too). Drag to move; double-click to reset its place",
+    "text": ""
+   }
+  ]
+ },
+ "welcome-update": {
+  "size": "1400,500",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "coverage-map": {
+  "size": "1440,1500",
+  "themes": [
+   "dark",
+   "light"
+  ],
+  "controls": [
+   {
+    "n": 1,
+    "title": "Only the agent networks of the open workspace",
+    "text": "This workspace"
+   },
+   {
+    "n": 2,
+    "title": "Every agent network Octoloom has seen on this machine",
+    "text": "All on this machine"
+   },
+   {
+    "n": 3,
+    "title": "Read every project again",
+    "text": "Refresh"
+   },
+   {
+    "n": 4,
+    "title": "A²D: hosted mocks and prototypes. Click to show only the networks that use it.",
+    "text": "A²D49 · 10 nets"
+   },
+   {
+    "n": 5,
+    "title": "Agent Fabric: MuleSoft policies and rulesets, and assets published in Exchange. Click to show only the networks that use it.",
+    "text": "Agent Fabric69 · 10 nets"
+   },
+   {
+    "n": 6,
+    "title": "Informatica IDMC: Headless IDMC MCP servers. Click to show only the networks that use it.",
+    "text": "Informatica IDMC10 · 3 nets"
+   },
+   {
+    "n": 7,
+    "title": "P4A: the community policy and ruleset catalog. Click to show only the networks that use it.",
+    "text": "P4A7 · 4 nets"
+   },
+   {
+    "n": 8,
+    "title": "Your organization's own policies and rulesets in Exchange. Click to show only the networks that use it.",
+    "text": "Your organization4 · 3 nets"
+   },
+   {
+    "n": 9,
+    "title": "An LLM provider declared in the project and called directly. Click to show only the networks that use it.",
+    "text": "LLM provider5 · 5 nets"
+   },
+   {
+    "n": 10,
+    "title": "A ruleset file on this machine. Click to show only the networks that use it.",
+    "text": "Local file2 · 2 nets"
+   },
+   {
+    "n": 11,
+    "title": "",
+    "text": "Overview"
+   },
+   {
+    "n": 12,
+    "title": "",
+    "text": "Policies"
+   },
+   {
+    "n": 13,
+    "title": "",
+    "text": "Governance"
+   },
+   {
+    "n": 14,
+    "title": "",
+    "text": "Authentication"
+   },
+   {
+    "n": 15,
+    "title": "",
+    "text": "Origins"
+   },
+   {
+    "n": 16,
+    "title": "",
+    "text": "Lifecycle"
+   },
+   {
+    "n": 17,
+    "title": "",
+    "text": "LLMs"
+   },
+   {
+    "n": 18,
+    "title": "",
+    "text": "All styles"
+   },
+   {
+    "n": 19,
+    "title": "",
+    "text": "Probabilistic"
+   },
+   {
+    "n": 20,
+    "title": "",
+    "text": "Deterministic"
+   },
+   {
+    "n": 21,
+    "title": "",
+    "text": "Any status"
+   },
+   {
+    "n": 22,
+    "title": "",
+    "text": "Deployed"
+   },
+   {
+    "n": 23,
+    "title": "",
+    "text": "Not deployed"
+   },
+   {
+    "n": 24,
+    "title": "Brokers without an access policy, connections without authentication, less than half covered, never validated or with violations",
+    "text": "Only networks with gaps 11"
+   },
+   {
+    "n": 25,
+    "title": "Agent Fabric: 13",
+    "text": ""
+   },
+   {
+    "n": 26,
+    "title": "Agent Fabric: 9",
+    "text": ""
+   },
+   {
+    "n": 27,
+    "title": "Agent Fabric: 2",
+    "text": ""
+   },
+   {
+    "n": 28,
+    "title": "Agent Fabric: 1",
+    "text": ""
+   }
+  ]
+ },
+ "new-project": {
+  "size": "1300,1100",
+  "themes": [
+   "dark",
+   "light"
+  ],
+  "controls": [
+   {
+    "n": 1,
+    "title": "",
+    "text": "BlankAn empty network"
+   },
+   {
+    "n": 2,
+    "title": "",
+    "text": "Use casesBusiness scenarios"
+   },
+   {
+    "n": 3,
+    "title": "",
+    "text": "Cancel"
+   },
+   {
+    "n": 4,
+    "title": "",
+    "text": "Create from template"
+   },
+   {
+    "n": 5,
+    "title": "Explain anything: click, then click any object (the guided tour starts from here too). Drag to move; double-click to reset its place",
+    "text": ""
+   }
+  ]
+ },
+ "new-project-readme": {
+  "size": "1300,1100",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "new-project-blank": {
+  "size": "1300,1000",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "new-project-idmc": {
+  "size": "1300,1100",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "exchange-import": {
+  "size": "1300,980",
+  "themes": [
+   "dark",
+   "light"
+  ],
+  "controls": [
+   {
+    "n": 1,
+    "title": "Latest version",
+    "text": "1.0.1"
+   },
+   {
+    "n": 2,
+    "title": "",
+    "text": "Browse…"
+   },
+   {
+    "n": 3,
+    "title": "",
+    "text": "Cancel"
+   },
+   {
+    "n": 4,
+    "title": "",
+    "text": "Download and open"
+   },
+   {
+    "n": 5,
+    "title": "Explain anything: click, then click any object (the guided tour starts from here too). Drag to move; double-click to reset its place",
+    "text": ""
+   }
+  ]
+ },
+ "projects-new-exchange": {
+  "size": "500,760",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "projects-deploy": {
+  "size": "500,760",
+  "themes": [
+   "dark",
+   "light"
+  ],
+  "controls": [
+   {
+    "n": 1,
+    "title": "New project",
+    "text": ""
+   },
+   {
+    "n": 2,
+    "title": "Download an agent network from Exchange into this workspace",
+    "text": ""
+   },
+   {
+    "n": 3,
+    "title": "Check deployment status",
+    "text": ""
+   },
+   {
+    "n": 4,
+    "title": "Governance report: validate every project in the workspace against rulesets",
+    "text": ""
+   },
+   {
+    "n": 5,
+    "title": "Refresh",
+    "text": ""
+   },
+   {
+    "n": 6,
+    "title": "All projects in the workspace",
+    "text": "All 2"
+   },
+   {
+    "n": 7,
+    "title": "Neither deployed nor running locally",
+    "text": "Draft 2"
+   },
+   {
+    "n": 8,
+    "title": "Not deployed",
+    "text": ""
+   },
+   {
+    "n": 9,
+    "title": "Governance: validate against Agent Fabric, P4A and organization rulesets",
+    "text": ""
+   },
+   {
+    "n": 10,
+    "title": "Validate: dry run of build, publish and deploy (changes nothing)",
+    "text": ""
+   },
+   {
+    "n": 11,
+    "title": "Build: repair and package locally",
+    "text": ""
+   },
+   {
+    "n": 12,
+    "title": "Publish to Exchange",
+    "text": ""
+   },
+   {
+    "n": 13,
+    "title": "Deploy",
+    "text": ""
+   },
+   {
+    "n": 14,
+    "title": "Setup gateways",
+    "text": ""
+   },
+   {
+    "n": 15,
+    "title": "Undeploy",
+    "text": ""
+   },
+   {
+    "n": 16,
+    "title": "Unpublish from Exchange",
+    "text": ""
+   },
+   {
+    "n": 17,
+    "title": "Remove from workspace (files stay on disk and in Git)",
+    "text": ""
+   },
+   {
+    "n": 18,
+    "title": "Run locally (Docker, nothing changes in Anypoint)",
+    "text": ""
+   }
+  ]
+ },
+ "deploy-form": {
+  "size": "560,900",
+  "themes": [
+   "dark",
+   "light"
+  ],
+  "controls": [
+   {
+    "n": 1,
+    "title": "New project",
+    "text": ""
+   },
+   {
+    "n": 2,
+    "title": "Download an agent network from Exchange into this workspace",
+    "text": ""
+   },
+   {
+    "n": 3,
+    "title": "Check deployment status",
+    "text": ""
+   },
+   {
+    "n": 4,
+    "title": "Governance report: validate every project in the workspace against rulesets",
+    "text": ""
+   },
+   {
+    "n": 5,
+    "title": "Refresh",
+    "text": ""
+   },
+   {
+    "n": 6,
+    "title": "Not deployed",
+    "text": ""
+   },
+   {
+    "n": 7,
+    "title": "Governance: validate against Agent Fabric, P4A and organization rulesets",
+    "text": ""
+   },
+   {
+    "n": 8,
+    "title": "Validate: dry run of build, publish and deploy (changes nothing)",
+    "text": ""
+   },
+   {
+    "n": 9,
+    "title": "Build: repair and package locally",
+    "text": ""
+   },
+   {
+    "n": 10,
+    "title": "Publish to Exchange",
+    "text": ""
+   },
+   {
+    "n": 11,
+    "title": "Deploy",
+    "text": ""
+   },
+   {
+    "n": 12,
+    "title": "Run locally (Docker, nothing changes in Anypoint)",
+    "text": ""
+   },
+   {
+    "n": 13,
+    "title": "Setup gateways",
+    "text": ""
+   },
+   {
+    "n": 14,
+    "title": "Undeploy",
+    "text": ""
+   },
+   {
+    "n": 15,
+    "title": "Unpublish from Exchange",
+    "text": ""
+   },
+   {
+    "n": 16,
+    "title": "Remove from workspace (files stay on disk and in Git)",
+    "text": ""
+   },
+   {
+    "n": 17,
+    "title": "",
+    "text": "Single gateway"
+   },
+   {
+    "n": 18,
+    "title": "",
+    "text": "Ingress / egress"
+   },
+   {
+    "n": 19,
+    "title": "Status: RUNNING · Runs in Cloudhub-US-East-2",
+    "text": "agentic"
+   },
+   {
+    "n": 20,
+    "title": "Status: RUNNING · Runs in admin-wt-lausanne (private space)",
+    "text": "agentic-ps"
+   },
+   {
+    "n": 21,
+    "title": "Status: STOPPED · Runs in Cloudhub-EU-West-1",
+    "text": "demo-gw-eu"
+   },
+   {
+    "n": 22,
+    "title": "Private space · us-east-2",
+    "text": "admin-wt-lausanne · private"
+   },
+   {
+    "n": 23,
+    "title": "Shared space · us-east-2",
+    "text": "Cloudhub-US-East-2"
+   },
+   {
+    "n": 24,
+    "title": "Shared space · eu-west-1",
+    "text": "Cloudhub-EU-West-1"
+   },
+   {
+    "n": 25,
+    "title": "Pre-deploy checks: Before build and deploy, Octoloom checks what the agent-network CLI only reports after a full publish and deploy: a broker implementation file that does not exist, a connection key longer than 51 characters (the local gateway of Run locally names its context <key>-api-context, 63 characters at most; deploys to a managed gateway accept the key, so for Build, Publish and Deploy it is only a warning), and, when Agent Fabric is connected, an exchange.json dependency the org cannot read, a registry key that is already an Exchange asset of another project, a connection key that is already an API instance in the environment, and (v1) a connection key another project already uses for the same Exchange asset in the environment (Duplicated connection name). Findings go to the \"Agent Network CLI\" output with a fix. The project checks (main file, classifier, unused dependencies, undeclared variables, two brokers on one .agent file) are listed there too, as warnings that never stop the build.",
+    "text": "Deploy"
+   },
+   {
+    "n": 26,
+    "title": "Cancel",
+    "text": "Cancel"
+   }
+  ]
+ },
+ "deploy-auth": {
+  "size": "500,640",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "run-local-vars": {
+  "size": "560,900",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "projects-explain": {
+  "size": "500,760",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "setup-connect": {
+  "size": "500,760",
+  "themes": [
+   "dark",
+   "light"
+  ],
+  "controls": [
+   {
+    "n": 1,
+    "title": "Select business group (publish and deploy into a sub org)",
+    "text": ""
+   },
+   {
+    "n": 2,
+    "title": "Select environment",
+    "text": ""
+   },
+   {
+    "n": 3,
+    "title": "Disconnect from Agent Fabric",
+    "text": ""
+   },
+   {
+    "n": 4,
+    "title": "Disconnect from A²D",
+    "text": ""
+   },
+   {
+    "n": 5,
+    "title": "Connect",
+    "text": "Connect"
+   },
+   {
+    "n": 6,
+    "title": "Re-check",
+    "text": ""
+   },
+   {
+    "n": 7,
+    "title": "Follow the VS Code color theme",
+    "text": "Auto"
+   },
+   {
+    "n": 8,
+    "title": "Light mode for all Octoloom views",
+    "text": "Light"
+   },
+   {
+    "n": 9,
+    "title": "Dark mode for all Octoloom views",
+    "text": "Dark"
+   }
+  ]
+ },
+ "setup-connect-update": {
+  "size": "500,760",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "setup-connect-idmc": {
+  "size": "500,760",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "assets-llm": {
+  "size": "500,760",
+  "themes": [
+   "dark",
+   "light"
+  ],
+  "controls": [
+   {
+    "n": 1,
+    "title": "A²D · prototype MCP servers, agents and LLM mocks",
+    "text": "A²D"
+   },
+   {
+    "n": 2,
+    "title": "Agent Fabric · Exchange",
+    "text": "Agent Fabric"
+   },
+   {
+    "n": 3,
+    "title": "Headless IDMC · shared and composite MCP servers",
+    "text": "IDMC"
+   },
+   {
+    "n": 4,
+    "title": "Cards",
+    "text": ""
+   },
+   {
+    "n": 5,
+    "title": "Rows",
+    "text": ""
+   },
+   {
+    "n": 6,
+    "title": "Refresh",
+    "text": ""
+   },
+   {
+    "n": 7,
+    "title": "",
+    "text": "All"
+   },
+   {
+    "n": 8,
+    "title": "",
+    "text": "MCP"
+   },
+   {
+    "n": 9,
+    "title": "",
+    "text": "Agents"
+   },
+   {
+    "n": 10,
+    "title": "",
+    "text": "LLMs"
+   },
+   {
+    "n": 11,
+    "title": "Add to the active editor",
+    "text": ""
+   }
+  ]
+ },
+ "assets-a2d-llm": {
+  "size": "500,760",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "assets-idmc": {
+  "size": "500,760",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "assets-error-detail": {
+  "size": "500,760",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "network-v2": {
+  "size": "1500,900",
+  "themes": [
+   "dark",
+   "light"
+  ],
+  "controls": [
+   {
+    "n": 1,
+    "title": "Agent Network 2.0: AgentScript brokers (.agent) with explicit, deterministic flows.",
+    "text": "Deterministic Network"
+   },
+   {
+    "n": 2,
+    "title": "Visual canvas",
+    "text": "Visual"
+   },
+   {
+    "n": 3,
+    "title": "YAML source",
+    "text": "Code"
+   },
+   {
+    "n": 4,
+    "title": "Network",
+    "text": "Network"
+   },
+   {
+    "n": 5,
+    "title": "exchange.json",
+    "text": "exchange.json"
+   },
+   {
+    "n": 6,
+    "title": "Build & Deploy",
+    "text": "Build & Deploy"
+   },
+   {
+    "n": 7,
+    "title": "Save",
+    "text": "Save"
+   },
+   {
+    "n": 8,
+    "title": "Open the broker flow (.agent)",
+    "text": "Flow"
+   },
+   {
+    "n": 9,
+    "title": "Collapse card",
+    "text": ""
+   },
+   {
+    "n": 10,
+    "title": "",
+    "text": "Edit"
+   },
+   {
+    "n": 11,
+    "title": "Add to the network",
+    "text": ""
+   },
+   {
+    "n": 12,
+    "title": "Asset Palette (Exchange / A²D)",
+    "text": ""
+   },
+   {
+    "n": 13,
+    "title": "Auto layout",
+    "text": ""
+   },
+   {
+    "n": 14,
+    "title": "Minimize all components to their icons (click an icon to open or minimize one). Auto layout packs them.",
+    "text": ""
+   },
+   {
+    "n": 15,
+    "title": "Zoom out",
+    "text": ""
+   },
+   {
+    "n": 16,
+    "title": "Reset to 100%",
+    "text": "90%"
+   },
+   {
+    "n": 17,
+    "title": "Zoom in",
+    "text": ""
+   },
+   {
+    "n": 18,
+    "title": "Fit to screen",
+    "text": ""
+   },
+   {
+    "n": 19,
+    "title": "Hide the minimap",
+    "text": ""
+   },
+   {
+    "n": 20,
+    "title": "Explain anything: click, then click any object (the guided tour starts from here too). Drag to move; double-click to reset its place",
+    "text": ""
+   }
+  ]
+ },
+ "network-v1": {
+  "size": "1500,900",
+  "themes": [
+   "dark",
+   "light"
+  ],
+  "controls": [
+   {
+    "n": 1,
+    "title": "Agent Network 1.0: an LLM broker picks linked agents and MCP tools at run time.",
+    "text": "Probabilistic Network"
+   },
+   {
+    "n": 2,
+    "title": "Visual canvas",
+    "text": "Visual"
+   },
+   {
+    "n": 3,
+    "title": "YAML source",
+    "text": "Code"
+   },
+   {
+    "n": 4,
+    "title": "Network",
+    "text": "Network"
+   },
+   {
+    "n": 5,
+    "title": "exchange.json",
+    "text": "exchange.json"
+   },
+   {
+    "n": 6,
+    "title": "Build & Deploy",
+    "text": "Build & Deploy"
+   },
+   {
+    "n": 7,
+    "title": "Save",
+    "text": "Save"
+   },
+   {
+    "n": 8,
+    "title": "Collapse card",
+    "text": ""
+   },
+   {
+    "n": 9,
+    "title": "",
+    "text": "Edit"
+   },
+   {
+    "n": 10,
+    "title": "Add to the network",
+    "text": ""
+   },
+   {
+    "n": 11,
+    "title": "Asset Palette (Exchange / A²D)",
+    "text": ""
+   },
+   {
+    "n": 12,
+    "title": "Auto layout",
+    "text": ""
+   },
+   {
+    "n": 13,
+    "title": "Minimize all components to their icons (click an icon to open or minimize one). Auto layout packs them.",
+    "text": ""
+   },
+   {
+    "n": 14,
+    "title": "Zoom out",
+    "text": ""
+   },
+   {
+    "n": 15,
+    "title": "Reset to 100%",
+    "text": "49%"
+   },
+   {
+    "n": 16,
+    "title": "Zoom in",
+    "text": ""
+   },
+   {
+    "n": 17,
+    "title": "Fit to screen",
+    "text": ""
+   },
+   {
+    "n": 18,
+    "title": "Hide the minimap",
+    "text": ""
+   },
+   {
+    "n": 19,
+    "title": "Explain anything: click, then click any object (the guided tour starts from here too). Drag to move; double-click to reset its place",
+    "text": ""
+   }
+  ]
+ },
+ "network-v2-context": {
+  "size": "1500,900",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "broker-protected": {
+  "size": "1400,900",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "policies-fold": {
+  "size": "1400,900",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "policy-picker": {
+  "size": "1400,1000",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "network-problems-fix": {
+  "size": "1500,900",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "network-v1-exchange-llm": {
+  "size": "1500,900",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "network-mcp-url": {
+  "size": "1500,900",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "network-fab-tip": {
+  "size": "1500,900",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "agent-flow": {
+  "size": "1500,900",
+  "themes": [
+   "dark",
+   "light"
+  ],
+  "controls": [
+   {
+    "n": 1,
+    "title": "Hide explorer",
+    "text": ""
+   },
+   {
+    "n": 2,
+    "title": "Visual canvas",
+    "text": "Visual"
+   },
+   {
+    "n": 3,
+    "title": "AgentScript source",
+    "text": "Code"
+   },
+   {
+    "n": 4,
+    "title": "Open agent-network.yaml",
+    "text": "Network"
+   },
+   {
+    "n": 5,
+    "title": "Preview",
+    "text": "Preview"
+   },
+   {
+    "n": 6,
+    "title": "New Version",
+    "text": "New Version"
+   },
+   {
+    "n": 7,
+    "title": "Bump the patch version in exchange.json and save all files",
+    "text": "Commit Version"
+   },
+   {
+    "n": 8,
+    "title": "Save",
+    "text": "Save"
+   },
+   {
+    "n": 9,
+    "title": "Add subagent",
+    "text": ""
+   },
+   {
+    "n": 10,
+    "title": "LLM loop that picks actions to complete a task",
+    "text": "Subagent"
+   },
+   {
+    "n": 11,
+    "title": "LLM coordinating two or more agents / tools",
+    "text": "Orchestrator"
+   },
+   {
+    "n": 12,
+    "title": "Single LLM call, optional structured output",
+    "text": "Generator"
+   },
+   {
+    "n": 13,
+    "title": "Deterministic: run actions, set variables (no LLM)",
+    "text": "Executor"
+   },
+   {
+    "n": 14,
+    "title": "Branch on conditions",
+    "text": "Router"
+   },
+   {
+    "n": 15,
+    "title": "Send a status message or artifact to the caller",
+    "text": "Reply"
+   },
+   {
+    "n": 16,
+    "title": "Collapse card",
+    "text": ""
+   },
+   {
+    "n": 17,
+    "title": "Add next step",
+    "text": "Step"
+   },
+   {
+    "n": 18,
+    "title": "Add node",
+    "text": "Add node"
+   },
+   {
+    "n": 19,
+    "title": "Discard manual positions",
+    "text": "Auto layout"
+   },
+   {
+    "n": 20,
+    "title": "Minimize all nodes to their icons (click an icon to open or minimize one). Auto layout packs them.",
+    "text": "Minimize all"
+   },
+   {
+    "n": 21,
+    "title": "Zoom out",
+    "text": ""
+   },
+   {
+    "n": 22,
+    "title": "Reset to 100%",
+    "text": "43%"
+   },
+   {
+    "n": 23,
+    "title": "Zoom in",
+    "text": ""
+   },
+   {
+    "n": 24,
+    "title": "Fit to screen",
+    "text": ""
+   },
+   {
+    "n": 25,
+    "title": "Hide the minimap",
+    "text": ""
+   },
+   {
+    "n": 26,
+    "title": "Explain anything: click, then click any object (the guided tour starts from here too). Drag to move; double-click to reset its place",
+    "text": ""
+   }
+  ]
+ },
+ "agent-patterns": {
+  "size": "1500,1000",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "code-yaml": {
+  "size": "1300,700",
+  "themes": [
+   "dark",
+   "light"
+  ],
+  "controls": [
+   {
+    "n": 1,
+    "title": "Agent Network 2.0: AgentScript brokers (.agent) with explicit, deterministic flows.",
+    "text": "Deterministic Network"
+   },
+   {
+    "n": 2,
+    "title": "Visual canvas",
+    "text": "Visual"
+   },
+   {
+    "n": 3,
+    "title": "YAML source",
+    "text": "Code"
+   },
+   {
+    "n": 4,
+    "title": "Network",
+    "text": "Network"
+   },
+   {
+    "n": 5,
+    "title": "exchange.json",
+    "text": "exchange.json"
+   },
+   {
+    "n": 6,
+    "title": "Build & Deploy",
+    "text": "Build & Deploy"
+   },
+   {
+    "n": 7,
+    "title": "Save",
+    "text": "Save"
+   },
+   {
+    "n": 8,
+    "title": "Ctrl+Space: suggestions · Shift+Alt+F: format · Ctrl/Cmd+S: apply · Ctrl/Cmd+F: find · Ctrl/Cmd+H: replace · F8: next problem",
+    "text": "agent-network.yaml · v2"
+   },
+   {
+    "n": 9,
+    "title": "Re-indent to the reference layout: 2 spaces per level (Shift+Alt+F)",
+    "text": "Format"
+   },
+   {
+    "n": 10,
+    "title": "Revert",
+    "text": "Revert"
+   },
+   {
+    "n": 11,
+    "title": "Apply to the file (Ctrl/Cmd+S)",
+    "text": "Apply"
+   },
+   {
+    "n": 12,
+    "title": "Open in text editor",
+    "text": "Open in text editor"
+   },
+   {
+    "n": 13,
+    "title": "Explain anything: click, then click any object (the guided tour starts from here too). Drag to move; double-click to reset its place",
+    "text": ""
+   }
+  ]
+ },
+ "code-find": {
+  "size": "1300,700",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "exchange-locked": {
+  "size": "1400,1000",
+  "themes": [
+   "dark",
+   "light"
+  ],
+  "controls": [
+   {
+    "n": 1,
+    "title": "Form",
+    "text": "Form"
+   },
+   {
+    "n": 2,
+    "title": "JSON source",
+    "text": "JSON"
+   },
+   {
+    "n": 3,
+    "title": "→ 1.0.1",
+    "text": "Bump patch"
+   },
+   {
+    "n": 4,
+    "title": "Network",
+    "text": "Network"
+   },
+   {
+    "n": 5,
+    "title": "Save",
+    "text": "Save"
+   },
+   {
+    "n": 6,
+    "title": "Fix: Copy the exchange.json description. One undoable edit; not saved.",
+    "text": "Copy the exchange.json description"
+   },
+   {
+    "n": 7,
+    "title": "Remove",
+    "text": "×"
+   },
+   {
+    "n": 8,
+    "title": "Unlock to edit",
+    "text": ""
+   },
+   {
+    "n": 9,
+    "title": "Add variable",
+    "text": ""
+   },
+   {
+    "n": 10,
+    "title": "Remove group",
+    "text": ""
+   },
+   {
+    "n": 11,
+    "title": "",
+    "text": "Add group"
+   },
+   {
+    "n": 12,
+    "title": "Explain anything: click, then click any object (the guided tour starts from here too). Drag to move; double-click to reset its place",
+    "text": ""
+   }
+  ]
+ },
+ "exchange-unlocked": {
+  "size": "1400,1000",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "chat-progress": {
+  "size": "1500,900",
+  "themes": [
+   "dark",
+   "light"
+  ],
+  "controls": [
+   {
+    "n": 1,
+    "title": "Collapse the left side (the chat keeps the space)",
+    "text": ""
+   },
+   {
+    "n": 2,
+    "title": "The agent network (read-only)",
+    "text": "Network"
+   },
+   {
+    "n": 3,
+    "title": "The trace of a reply: pick the trace icon under a deployed reply",
+    "text": "Trace"
+   },
+   {
+    "n": 4,
+    "title": "Deployed and running · Sandbox / example-gateway",
+    "text": ""
+   },
+   {
+    "n": 5,
+    "title": "Check status",
+    "text": ""
+   },
+   {
+    "n": 6,
+    "title": "Full screen: the network takes the whole panel",
+    "text": ""
+   },
+   {
+    "n": 7,
+    "title": "Collapse card",
+    "text": ""
+   },
+   {
+    "n": 8,
+    "title": "Auto layout",
+    "text": ""
+   },
+   {
+    "n": 9,
+    "title": "Minimize all components to their icons (click an icon to open or minimize one)",
+    "text": ""
+   },
+   {
+    "n": 10,
+    "title": "Zoom out",
+    "text": ""
+   },
+   {
+    "n": 11,
+    "title": "Reset to 100%",
+    "text": "48%"
+   },
+   {
+    "n": 12,
+    "title": "Zoom in",
+    "text": ""
+   },
+   {
+    "n": 13,
+    "title": "Fit to screen",
+    "text": ""
+   },
+   {
+    "n": 14,
+    "title": "Hide the minimap",
+    "text": ""
+   },
+   {
+    "n": 15,
+    "title": "Running",
+    "text": ""
+   },
+   {
+    "n": 16,
+    "title": "The broker deployed to your gateway",
+    "text": "Deployed"
+   },
+   {
+    "n": 17,
+    "title": "The broker running on this machine (Run locally, Docker)",
+    "text": "Local"
+   },
+   {
+    "n": 18,
+    "title": "Use another URL",
+    "text": ""
+   },
+   {
+    "n": 19,
+    "title": "Copy URL",
+    "text": ""
+   },
+   {
+    "n": 20,
+    "title": "Authentication: none",
+    "text": ""
+   },
+   {
+    "n": 21,
+    "title": "Show raw JSON for every reply",
+    "text": ""
+   },
+   {
+    "n": 22,
+    "title": "New conversation (new context)",
+    "text": ""
+   },
+   {
+    "n": 23,
+    "title": "Share this broker: A²D sessions (invite people by email, see their feedback here) or a web chat app (opens a dialog)",
+    "text": ""
+   },
+   {
+    "n": 24,
+    "title": "Full height: the chat takes the whole panel",
+    "text": ""
+   },
+   {
+    "n": 25,
+    "title": "Collapse the chat (the left side keeps the space)",
+    "text": ""
+   },
+   {
+    "n": 26,
+    "title": "",
+    "text": "JSON"
+   },
+   {
+    "n": 27,
+    "title": "Copy answer",
+    "text": "Copy"
+   },
+   {
+    "n": 28,
+    "title": "Trace of this reply on the left: every call, in order, with its duration (spans arrive about 20 s after the reply)",
+    "text": ""
+   }
+  ]
+ },
+ "chat-auth": {
+  "size": "1500,900",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "chat-network": {
+  "size": "1500,900",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "chat-network-sequence": {
+  "size": "1500,900",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "chat-trace": {
+  "size": "1500,900",
+  "themes": [
+   "dark",
+   "light"
+  ],
+  "controls": [
+   {
+    "n": 1,
+    "title": "Collapse the left side (the chat keeps the space)",
+    "text": ""
+   },
+   {
+    "n": 2,
+    "title": "The agent network (read-only)",
+    "text": "Network"
+   },
+   {
+    "n": 3,
+    "title": "The trace of a reply: pick the trace icon under a deployed reply",
+    "text": "Trace"
+   },
+   {
+    "n": 4,
+    "title": "Deployed and running · Sandbox / example-gateway",
+    "text": ""
+   },
+   {
+    "n": 5,
+    "title": "Check status",
+    "text": ""
+   },
+   {
+    "n": 6,
+    "title": "Load the trace again",
+    "text": ""
+   },
+   {
+    "n": 7,
+    "title": "Full height: the trace takes the whole panel",
+    "text": ""
+   },
+   {
+    "n": 8,
+    "title": "Back to the network",
+    "text": ""
+   },
+   {
+    "n": 9,
+    "title": "Broker: The broker that handles the message, and its gateway request. Click to choose its colour.",
+    "text": "Broker"
+   },
+   {
+    "n": 10,
+    "title": "Agent: A2A calls to agents. Click to choose its colour.",
+    "text": "Agent"
+   },
+   {
+    "n": 11,
+    "title": "LLM: Calls to a language model (OpenAI, Gemini, Bedrock, Azure…). Click to choose its colour.",
+    "text": "LLM"
+   },
+   {
+    "n": 12,
+    "title": "MCP: MCP tool calls (tools/call). Click to choose its colour.",
+    "text": "MCP"
+   },
+   {
+    "n": 13,
+    "title": "Error: A span that failed, whatever it calls. Click to choose its colour.",
+    "text": "Error"
+   },
+   {
+    "n": 14,
+    "title": "Needs credentials (HTTP 401): set them in the chat (shield button)",
+    "text": ""
+   },
+   {
+    "n": 15,
+    "title": "The broker deployed to your gateway",
+    "text": "Deployed"
+   },
+   {
+    "n": 16,
+    "title": "The broker running on this machine (Run locally, Docker)",
+    "text": "Local"
+   },
+   {
+    "n": 17,
+    "title": "Use another URL",
+    "text": ""
+   },
+   {
+    "n": 18,
+    "title": "Copy URL",
+    "text": ""
+   },
+   {
+    "n": 19,
+    "title": "Authentication: User sign-in · not signed in",
+    "text": ""
+   },
+   {
+    "n": 20,
+    "title": "Show raw JSON for every reply",
+    "text": ""
+   },
+   {
+    "n": 21,
+    "title": "New conversation (new context)",
+    "text": ""
+   },
+   {
+    "n": 22,
+    "title": "Share this broker: A²D sessions (invite people by email, see their feedback here) or a web chat app (opens a dialog)",
+    "text": ""
+   },
+   {
+    "n": 23,
+    "title": "Full height: the chat takes the whole panel",
+    "text": ""
+   },
+   {
+    "n": 24,
+    "title": "Collapse the chat (the left side keeps the space)",
+    "text": ""
+   },
+   {
+    "n": 25,
+    "title": "Returns: Start and track a return",
+    "text": "Return order 1042"
+   },
+   {
+    "n": 26,
+    "title": "",
+    "text": "JSON"
+   },
+   {
+    "n": 27,
+    "title": "Copy answer",
+    "text": "Copy"
+   },
+   {
+    "n": 28,
+    "title": "Trace of this reply on the left: every call, in order, with its duration (spans arrive about 20 s after the reply)",
+    "text": ""
+   }
+  ]
+ },
+ "chat-trace-colors": {
+  "size": "1500,900",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "chat-share-a2d": {
+  "size": "1500,900",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "chat-share-web": {
+  "size": "1500,900",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "chat-share-a2d-review": {
+  "size": "1500,900",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "chat-narrow": {
+  "size": "720,950",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "tracer": {
+  "size": "1500,950",
+  "themes": [
+   "dark",
+   "light"
+  ],
+  "controls": [
+   {
+    "n": 1,
+    "title": "Collapse the left side (the chat keeps the space)",
+    "text": ""
+   },
+   {
+    "n": 2,
+    "title": "The agent network (read-only)",
+    "text": "Network"
+   },
+   {
+    "n": 3,
+    "title": "The trace of a reply: pick the trace icon under a deployed reply",
+    "text": "Trace"
+   },
+   {
+    "n": 4,
+    "title": "Deployed and running · Sandbox / example-gateway",
+    "text": ""
+   },
+   {
+    "n": 5,
+    "title": "Check status",
+    "text": ""
+   },
+   {
+    "n": 6,
+    "title": "Load the trace again",
+    "text": ""
+   },
+   {
+    "n": 7,
+    "title": "Full height: the trace takes the whole panel",
+    "text": ""
+   },
+   {
+    "n": 8,
+    "title": "Back to the network",
+    "text": ""
+   },
+   {
+    "n": 9,
+    "title": "Broker: The broker that handles the message, and its gateway request. Click to choose its colour.",
+    "text": "Broker"
+   },
+   {
+    "n": 10,
+    "title": "Agent: A2A calls to agents. Click to choose its colour.",
+    "text": "Agent"
+   },
+   {
+    "n": 11,
+    "title": "LLM: Calls to a language model (OpenAI, Gemini, Bedrock, Azure…). Click to choose its colour.",
+    "text": "LLM"
+   },
+   {
+    "n": 12,
+    "title": "MCP: MCP tool calls (tools/call). Click to choose its colour.",
+    "text": "MCP"
+   },
+   {
+    "n": 13,
+    "title": "Error: A span that failed, whatever it calls. Click to choose its colour.",
+    "text": "Error"
+   },
+   {
+    "n": 14,
+    "title": "Running",
+    "text": ""
+   },
+   {
+    "n": 15,
+    "title": "The broker deployed to your gateway",
+    "text": "Deployed"
+   },
+   {
+    "n": 16,
+    "title": "The broker running on this machine (Run locally, Docker)",
+    "text": "Local"
+   },
+   {
+    "n": 17,
+    "title": "Use another URL",
+    "text": ""
+   },
+   {
+    "n": 18,
+    "title": "Copy URL",
+    "text": ""
+   },
+   {
+    "n": 19,
+    "title": "Authentication: none",
+    "text": ""
+   },
+   {
+    "n": 20,
+    "title": "Show raw JSON for every reply",
+    "text": ""
+   },
+   {
+    "n": 21,
+    "title": "New conversation (new context)",
+    "text": ""
+   },
+   {
+    "n": 22,
+    "title": "Share this broker: A²D sessions (invite people by email, see their feedback here) or a web chat app (opens a dialog)",
+    "text": ""
+   },
+   {
+    "n": 23,
+    "title": "Full height: the chat takes the whole panel",
+    "text": ""
+   },
+   {
+    "n": 24,
+    "title": "Collapse the chat (the left side keeps the space)",
+    "text": ""
+   },
+   {
+    "n": 25,
+    "title": "Live progress is on: you see each step of the broker as it happens. Click to turn it off.",
+    "text": ""
+   },
+   {
+    "n": 26,
+    "title": "Send (Enter)",
+    "text": ""
+   },
+   {
+    "n": 27,
+    "title": "Hide the tracer",
+    "text": ""
+   },
+   {
+    "n": 28,
+    "title": "Tracing with the Agent Fabric connected app · 1 of 1 APIs reachable. Click for details.",
+    "text": "App 1/1"
+   }
+  ]
+ },
+ "tracer-mini": {
+  "size": "1500,950",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "governance": {
+  "size": "1500,900",
+  "themes": [
+   "dark",
+   "light"
+  ],
+  "controls": [
+   {
+    "n": 1,
+    "title": "",
+    "text": "Project"
+   },
+   {
+    "n": 2,
+    "title": "",
+    "text": "Workspace report"
+   },
+   {
+    "n": 3,
+    "title": "Reload the ruleset catalogs and projects",
+    "text": ""
+   },
+   {
+    "n": 4,
+    "title": "Hide the rulesets",
+    "text": ""
+   },
+   {
+    "n": 5,
+    "title": "Add a ruleset YAML file",
+    "text": ""
+   },
+   {
+    "n": 6,
+    "title": "",
+    "text": "Canvas"
+   },
+   {
+    "n": 7,
+    "title": "",
+    "text": "Governed services"
+   },
+   {
+    "n": 8,
+    "title": "",
+    "text": "Configuration"
+   },
+   {
+    "n": 9,
+    "title": "Select at least one ruleset",
+    "text": "Validate"
+   },
+   {
+    "n": 10,
+    "title": "Save an HTML report of this project",
+    "text": "Report"
+   },
+   {
+    "n": 11,
+    "title": "Show details",
+    "text": ""
+   },
+   {
+    "n": 12,
+    "title": "Hide the findings",
+    "text": ""
+   },
+   {
+    "n": 13,
+    "title": "Explain anything: click, then click any object (the guided tour starts from here too). Drag to move; double-click to reset its place",
+    "text": ""
+   }
+  ]
+ },
+ "governance-fix-all": {
+  "size": "1500,900",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "explain-anything": {
+  "size": "1400,860",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
+ "explain-guide": {
+  "size": "1400,860",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ }
+}

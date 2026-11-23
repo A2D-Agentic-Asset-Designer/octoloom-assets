@@ -1,4 +1,33 @@
+<span class="ol-pill">Help</span>
+
 # Explain anything
+
+<p class="lede"><strong>Click the button, then any object: a panel explains what it is, when to use it and gives examples. It also starts the guided tour.</strong> Help where you are, in the same words as this site's UI reference.</p>
+
+!!! info "Where to find it"
+    The floating **i** button, bottom right of every Octoloom view
+
+<figure markdown>
+![Explain on the network canvas](../assets/ui/explain-anything-light.webp#only-light){ loading=lazy }
+![Explain on the network canvas](../assets/ui/explain-anything-dark.webp#only-dark){ loading=lazy }
+<figcaption>Explain on the network canvas</figcaption>
+</figure>
+
+## How to use it
+
+1. Click the floating **Explain** button.
+2. Click any button, card or panel.
+3. Use **Start the guide** for the tour of this view.
+
+## More screenshots
+
+<figure markdown>
+![The Explain panel with the guided tour](../assets/ui/explain-guide-light.webp#only-light){ loading=lazy }
+![The Explain panel with the guided tour](../assets/ui/explain-guide-dark.webp#only-dark){ loading=lazy }
+<figcaption>The Explain panel with the guided tour</figcaption>
+</figure>
+
+## In detail
 
 Every Octoloom editor and panel (canvases, broker flow, `exchange.json`, chat, Governance, Welcome, New project) has one round, dark blue **info button** floating near the bottom right, above the minimap. It replaces the Explain buttons the views used to have. Click it (or focus it and press Enter) to turn on Explain mode:
 
@@ -9,21 +38,26 @@ Every Octoloom editor and panel (canvases, broker flow, `exchange.json`, chat, G
 - **Toolbar and project buttons** each have their own card (Visual / Code, Preview, New Version, Commit Version, Build, Publish, Run locally…). The Publish card says how versions work: Publish uses the version in `exchange.json` as it is and never bumps it, and a version already in Exchange can't be published again.
 - **Drag** the button anywhere. It feels like one button: every open Octoloom tab follows, so it is in the same place when you switch tabs (and after a restart). In a split view each editor group shows its own copy at that place. Double-click it to put it back everywhere.
 
-![Explain anything: the info button is on, a broker card is clicked and its explanation opens beside it](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/screenshots/explain-anything.png)
 
-![Explain mode on: the hint offers Start the guide](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/screenshots/explain-guide.png)
 
 ## Buttons and components
 
-The same text as the in-app **Explain** button (click the floating info button, then the item).
+The same text as the in-app **Explain** button (click the floating **i**, then the item).
 
 ### Explain anything
+
+<div class="grid" markdown>
+
+![explain-button](../assets/ui/explain-button-light.webp#only-light){ loading=lazy }
+![explain-button](../assets/ui/explain-button-dark.webp#only-dark){ loading=lazy }
 
 The floating info button on every Octoloom editor and panel (canvases, broker flow, chat, Governance, Welcome, New project). Turn it on, then click any card, panel, tool or canvas: instead of acting, the view tells you what that object is, when to use it and examples. Nothing is changed while it is on.
 
 **When to use it:** Whenever you are unsure what something on screen does. Drag the button anywhere; every Octoloom tab follows, so it stays in the same place when you switch tabs.
 
-**Examples:**
+</div>
+
+**Examples and details:**
 
 - Click the button (or press Enter on it), then click a broker card to read about brokers
 - Hover first: the object that will be explained is outlined and named

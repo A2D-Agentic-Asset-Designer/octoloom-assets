@@ -1,4 +1,51 @@
+<span class="ol-pill">Start</span>
+
 # Setup & Connect
+
+<p class="lede"><strong>One-time setup: connections (Agent Fabric / Anypoint, A²D, P4A, Informatica IDMC), the CLI tools and the theme.</strong> Every other view needs these connections; the status line tells you what is missing.</p>
+
+!!! info "Where to find it"
+    Side bar → **Setup & Connect**
+
+<figure markdown>
+![Setup & Connect: connections, tooling and appearance](../assets/ui/setup-connect-annot-light.webp#only-light){ loading=lazy }
+![Setup & Connect: connections, tooling and appearance](../assets/ui/setup-connect-annot-dark.webp#only-dark){ loading=lazy }
+<figcaption>Setup & Connect: connections, tooling and appearance</figcaption>
+</figure>
+
+| # | Control | What it does |
+|---|---|---|
+| <span class="ol-n">1</span> | **Select business group** | Select business group (publish and deploy into a sub org) |
+| <span class="ol-n">2</span> | **Select environment** | Pick the Anypoint environment |
+| <span class="ol-n">3</span> | **Disconnect from Agent Fabric** | Sign out of Anypoint |
+| <span class="ol-n">4</span> | **Disconnect from A²D** | Remove the A²D API key |
+| <span class="ol-n">5</span> | **Connect** | Connect with these settings |
+| <span class="ol-n">6</span> | **Re-check** | Run the checks again |
+| <span class="ol-n">7</span> | **Auto** | Follow the VS Code color theme |
+| <span class="ol-n">8</span> | **Light** | Light mode for all Octoloom views |
+| <span class="ol-n">9</span> | **Dark** | Dark mode for all Octoloom views |
+
+## How to use it
+
+1. Click **Connect** on each connection you need (Agent Fabric first).
+2. Check **Tooling**: Node.js, Java, anypoint-cli-v4 and the agent-network plugin; install or update from there.
+3. Pick the theme under **Appearance**.
+
+## More screenshots
+
+<figure markdown>
+![A newer Octoloom on the Marketplace](../assets/ui/setup-connect-update-light.webp#only-light){ loading=lazy }
+![A newer Octoloom on the Marketplace](../assets/ui/setup-connect-update-dark.webp#only-dark){ loading=lazy }
+<figcaption>A newer Octoloom on the Marketplace</figcaption>
+</figure>
+
+<figure markdown>
+![Informatica IDMC connected](../assets/ui/setup-connect-idmc-light.webp#only-light){ loading=lazy }
+![Informatica IDMC connected](../assets/ui/setup-connect-idmc-dark.webp#only-dark){ loading=lazy }
+<figcaption>Informatica IDMC connected</figcaption>
+</figure>
+
+## In detail
 
 <img src="https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/screenshots/setup-connect.png" width="300" align="right" alt="Setup and Connect side bar" />
 
@@ -14,7 +61,7 @@ It is collapsed by default. It opens by itself when the window has no folder or 
 
 ## Buttons and components
 
-The same text as the in-app **Explain** button (click the floating info button, then the item).
+The same text as the in-app **Explain** button (click the floating **i**, then the item).
 
 ### Setup & Connect
 
@@ -22,7 +69,7 @@ One-time setup in the Octoloom side bar, most important first: Connections to Ag
 
 **When to use it:** The first time you use Octoloom, when a connection expires, or when a build says a tool is missing. It is collapsed by default and opens by itself when the workspace has no folder or no agent network project yet.
 
-**Examples:**
+**Examples and details:**
 
 - Appearance: Auto follows the VS Code theme; Light or Dark forces Octoloom's own palette. When the forced mode doesn't match VS Code, a hint says so with Follow VS Code
 - Connect Agent Fabric, then pick the environment with the globe button

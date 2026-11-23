@@ -1,3 +1,4 @@
+import re
 #!/usr/bin/env python3
 """Generate the Octoloom documentation site (octoloom#301) into docs/ and mkdocs.yml.
 
@@ -10,7 +11,9 @@ Sources (nothing is written by hand twice):
   - templates/, tutorials/ and skills/ of this repo
 The site is built and published by .github/workflows/docs.yml (MkDocs Material, GitHub Pages).
 """
-import json, os, re, shutil, subprocess, sys
+import json, os, re, shutil, subprocess, sys, urllib.request
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from ui_meta import SECTIONS, F, REF_SHOT, CARD_IMG, KEY_SHOT
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -28,6 +31,108 @@ INDEX = json.load(open(os.path.join(REPO, 'media', 'templates', 'index.json')))[
 TUTS = os.path.join(ROOT, 'tutorials')
 TPLS = os.path.join(ROOT, 'templates')
 SKILLS = os.path.join(ROOT, 'skills')
+UI = os.path.join(HERE, 'img', 'ui')
+SHOTS = json.load(open(os.path.join(UI, 'index.json'))) if os.path.exists(os.path.join(UI, 'index.json')) else {}
+
+
+def market_stats():
+    """Install count etc. from the VS Code Marketplace (baked in; marketplace.js refreshes it live)."""
+    try:
+        req = urllib.request.Request('https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery',
+            data=json.dumps({'filters': [{'criteria': [{'filterType': 7, 'value': 'octoloom.octoloom'}]}], 'flags': 914}).encode(),
+            headers={'Content-Type': 'application/json', 'Accept': 'application/json;api-version=3.0-preview.1'})
+        try:
+            raw = urllib.request.urlopen(req, timeout=20).read()
+        except Exception:  # local Python without CA certs: fall back to curl
+            import subprocess
+            raw = subprocess.run(['curl', '-s', '-X', 'POST', req.full_url, '-H', 'Content-Type: application/json',
+                                  '-H', 'Accept: application/json;api-version=3.0-preview.1', '--data-binary', req.data.decode()],
+                                 capture_output=True, check=True, timeout=30).stdout
+        x = json.loads(raw)['results'][0]['extensions'][0]
+        st = {t['statisticName']: t['value'] for t in x['statistics']}
+        return {'installs': int(st.get('install', 0)), 'rating': st.get('averagerating', 0), 'ratings': int(st.get('ratingcount', 0)),
+                'version': x['versions'][0]['version']}
+    except Exception as e:
+        print('marketplace stats unavailable:', e)
+        return {'installs': 0, 'rating': 0, 'ratings': 0, 'version': PKG['version']}
+
+
+MK = None
+SHOT_CAP = {}
+for _m in F.values():
+    for _sh, _cap in _m.get('shots') or []: SHOT_CAP.setdefault(_sh, _cap)
+
+
+def img(name, up, caption=None, theme_pair=True, cls=''):
+    """A screenshot in light and dark (the one matching the site theme shows)."""
+    alt = (caption or name).replace('"', "'")
+    base = f'{up}assets/ui/{name}'
+    c = f'{{ loading=lazy {cls}}}' if cls else '{ loading=lazy }'
+    if theme_pair and os.path.exists(os.path.join(UI, f'{name}-dark.webp')):
+        out = f'![{alt}]({base}-light.webp#only-light){c}\n![{alt}]({base}-dark.webp#only-dark){c}'
+    else:
+        out = f'![{alt}]({base}-light.webp){c}'
+    if caption: out = f'<figure markdown>\n{out}\n<figcaption>{caption}</figcaption>\n</figure>'
+    return out
+
+
+CTL_DESC = {
+    'Network': 'Open the Agent Network view of the deployed network', 'exchange.json': 'Open the Exchange asset form of this project',
+    'Build & Deploy': 'Validate, build, publish and deploy this network', 'Save': 'Save the file (the YAML stays the source of truth)',
+    'Collapse card': 'Collapse or expand the card body', 'Edit': 'Edit the linked agents or MCP servers of this broker',
+    'Add to the network': 'Add a broker, agent, MCP server, LLM or policy', 'Auto layout': 'Arrange the cards automatically',
+    'Zoom out': 'Zoom the canvas out', 'Zoom in': 'Zoom the canvas in', 'Fit to screen': 'Fit all cards into the view',
+    'Hide the minimap': 'Show or hide the minimap', 'Overview': 'One row per agent network', 'Policies': 'Policy coverage per network',
+    'Governance': 'Governance results per network', 'Authentication': 'Upstream authentication per connection',
+    'Origins': 'Where the assets come from', 'Lifecycle': 'Validated, built, published, deployed', 'LLMs': 'LLM providers per network',
+    'Code': 'YAML / AgentScript source view',
+    'Use another URL': 'Chat with a broker at a different URL', 'Show raw JSON for every reply': 'Show the raw A2A JSON under each reply',
+    'Running': 'Show only the running deployments', 'Not deployed': 'Show only the projects that are not deployed',
+    'Copy URL': 'Copy the broker URL', 'Check status': 'Ask Agent Fabric for the deployment status',
+    'Check deployment status': 'Ask Agent Fabric for the deployment status', 'Workspace report': 'Open the HTML report of all findings',
+    'Unpublish from Exchange': 'Remove this version from Exchange', 'Undeploy': 'Stop the deployment (asks first)',
+    'Show details': 'Show the full details', 'Setup gateways': 'Pick the Flex gateways to deploy to',
+    'Setup & Connect': 'Connect Anypoint, A²D and IDMC', 'Reload the ruleset catalogs and projects': 'Read the rulesets and projects again',
+    'Publish to Exchange': 'Publish the assets to Exchange', 'Projects & Deploy': 'The projects list with status lights',
+    'Project': 'Project settings', 'Preview': 'Preview the result before you apply it', 'Open folder…': 'Open the project folder',
+    'New Version': 'Bump the asset version', 'New project': 'Create a project from a template', 'JSON': 'Show the JSON source',
+    'Hide the rulesets': 'Hide the rulesets column', 'Hide the findings': 'Hide the findings column', 'Hide explorer': 'Hide the flow explorer',
+    'Governed services': 'The services the rulesets checked', 'Deploy': 'Deploy the network to Agent Fabric',
+    'Configuration': 'Deployment settings: environment, gateway, variables', 'Canvas': 'Show the canvas', 'Cancel': 'Close without changes',
+    'Add subagent': 'Add a subagent step to the flow', 'Add node': 'Add a step to the flow', 'Add a ruleset YAML file': 'Use a local ruleset file',
+    'Unlock to edit': 'Unlock the generated file to edit it by hand', 'Select environment': 'Pick the Anypoint environment',
+    'Revert': 'Undo the unsaved changes', 'Remove group': 'Remove this group', 'Re-check': 'Run the checks again',
+    'Probabilistic': 'v1 networks: the LLM picks the next agent', 'Deterministic': 'v2 networks: an AgentScript flow decides',
+    'Open in text editor': 'Open the file as text', 'Load the trace again': 'Reload the trace', 'Hide the tracer': 'Hide the tracer panel',
+    'Form': 'Show the form view', 'Download and open': 'Download the asset and open it as a project',
+    'Disconnect from Agent Fabric': 'Sign out of Anypoint', 'Disconnect from A²D': 'Remove the A²D API key',
+    'Deployed': 'Show only deployed projects', 'Create from template': 'Create the project', 'Connect': 'Connect with these settings',
+    'Cards': 'Show the results as cards', 'Rows': 'Show the results as rows', 'Browse…': 'Pick a folder', 'Back to the network': 'Return to the network canvas',
+    'Any status': 'Filter by status', 'All': 'Show all', 'All styles': 'Show v1 and v2 networks', 'MCP': 'Show MCP servers', 'Visual': 'Visual canvas', 'Refresh': 'Read the data again', 'Send': 'Send the message to the broker',
+}
+
+
+def controls_table(shot, E_titles=None):
+    ctl = SHOTS.get(shot, {}).get('controls') or []
+    if not ctl: return ''
+    rows = ['| # | Control | What it does |', '|---|---|---|']
+    for c in ctl:
+        t, txt = c['title'] or '', c['text'] or ''
+        pre = t.split(':')[0].split('(')[0].strip() if ':' in t else ''
+        name = pre if pre and len(pre) <= 40 else (txt if txt and len(txt) <= 32 else (t.split('(')[0].strip()[:40] or txt))
+        name = re.sub(r'\d+\s*·\s*\d+\s*nets?$', '', name).strip()
+        what = t if t and t != name else ''
+        m = re.match(r'^(.*?[a-z…])([A-Z][a-z].*)$', name)
+        if m and ' ' in name and not what: name, what = m.group(1), m.group(2)
+        if not what: what = CTL_DESC.get(name, '')
+        what = what.replace('|', '/').replace('\n', ' ')
+        rows.append(f'| <span class="ol-n">{c["n"]}</span> | **{name.replace("|", "/")}** | {what} |')
+    return '\n'.join(rows)
+
+
+def annotated(shot, up, caption):
+    if not SHOTS.get(shot, {}).get('controls'): return img(shot, up, caption)
+    return img(f'{shot}-annot', up, caption) + '\n\n' + controls_table(shot)
 
 
 def explain():
@@ -136,13 +241,18 @@ GROUPS = [
 ]
 
 
-def card(e, level='###'):
-    out = [f'{level} {e["title"]}', '', e['what'], '', f'**When to use it:** {e["when"]}', '']
+def card(e, level='###', up='../', key=None):
+    out = [f'{level} {e["title"]}', '']
+    pic = CARD_IMG.get(key) if key else None
+    if pic and os.path.exists(os.path.join(UI, f'{pic}-light.webp')):
+        out += ['<div class="grid" markdown>', '', img(pic, up, None), '', f'{e["what"]}\n\n**When to use it:** {e["when"]}', '', '</div>', '']
+    else:
+        out += [e['what'], '', f'**When to use it:** {e["when"]}', '']
     if e.get('examples'):
-        out += ['**Examples:**', ''] + [f'- {x}' for x in e['examples']] + ['']
+        out += ['**Examples and details:**', ''] + [f'- {x}' for x in e['examples']] + ['']
     if e.get('snippet'):
         lang = 'yaml' if re.match(r'^\s*[\w-]+:\s', e['snippet']) and 'transition to' not in e['snippet'] and '->' not in e['snippet'] else 'text'
-        out += [f'```{lang}', e['snippet'], '```', '']
+        out += ['??? note "In the file"', '', f'    ```{lang}'] + ['    ' + l for l in e['snippet'].splitlines()] + ['    ```', '']
     return '\n'.join(out)
 
 
@@ -153,11 +263,21 @@ def home(version):
     for r in rows:
         m = re.match(r'\| \*\*(.+?)\*\* \| (.+) \|$', r)
         if m: cards.append(f'-   **{m.group(1)}**\n\n    ---\n\n    {m.group(2)}')
-    intro = README.split('## Highlights')[0]
-    intro = re.sub(r'(?s)^.*?</p>\s*', '', intro, count=1) if '</p>' in intro else intro
-    intro = re.sub(r'(?s)<h1.*?</h1>|<p[^>]*>.*?</p>', '', intro)
-    intro = re.sub(r'(?m)^</?div.*$|^<img.*$|^---\s*$', '', intro)
-    intro = re.sub(r'!\[[^\]]*\]\([^)]*\)', '', intro).strip()
+    mk = MK
+    n_v1 = sum(1 for t in INDEX if t['version'] == 'v1'); n_v2 = len(INDEX) - n_v1
+    def tile(slug_, title, shot, text):
+        return (f'-   **[{title}](features/{slug_}.md)**\n\n    ![{title}](assets/ui/{shot}-light.webp){{ loading=lazy }}\n\n    {text}\n')
+    tour = [
+        ('new-project-from-templates', 'Start from a template', 'new-project', f'{len(INDEX)} ready-to-run networks, every upstream mocked.'),
+        ('network-canvas-agent-network-yaml', 'Design on the canvas', 'network-v2', 'Brokers, agents, MCP servers and LLMs as cards; the YAML stays in sync.'),
+        ('broker-flow-editor-brokers-agent', 'Write broker flows', 'agent-flow', 'AgentScript flows: steps, branches, replies and live progress.'),
+        ('governance-rulesets-for-brokers-agents-and-mcp-servers', 'Govern locally', 'governance', 'Rulesets from Agent Fabric, P4A and your org, with Fix all.'),
+        ('projects-deploy', 'Build, publish, deploy', 'projects-deploy', 'Validate, build, publish to Exchange and deploy to your gateways.'),
+        ('broker-chat', 'Chat and trace', 'chat-progress', 'Talk to the broker over A2A and see every call it made.'),
+        ('agent-network-tracer', 'Agent Network Tracer', 'tracer', 'The path each task took through the flow, from the logs.'),
+        ('coverage-map', 'Coverage map', 'coverage-map', 'Policy, auth and governance coverage of every network.'),
+        ('setup-connect', 'Setup & Connect', 'setup-connect', 'Connections, CLI tools and theme in one place.'),
+    ]
     return f'''---
 hide:
   - navigation
@@ -168,25 +288,48 @@ hide:
 
 ![Loomi, the Octoloom octopus](assets/loomi.png){{ .hero-logo }}
 
+<span class="ol-pill">VS Code extension for MuleSoft Agent Fabric</span>
+
 # Octoloom for Agent Fabric
 
-**Design, govern, deploy and observe MuleSoft Agent Fabric agent networks, visually, in VS Code.**
+<p class="lede"><strong>Design, govern, deploy and observe agent networks, visually, in VS Code.</strong>
+Octoloom turns <code>agent-network.yaml</code> and AgentScript <code>.agent</code> flows into canvases, checks them with governance rulesets on your machine,
+deploys them with the Anypoint CLI and lets you chat with the deployed broker and trace every call. Meet Loomi, the octopus who weaves your agents together.</p>
 
-[Get it on the Marketplace]({MARKET}){{ .md-button .md-button--primary }}
+<div class="ol-stats">
+<a class="ol-stat" href="{MARKET}"><b class="ol-installs" data-fallback="{mk['installs']:,}">{mk['installs']:,}</b><span>Marketplace installs</span></a>
+<a class="ol-stat" href="{MARKET}&ssr=false#review-details"><b><span class="ol-rating">{mk['rating']:.1f}</span> ★</b><span><span class="ol-ratings">{mk['ratings']}</span> ratings</span></a>
+<div class="ol-stat"><b class="ol-version">{mk['version']}</b><span>Latest version</span></div>
+<a class="ol-stat" href="catalog/index.md"><b>{len(INDEX)}</b><span>Templates ({n_v1} v1 · {n_v2} v2)</span></a>
+<a class="ol-stat" href="tutorials/index.md"><b>{len(INDEX)}</b><span>Tutorials</span></a>
+</div>
+
+[Install from the Marketplace]({MARKET}){{ .md-button .md-button--primary }}
 [Getting started](getting-started.md){{ .md-button }}
-[Tutorials](tutorials/index.md){{ .md-button }}
-
-<small>Version {version}</small>
+[Features](features/index.md){{ .md-button }}
+[Templates](catalog/index.md){{ .md-button }}
 
 </div>
 
-{intro}
+![The deterministic network canvas with the inspector](assets/ui/network-v2-light.webp#only-light)
+![The deterministic network canvas with the inspector](assets/ui/network-v2-dark.webp#only-dark)
 
-![Deterministic network canvas with the inspector]({RAW}/screenshots/network-v2.png)
+## Tour of Octoloom
+
+<div class="grid cards" markdown>
+
+{chr(10).join(tile(*t) for t in tour)}
+</div>
 
 ## Where to start
 
 <div class="grid cards" markdown>
+
+-   :material-microsoft-visual-studio-code: **[Install from the VS Code Marketplace]({MARKET})**
+
+    ---
+
+    Search **Octoloom** in the Extensions view, or open the Marketplace page. Version {mk['version']}, {mk['installs']:,} installs.
 
 -   :material-rocket-launch: **[Getting started](getting-started.md)**
 
@@ -198,7 +341,7 @@ hide:
 
     ---
 
-    One per template ({len(INDEX)}), each with three paths: *Just use it*, *Learn step by step* and *Build it from scratch*.
+    One per template, each with three paths: *Just use it*, *Learn step by step* and *Build it from scratch*.
 
 -   :material-view-grid: **[Templates](catalog/index.md)**
 
@@ -206,17 +349,11 @@ hide:
 
     Ready-to-run agent networks: use cases, governed, secured, fully mocked and Informatica IDMC.
 
--   :material-book-open-variant: **[Features](features/index.md)**
-
-    ---
-
-    Every view of Octoloom, what it does and how to use it, with screenshots.
-
 -   :material-gesture-tap-button: **[UI reference](reference/index.md)**
 
     ---
 
-    Every button, card, canvas and panel: what it is, when to use it, examples. The same texts as the in-app **Explain** button.
+    Every button, card, canvas and panel on a screenshot, with what it does. The same texts as the in-app **Explain** button.
 
 -   :material-robot: **[Skills for your AI assistant](skills/index.md)**
 
@@ -237,34 +374,65 @@ hide:
 
 
 def features(E):
-    tour = readme_section('Feature tour')
-    pages, nav = [], []
-    idx = ['# Features', '', 'Every view of Octoloom, in the order you meet them. Each page ends with the buttons and components of that view, as the **Explain** button describes them.', '']
-    for title, body in sections(tour, 3):
-        s = slug(title)
-        md = [f'# {title}', '', site_links(body, 'features/'), '']
-        keys = FEATURE_EXPLAIN.get(s, [])
-        if keys:
-            md += ['## Buttons and components', '', 'The same text as the in-app **Explain** button (click the floating info button, then the item).', '']
-            md += [card(E[k]) for k in keys if k in E]
-        write(f'features/{s}.md', '\n'.join(md))
-        first = re.sub(r'\s+', ' ', re.sub(r'!\[[^\]]*\]\([^)]*\)', '', body).strip().split('\n\n')[0])
-        idx.append(f'- **[{title.replace("`", "")}]({s}.md)**: {first[:220]}{"…" if len(first) > 220 else ""}')
-        nav.append((title.replace('`', ''), f'features/{s}.md'))
+    tour = dict((slug(t), (t, b)) for t, b in sections(readme_section('Feature tour'), 3))
+    nav = []
+    idx = ['<span class="ol-pill">Using Octoloom</span>', '', '# Features', '',
+           '<p class="lede"><strong>Every view of Octoloom, with screenshots.</strong> Each page says what the view is for, why you use it, '
+           'where to find it and how to use it step by step. Every numbered control is explained under its screenshot.</p>', '']
+    for sec, slugs in SECTIONS:
+        idx += [f'## {sec}', '', '<div class="grid cards" markdown>', '']
+        sub = []
+        for s_ in slugs:
+            if s_ not in tour: continue
+            title, body = tour[s_]; m = F.get(s_, {})
+            shots = m.get('shots') or []
+            first = shots[0][0] if shots else None
+            md = [f'<span class="ol-pill">{sec}</span>', '', f'# {m.get("nav") or title}', '']
+            if m.get('what'): md += [f'<p class="lede"><strong>{m["what"]}</strong> {m.get("why", "")}</p>', '']
+            if m.get('where'): md += [f'!!! info "Where to find it"', f'    {m["where"]}', '']
+            if first: md += [annotated(first, '../', shots[0][1]) if SHOTS.get(first, {}).get('controls') else img(first, '../', shots[0][1]), '']
+            if m.get('how'):
+                md += ['## How to use it', ''] + [f'{i}. {x}' for i, x in enumerate(m['how'], 1)] + ['']
+            if len(shots) > 1:
+                md += ['## More screenshots', '']
+                for sh, cap in shots[1:]: md += [img(sh, '../', cap), '']
+            md += ['## In detail', '', site_links(re.sub(r'!\[[^\]]*\]\([^)]*\)\s*', '', body), 'features/'), '']
+            keys = FEATURE_EXPLAIN.get(s_, [])
+            if keys:
+                md += ['## Buttons and components', '', 'The same text as the in-app **Explain** button (click the floating **i**, then the item).', '']
+                md += [card(E[k], '###', '../', k) for k in keys if k in E]
+            write(f'features/{s_}.md', '\n'.join(md))
+            thumb = f'![{m.get("nav", title)}](../assets/ui/{first}-light.webp){{ loading=lazy }}' if first else ''
+            idx += [f'-   **[{m.get("nav") or title}]({s_}.md)**', '', f'    {thumb}', '', f'    {m.get("what", "")}', '']
+            sub.append((m.get('nav') or title.replace('`', ''), f'features/{s_}.md'))
+        idx += ['</div>', '']
+        nav.append((sec, sub))
     write('features/index.md', '\n'.join(idx))
     return nav
 
 
 def reference(E, G):
     nav, used = [], set()
-    idx = ['# UI reference', '', 'Every button, card, canvas and panel of Octoloom: what it is, when to use it and examples. '
-           'These are the texts of the in-app **Explain** button: click the floating info button in any Octoloom editor, then click the item.', '']
+    idx = ['<span class="ol-pill">UI reference</span>', '', '# UI reference', '',
+           '<p class="lede"><strong>Every button, card, canvas and panel of Octoloom, on a screenshot.</strong> What it is, when to use it and examples: '
+           'the texts of the in-app <b>Explain</b> button. The file syntax is folded under <i>In the file</i>, for when you need it.</p>', '',
+           '<div class="grid cards" markdown>', '']
     for gid, title, intro, keys in GROUPS:
-        md = [f'# {title}', '', intro, '']
+        md = ['<span class="ol-pill">UI reference</span>', '', f'# {title}', '', f'<p class="lede">{intro}</p>', '']
+        shots = REF_SHOT.get(gid, [])
+        for sh in shots[:1]:
+            md += [annotated(sh, '../', SHOT_CAP.get(sh, '')), '']
         for k in keys:
-            if k in E: md.append(card(E[k], '##')); used.add(k)
+            if k not in E: continue
+            md.append(card(E[k], '##', '../', k)); used.add(k)
+            sh = KEY_SHOT.get(k)
+            if sh and sh not in shots[:1] and not CARD_IMG.get(k): md += [img(sh, '../', SHOT_CAP.get(sh, E[k]['title'])), '']
+        for sh in shots[1:]:
+            if not any(KEY_SHOT.get(k) == sh for k in keys): md += [f'## {SHOT_CAP.get(sh, sh)}', '', annotated(sh, '../', SHOT_CAP.get(sh, '')), '']
         write(f'reference/{gid}.md', '\n'.join(md))
-        idx.append(f'- **[{title}]({gid}.md)**: ' + ', '.join(E[k]['title'] for k in keys if k in E))
+        sh0 = (REF_SHOT.get(gid) or [None])[0]
+        th = f'![{title}](../assets/ui/{sh0}-light.webp){{ loading=lazy }}' if sh0 else ''
+        idx += [f'-   **[{title}]({gid}.md)**', '', f'    {th}', '', '    ' + ', '.join(E[k]['title'] for k in keys if k in E), '']
         nav.append((title, f'reference/{gid}.md'))
     rest = [k for k in E if k not in used]
     if rest:
@@ -282,7 +450,13 @@ def reference(E, G):
     write('reference/settings.md', '# Settings\n\n' + readme_section('Settings'))
     nav += [('Commands', 'reference/commands.md'), ('Settings', 'reference/settings.md')]
     idx += ['- **[Commands](commands.md)**: every command in the command palette', '- **[Settings](settings.md)**: every `agentNetwork.*` setting']
-    write('reference/index.md', '\n'.join(idx))
+    idx.insert(idx.index('<div class="grid cards" markdown>') + 2, '')
+    # close the card grid before the plain list items
+    out, closed = [], False
+    for l in idx:
+        if not closed and l.startswith('- **['): out += ['</div>', '']; closed = True
+        out.append(l)
+    write('reference/index.md', '\n'.join(out))
     return nav
 
 
@@ -310,9 +484,16 @@ def templates():
            '| Fully mocked | The LLM is an A²D LLM mock too: deploy and chat without an OpenAI key. |',
            '| Informatica IDMC | Uses Informatica IDMC MCP servers (needs an IDMC org). |', '']
     nav = []
+    idx[0:0] = ['<span class="ol-pill">Templates</span>', '']
     for v in ('v1', 'v2'):
         lst = [t for t in INDEX if t['version'] == v]
-        idx += [f'## {style[v]}', '', '| Template | Kind | Agents | MCP | Policies | Tutorial |', '|---|---|---|---|---|---|']
+        idx += [f'## {style[v]}', '', '<div class="grid cards" markdown>', '']
+        for t in lst:
+            th = f'{RAW}/tutorials/{t["id"]}/img/canvas.png'
+            idx += [f'-   **[{t["title"]}]({t["id"]}.md)**', '', f'    ![{t["title"]}]({th}){{ loading=lazy }}', '',
+                    f'    <small>{tkind(t)} · {t.get("agents", 0)} agents · {t.get("mcps", 0)} MCP · {len(t.get("policies") or [])} policies</small>', '',
+                    f'    {t.get("summary", "")}', '']
+        idx += ['</div>', '', '| Template | Kind | Agents | MCP | Policies | Tutorial |', '|---|---|---|---|---|---|']
         sub = []
         for t in lst:
             idx.append(f'| [{t["title"]}]({t["id"]}.md) | {tkind(t)} | {t.get("agents", 0)} | {t.get("mcps", 0)} | {len(t.get("policies") or [])} | [Tutorial](../tutorials/{t["id"]}.md) |')
@@ -355,7 +536,16 @@ def tutorials():
         if not os.path.exists(p): continue
         write(f'tutorials/{t["id"]}.md', fix(open(p).read()))
         nav[t['version']].append((t['title'], f'tutorials/{t["id"]}.md'))
-    write('tutorials/index.md', fix(open(os.path.join(TUTS, 'README.md')).read()))
+    ti = fix(open(os.path.join(TUTS, 'README.md')).read())
+    grid = ['', '## Pick a tutorial', '', '<div class="grid cards" markdown>', '']
+    for t in INDEX:
+        if not os.path.exists(os.path.join(TUTS, t['id'], 'README.md')): continue
+        th = f'{RAW}/tutorials/{t["id"]}/img/canvas.png'
+        grid += [f'-   **[{t["title"]}]({t["id"]}.md)**', '', f'    ![{t["title"]}]({th}){{ loading=lazy }}', '',
+                 f'    <small>{"Probabilistic (v1)" if t["version"] == "v1" else "Deterministic (v2)"} · {tkind(t)}</small>', '']
+    grid += ['</div>', '']
+    ti = re.sub(r'^(# .*\n)', r'<span class="ol-pill">Tutorials</span>\n\n\1', ti, count=1)
+    write('tutorials/index.md', ti + '\n'.join(grid))
     gs = open(os.path.join(TUTS, 'getting-started.md')).read()
     gs = re.sub(r'\]\(README\.md\)', '](tutorials/index.md)', gs)
     gs = re.sub(r'\]\(([\w-]+)/README\.md\)', r'](tutorials/\1.md)', gs)
@@ -423,17 +613,24 @@ def main():
     os.makedirs(os.path.join(DOCS, 'assets'))
     shutil.copy(os.path.join(REPO, 'media', 'octoloom.png'), os.path.join(DOCS, 'assets', 'loomi.png'))
     shutil.copy(os.path.join(HERE, 'extra.css'), os.path.join(DOCS, 'assets', 'extra.css'))
+    shutil.copy(os.path.join(HERE, 'marketplace.js'), os.path.join(DOCS, 'assets', 'marketplace.js'))
+    if os.path.isdir(UI): shutil.copytree(UI, os.path.join(DOCS, 'assets', 'ui'), ignore=shutil.ignore_patterns('index.json'))
+    global MK
+    MK = market_stats()
     version = PKG['version']
     write('index.md', home(version))
     tut = tutorials()
-    nav = [('Home', 'index.md'), ('Getting started', 'getting-started.md'),
-           ('Tutorials', [('All tutorials', 'tutorials/index.md')] + tut),
+    nav = [('Get started', [('Introduction', 'index.md'), ('Getting started', 'getting-started.md'),
+                            ('Install from the Marketplace', MARKET)]),
+           ('Using Octoloom', [('All features', 'features/index.md')] + features(E)),
+           ('UI reference', [('Overview', 'reference/index.md')] + reference(E, G)),
            ('Templates', [('All templates', 'catalog/index.md')] + templates()),
-           ('Features', [('Overview', 'features/index.md')] + features(E)),
-           ('UI reference', [('Overview', 'reference/index.md')] + reference(E, G))]
+           ('Tutorials', [('All tutorials', 'tutorials/index.md')] + tut)]
     sk = skills()
-    if sk: nav.append(('Skills', [('Overview', 'skills/index.md')] + sk))
+    if sk: nav.append(('Skills for AI assistants', [('Overview', 'skills/index.md')] + sk))
     ref_pages(); team()
+    req = open(os.path.join(DOCS, 'about', 'requirements.md')).read()
+    write('about/requirements.md', req + '\n\n' + img('setup-connect', '../', 'Setup & Connect → Tooling checks every requirement and installs what is missing'))
     nav.append(('About', [('Requirements', 'about/requirements.md'), ('Privacy and security', 'about/privacy.md'),
                           ('Known limitations', 'about/limitations.md'), ('Meet the Octoloomies', 'team.md')]))
     yml = f'''# Generated by docs-src/build_docs.py (octoloom#301). Edit the generator, not this file.
@@ -443,28 +640,28 @@ site_url: {SITE}
 repo_url: https://github.com/A2D-Agentic-Asset-Designer/octoloom-assets
 repo_name: octoloom-assets
 edit_uri: ""
-copyright: Octoloom for Agent Fabric {version}
+copyright: 'Octoloom for Agent Fabric {version} · <a href="{MARKET}">VS Code Marketplace</a>'
 theme:
   name: material
+  custom_dir: docs-src/overrides
   logo: assets/loomi.png
   favicon: assets/loomi.png
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: indigo
-      accent: light blue
+      primary: custom
+      accent: custom
       toggle:
         icon: material/weather-night
         name: Dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: indigo
-      accent: light blue
+      primary: custom
+      accent: custom
       toggle:
         icon: material/weather-sunny
         name: Light mode
   features:
-    - navigation.tabs
     - navigation.sections
     - navigation.top
     - navigation.indexes
@@ -473,8 +670,26 @@ theme:
     - search.highlight
     - content.code.copy
     - toc.follow
+    - navigation.instant
+    - content.tabs.link
+  font:
+    text: Inter
+    code: JetBrains Mono
 extra_css:
   - assets/extra.css
+extra_javascript:
+  - assets/marketplace.js
+extra:
+  version: "{version}"
+  installs: "{MK['installs']:,}"
+  marketplace: {MARKET}
+  social:
+    - icon: material/microsoft-visual-studio-code
+      link: {MARKET}
+      name: Octoloom on the VS Code Marketplace
+    - icon: fontawesome/brands/github
+      link: https://github.com/A2D-Agentic-Asset-Designer/octoloom-assets
+      name: octoloom-assets on GitHub
 markdown_extensions:
   - admonition
   - attr_list
@@ -483,6 +698,8 @@ markdown_extensions:
   - toc:
       permalink: true
   - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
   - pymdownx.superfences
   - pymdownx.highlight
   - pymdownx.emoji:

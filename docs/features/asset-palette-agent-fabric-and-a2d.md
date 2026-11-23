@@ -1,4 +1,59 @@
-# Asset palette: Agent Fabric and A²D
+<span class="ol-pill">Design</span>
+
+# Asset Palette
+
+<p class="lede"><strong>Every asset you can drop on a canvas: Agent Fabric (Exchange) agents, MCP servers and LLMs, A²D prototypes and mocks, Informatica IDMC MCP servers.</strong> Reuse what is already published or mocked instead of typing URLs.</p>
+
+!!! info "Where to find it"
+    Side bar → **Asset Palette** · **Palette** button on the canvas
+
+<figure markdown>
+![Agent Fabric tab, LLMs filter](../assets/ui/assets-llm-annot-light.webp#only-light){ loading=lazy }
+![Agent Fabric tab, LLMs filter](../assets/ui/assets-llm-annot-dark.webp#only-dark){ loading=lazy }
+<figcaption>Agent Fabric tab, LLMs filter</figcaption>
+</figure>
+
+| # | Control | What it does |
+|---|---|---|
+| <span class="ol-n">1</span> | **A²D** | A²D · prototype MCP servers, agents and LLM mocks |
+| <span class="ol-n">2</span> | **Agent Fabric** | Agent Fabric · Exchange |
+| <span class="ol-n">3</span> | **IDMC** | Headless IDMC · shared and composite MCP servers |
+| <span class="ol-n">4</span> | **Cards** | Show the results as cards |
+| <span class="ol-n">5</span> | **Rows** | Show the results as rows |
+| <span class="ol-n">6</span> | **Refresh** | Read the data again |
+| <span class="ol-n">7</span> | **All** | Show all |
+| <span class="ol-n">8</span> | **MCP** | Show MCP servers |
+| <span class="ol-n">9</span> | **Agents** |  |
+| <span class="ol-n">10</span> | **LLMs** | LLM providers per network |
+| <span class="ol-n">11</span> | **Add to the active editor** |  |
+
+## How to use it
+
+1. Pick the tab: **A²D**, **Agent Fabric** or **IDMC**.
+2. Filter by type (All, MCP, Agents, LLMs) or search.
+3. Drag an asset onto the open canvas: it is added to the network with its connection.
+
+## More screenshots
+
+<figure markdown>
+![A²D tab: LLM mocks](../assets/ui/assets-a2d-llm-light.webp#only-light){ loading=lazy }
+![A²D tab: LLM mocks](../assets/ui/assets-a2d-llm-dark.webp#only-dark){ loading=lazy }
+<figcaption>A²D tab: LLM mocks</figcaption>
+</figure>
+
+<figure markdown>
+![IDMC tab: shared and composite MCP servers](../assets/ui/assets-idmc-light.webp#only-light){ loading=lazy }
+![IDMC tab: shared and composite MCP servers](../assets/ui/assets-idmc-dark.webp#only-dark){ loading=lazy }
+<figcaption>IDMC tab: shared and composite MCP servers</figcaption>
+</figure>
+
+<figure markdown>
+![A connection error with its details](../assets/ui/assets-error-detail-light.webp#only-light){ loading=lazy }
+![A connection error with its details](../assets/ui/assets-error-detail-dark.webp#only-dark){ loading=lazy }
+<figcaption>A connection error with its details</figcaption>
+</figure>
+
+## In detail
 
 <img src="https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/screenshots/palette.png" width="260" align="right" alt="Asset palette, Agent Fabric tab" />
 <img src="https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/screenshots/palette-a2d.png" width="260" align="right" alt="Asset palette, A²D prototypes" />
@@ -23,7 +78,7 @@
 
 ## Buttons and components
 
-The same text as the in-app **Explain** button (click the floating info button, then the item).
+The same text as the in-app **Explain** button (click the floating **i**, then the item).
 
 ### Assets
 
@@ -31,7 +86,7 @@ The assets you can add to a network: agents and MCP servers from Exchange, A²D,
 
 **When to use it:** While building a network, to find what to drag onto the canvas.
 
-**Examples:**
+**Examples and details:**
 
 - Drag an asset card onto the network canvas to add it
 - Filter the list, or search Exchange
@@ -46,7 +101,7 @@ A network can declare its own LLM (registry.llms in v2, llmProviders in v1): eve
 
 **When to use it:** When your Exchange fills up with one LLM asset per project, or to share one LLM proxy across networks.
 
-**Examples:**
+**Examples and details:**
 
 - v2: connection ref { name: openai, namespace: <MuleSoft org> } plus the llm-metadata dependency: build has no "Building LLM" step
 - v1: spec.llm.ref of the broker names an LLM asset without an input format, plus the dependency; MuleSoft openai is rejected (3061)

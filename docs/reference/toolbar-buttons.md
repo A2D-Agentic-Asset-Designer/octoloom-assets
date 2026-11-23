@@ -1,6 +1,37 @@
+<span class="ol-pill">UI reference</span>
+
 # Toolbar buttons
 
-The buttons at the top of every Octoloom editor.
+<p class="lede">The buttons at the top of every Octoloom editor.</p>
+
+<figure markdown>
+![A deterministic (2.0) network: broker, agents, MCP server and LLM](../assets/ui/network-v2-annot-light.webp#only-light){ loading=lazy }
+![A deterministic (2.0) network: broker, agents, MCP server and LLM](../assets/ui/network-v2-annot-dark.webp#only-dark){ loading=lazy }
+<figcaption>A deterministic (2.0) network: broker, agents, MCP server and LLM</figcaption>
+</figure>
+
+| # | Control | What it does |
+|---|---|---|
+| <span class="ol-n">1</span> | **Agent Network 2.0** | Agent Network 2.0: AgentScript brokers (.agent) with explicit, deterministic flows. |
+| <span class="ol-n">2</span> | **Visual** | Visual canvas |
+| <span class="ol-n">3</span> | **Code** | YAML source |
+| <span class="ol-n">4</span> | **Network** | Open the Agent Network view of the deployed network |
+| <span class="ol-n">5</span> | **exchange.json** | Open the Exchange asset form of this project |
+| <span class="ol-n">6</span> | **Build & Deploy** | Validate, build, publish and deploy this network |
+| <span class="ol-n">7</span> | **Save** | Save the file (the YAML stays the source of truth) |
+| <span class="ol-n">8</span> | **Flow** | Open the broker flow (.agent) |
+| <span class="ol-n">9</span> | **Collapse card** | Collapse or expand the card body |
+| <span class="ol-n">10</span> | **Edit** | Edit the linked agents or MCP servers of this broker |
+| <span class="ol-n">11</span> | **Add to the network** | Add a broker, agent, MCP server, LLM or policy |
+| <span class="ol-n">12</span> | **Asset Palette** | Asset Palette (Exchange / A²D) |
+| <span class="ol-n">13</span> | **Auto layout** | Arrange the cards automatically |
+| <span class="ol-n">14</span> | **Minimize all components to their icons** | Minimize all components to their icons (click an icon to open or minimize one). Auto layout packs them. |
+| <span class="ol-n">15</span> | **Zoom out** | Zoom the canvas out |
+| <span class="ol-n">16</span> | **90%** | Reset to 100% |
+| <span class="ol-n">17</span> | **Zoom in** | Zoom the canvas in |
+| <span class="ol-n">18</span> | **Fit to screen** | Fit all cards into the view |
+| <span class="ol-n">19</span> | **Hide the minimap** | Show or hide the minimap |
+| <span class="ol-n">20</span> | **Explain anything** | Explain anything: click, then click any object (the guided tour starts from here too). Drag to move; double-click to reset its place |
 
 ## Visual / Code
 
@@ -8,7 +39,7 @@ Switches between the visual editor (canvas or form) and the source text of the s
 
 **When to use it:** Code for a quick text edit, search (Cmd/Ctrl+F) or to see exactly what is saved; Visual for everything else.
 
-**Examples:**
+**Examples and details:**
 
 - An edit in Code shows on the canvas at once
 - YAML errors: Fix in code opens the line
@@ -19,7 +50,7 @@ Shows or hides the outline of the flow on the left: sections, nodes and their or
 
 **When to use it:** To find a node in a long flow, or to make room for the canvas.
 
-**Examples:**
+**Examples and details:**
 
 - Click a node in the outline to select it on the canvas
 
@@ -29,7 +60,7 @@ Opens agent-network.yaml of this project on its canvas: the brokers, agents, MCP
 
 **When to use it:** To change what this broker connects to, or to build, publish and deploy the project.
 
-**Examples:**
+**Examples and details:**
 
 - From a flow: open the network the broker belongs to
 
@@ -39,7 +70,7 @@ Opens the settings of the whole network in the side panel: name, description (sh
 
 **When to use it:** To change what Exchange shows for this network.
 
-**Examples:**
+**Examples and details:**
 
 - Set the description Exchange shows on the asset page
 
@@ -49,7 +80,7 @@ A small chat panel beside the flow that sends messages to the deployed broker at
 
 **When to use it:** To try the broker of this flow after a deploy without leaving the editor.
 
-**Examples:**
+**Examples and details:**
 
 - Paste the broker URL from Projects & Deploy
 - For the full chat with traces, use the chat from Projects & Deploy
@@ -60,7 +91,7 @@ Sets the next Major, Minor or Patch version in exchange.json and saves all files
 
 **When to use it:** Once before each publish of a change. Publish uses the version in exchange.json as it is and never bumps it; a version already in Exchange can't be published again.
 
-**Examples:**
+**Examples and details:**
 
 - Publish uses the version in exchange.json as it is and never bumps it; a version already in Exchange can't be published again
 - Deploy with "Publish before deploy" publishes this same version
@@ -73,7 +104,7 @@ Bumps the patch version in exchange.json to the next free one (from the highest 
 
 **When to use it:** After a change, before Publish (or a deploy that publishes).
 
-**Examples:**
+**Examples and details:**
 
 - 1.0.3 is the highest in Exchange, exchange.json says 1.0.1: Commit Version sets 1.0.4
 - Publish uses the version in exchange.json as it is and never bumps it; a version already in Exchange can't be published again
@@ -85,7 +116,7 @@ Raises the patch number of the version in this form by one (the tooltip shows th
 
 **When to use it:** Before the next Publish of a change.
 
-**Examples:**
+**Examples and details:**
 
 - 1.0.0 → 1.0.1
 - Publish uses the version in exchange.json as it is and never bumps it; a version already in Exchange can't be published again
@@ -96,7 +127,7 @@ Opens the Exchange descriptor of this project in its form: name, version, variab
 
 **When to use it:** To change the version, a variable default or what Exchange shows.
 
-**Examples:**
+**Examples and details:**
 
 - Set a variable default for deploy and local runs
 
@@ -106,7 +137,7 @@ The project actions: Validate (dry run, changes nothing), Build (local package),
 
 **When to use it:** To ship the network. Validate first when unsure.
 
-**Examples:**
+**Examples and details:**
 
 - Publish uses the version in exchange.json as it is and never bumps it; a version already in Exchange can't be published again
 - Deploy… opens the same form as the rocket in Projects & Deploy
@@ -117,6 +148,6 @@ Saves this file (the same as Cmd/Ctrl+S). The canvas and the form edit the file 
 
 **When to use it:** Whenever you want the change on disk; Build and Publish use saved files.
 
-**Examples:**
+**Examples and details:**
 
 - Unsaved changes show a dot on the editor tab

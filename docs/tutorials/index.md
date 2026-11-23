@@ -1,3 +1,5 @@
+<span class="ol-pill">Tutorials</span>
+
 # Octoloom tutorials
 
 One tutorial for every template project in Octoloom for Agent Fabric. Each one gives you three paths:
@@ -67,3 +69,267 @@ AgentScript flows decide every step: routers, gates, executors.
 
 ---
 The tutorials are generated from the bundled templates with `tutorials/tools/build.py` and updated when the templates change. Screenshots use fake data.
+
+## Pick a tutorial
+
+<div class="grid cards" markdown>
+
+-   **[Employee Onboarding](v1-employee-onboarding.md)**
+
+    ![Employee Onboarding](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-employee-onboarding/img/canvas.png){ loading=lazy }
+
+    <small>Probabilistic (v1) · Use case</small>
+
+-   **[Employee Onboarding: governed](v1-employee-onboarding-governed.md)**
+
+    ![Employee Onboarding: governed](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-employee-onboarding-governed/img/canvas.png){ loading=lazy }
+
+    <small>Probabilistic (v1) · Governed</small>
+
+-   **[Customer Service Broker](v1-customer-service.md)**
+
+    ![Customer Service Broker](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-customer-service/img/canvas.png){ loading=lazy }
+
+    <small>Probabilistic (v1) · Use case</small>
+
+-   **[Customer Service Broker: governed](v1-customer-service-governed.md)**
+
+    ![Customer Service Broker: governed](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-customer-service-governed/img/canvas.png){ loading=lazy }
+
+    <small>Probabilistic (v1) · Governed</small>
+
+-   **[IT Helpdesk](v1-it-helpdesk.md)**
+
+    ![IT Helpdesk](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-it-helpdesk/img/canvas.png){ loading=lazy }
+
+    <small>Probabilistic (v1) · Use case</small>
+
+-   **[IT Helpdesk: governed](v1-it-helpdesk-governed.md)**
+
+    ![IT Helpdesk: governed](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-it-helpdesk-governed/img/canvas.png){ loading=lazy }
+
+    <small>Probabilistic (v1) · Governed</small>
+
+-   **[Travel & Expense](v1-travel-expense.md)**
+
+    ![Travel & Expense](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-travel-expense/img/canvas.png){ loading=lazy }
+
+    <small>Probabilistic (v1) · Use case</small>
+
+-   **[Travel & Expense: governed](v1-travel-expense-governed.md)**
+
+    ![Travel & Expense: governed](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-travel-expense-governed/img/canvas.png){ loading=lazy }
+
+    <small>Probabilistic (v1) · Governed</small>
+
+-   **[Procurement Assistant](v1-procurement.md)**
+
+    ![Procurement Assistant](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-procurement/img/canvas.png){ loading=lazy }
+
+    <small>Probabilistic (v1) · Use case</small>
+
+-   **[Procurement Assistant: governed](v1-procurement-governed.md)**
+
+    ![Procurement Assistant: governed](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-procurement-governed/img/canvas.png){ loading=lazy }
+
+    <small>Probabilistic (v1) · Governed</small>
+
+-   **[Insurance Claims (FNOL to Payout)](v2-insurance-claims.md)**
+
+    ![Insurance Claims (FNOL to Payout)](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-insurance-claims/img/canvas.png){ loading=lazy }
+
+    <small>Deterministic (v2) · Use case</small>
+
+-   **[Insurance Claims (FNOL to Payout): governed](v2-insurance-claims-governed.md)**
+
+    ![Insurance Claims (FNOL to Payout): governed](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-insurance-claims-governed/img/canvas.png){ loading=lazy }
+
+    <small>Deterministic (v2) · Governed</small>
+
+-   **[Retail Returns](v2-retail-returns.md)**
+
+    ![Retail Returns](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-retail-returns/img/canvas.png){ loading=lazy }
+
+    <small>Deterministic (v2) · Use case</small>
+
+-   **[Retail Returns: governed](v2-retail-returns-governed.md)**
+
+    ![Retail Returns: governed](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-retail-returns-governed/img/canvas.png){ loading=lazy }
+
+    <small>Deterministic (v2) · Governed</small>
+
+-   **[Loan Origination](v2-loan-origination.md)**
+
+    ![Loan Origination](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-loan-origination/img/canvas.png){ loading=lazy }
+
+    <small>Deterministic (v2) · Use case</small>
+
+-   **[Loan Origination: governed](v2-loan-origination-governed.md)**
+
+    ![Loan Origination: governed](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-loan-origination-governed/img/canvas.png){ loading=lazy }
+
+    <small>Deterministic (v2) · Governed</small>
+
+-   **[Field Service Dispatch](v2-field-service.md)**
+
+    ![Field Service Dispatch](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-field-service/img/canvas.png){ loading=lazy }
+
+    <small>Deterministic (v2) · Use case</small>
+
+-   **[Field Service Dispatch: governed](v2-field-service-governed.md)**
+
+    ![Field Service Dispatch: governed](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-field-service-governed/img/canvas.png){ loading=lazy }
+
+    <small>Deterministic (v2) · Governed</small>
+
+-   **[Marketing Campaign Studio](v2-campaign-studio.md)**
+
+    ![Marketing Campaign Studio](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-campaign-studio/img/canvas.png){ loading=lazy }
+
+    <small>Deterministic (v2) · Use case</small>
+
+-   **[Marketing Campaign Studio: governed](v2-campaign-studio-governed.md)**
+
+    ![Marketing Campaign Studio: governed](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-campaign-studio-governed/img/canvas.png){ loading=lazy }
+
+    <small>Deterministic (v2) · Governed</small>
+
+-   **[HR Leave Requests](v1-hr-leave.md)**
+
+    ![HR Leave Requests](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-hr-leave/img/canvas.png){ loading=lazy }
+
+    <small>Probabilistic (v1) · Use case</small>
+
+-   **[HR Leave Requests: governed](v1-hr-leave-governed.md)**
+
+    ![HR Leave Requests: governed](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-hr-leave-governed/img/canvas.png){ loading=lazy }
+
+    <small>Probabilistic (v1) · Governed</small>
+
+-   **[HR Leave Requests: secured](v1-hr-leave-secured.md)**
+
+    ![HR Leave Requests: secured](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-hr-leave-secured/img/canvas.png){ loading=lazy }
+
+    <small>Probabilistic (v1) · Secured</small>
+
+-   **[Patient Intake (demo data)](v1-patient-intake.md)**
+
+    ![Patient Intake (demo data)](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-patient-intake/img/canvas.png){ loading=lazy }
+
+    <small>Probabilistic (v1) · Use case</small>
+
+-   **[Patient Intake (demo data): governed](v1-patient-intake-governed.md)**
+
+    ![Patient Intake (demo data): governed](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-patient-intake-governed/img/canvas.png){ loading=lazy }
+
+    <small>Probabilistic (v1) · Governed</small>
+
+-   **[Patient Intake (demo data): secured](v1-patient-intake-secured.md)**
+
+    ![Patient Intake (demo data): secured](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-patient-intake-secured/img/canvas.png){ loading=lazy }
+
+    <small>Probabilistic (v1) · Secured</small>
+
+-   **[Supply Chain Disruption](v2-supply-chain.md)**
+
+    ![Supply Chain Disruption](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-supply-chain/img/canvas.png){ loading=lazy }
+
+    <small>Deterministic (v2) · Use case</small>
+
+-   **[Supply Chain Disruption: governed](v2-supply-chain-governed.md)**
+
+    ![Supply Chain Disruption: governed](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-supply-chain-governed/img/canvas.png){ loading=lazy }
+
+    <small>Deterministic (v2) · Governed</small>
+
+-   **[Supply Chain Disruption: secured](v2-supply-chain-secured.md)**
+
+    ![Supply Chain Disruption: secured](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-supply-chain-secured/img/canvas.png){ loading=lazy }
+
+    <small>Deterministic (v2) · Secured</small>
+
+-   **[KYC / AML Onboarding](v2-kyc-onboarding.md)**
+
+    ![KYC / AML Onboarding](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-kyc-onboarding/img/canvas.png){ loading=lazy }
+
+    <small>Deterministic (v2) · Use case</small>
+
+-   **[KYC / AML Onboarding: governed](v2-kyc-onboarding-governed.md)**
+
+    ![KYC / AML Onboarding: governed](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-kyc-onboarding-governed/img/canvas.png){ loading=lazy }
+
+    <small>Deterministic (v2) · Governed</small>
+
+-   **[KYC / AML Onboarding: secured](v2-kyc-onboarding-secured.md)**
+
+    ![KYC / AML Onboarding: secured](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-kyc-onboarding-secured/img/canvas.png){ loading=lazy }
+
+    <small>Deterministic (v2) · Secured</small>
+
+-   **[IT Incident Response](v2-incident-response.md)**
+
+    ![IT Incident Response](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-incident-response/img/canvas.png){ loading=lazy }
+
+    <small>Deterministic (v2) · Use case</small>
+
+-   **[IT Incident Response: governed](v2-incident-response-governed.md)**
+
+    ![IT Incident Response: governed](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-incident-response-governed/img/canvas.png){ loading=lazy }
+
+    <small>Deterministic (v2) · Governed</small>
+
+-   **[IT Incident Response: secured](v2-incident-response-secured.md)**
+
+    ![IT Incident Response: secured](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-incident-response-secured/img/canvas.png){ loading=lazy }
+
+    <small>Deterministic (v2) · Secured</small>
+
+-   **[Hotel Concierge (fully mocked)](v1-hotel-concierge.md)**
+
+    ![Hotel Concierge (fully mocked)](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-hotel-concierge/img/canvas.png){ loading=lazy }
+
+    <small>Probabilistic (v1) · Fully mocked</small>
+
+-   **[Library Services (fully mocked)](v1-library-services.md)**
+
+    ![Library Services (fully mocked)](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-library-services/img/canvas.png){ loading=lazy }
+
+    <small>Probabilistic (v1) · Fully mocked</small>
+
+-   **[Fleet Maintenance (fully mocked)](v1-fleet-maintenance.md)**
+
+    ![Fleet Maintenance (fully mocked)](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-fleet-maintenance/img/canvas.png){ loading=lazy }
+
+    <small>Probabilistic (v1) · Fully mocked</small>
+
+-   **[Event Ticketing (fully mocked)](v2-event-ticketing.md)**
+
+    ![Event Ticketing (fully mocked)](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-event-ticketing/img/canvas.png){ loading=lazy }
+
+    <small>Deterministic (v2) · Fully mocked</small>
+
+-   **[Warranty Repair (fully mocked)](v2-warranty-repair.md)**
+
+    ![Warranty Repair (fully mocked)](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-warranty-repair/img/canvas.png){ loading=lazy }
+
+    <small>Deterministic (v2) · Fully mocked</small>
+
+-   **[Utility Outage (fully mocked)](v2-utility-outage.md)**
+
+    ![Utility Outage (fully mocked)](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-utility-outage/img/canvas.png){ loading=lazy }
+
+    <small>Deterministic (v2) · Fully mocked</small>
+
+-   **[IDMC Customer Data Steward (needs Informatica IDMC)](v1-idmc-customer-steward.md)**
+
+    ![IDMC Customer Data Steward (needs Informatica IDMC)](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-idmc-customer-steward/img/canvas.png){ loading=lazy }
+
+    <small>Probabilistic (v1) · Informatica IDMC</small>
+
+-   **[IDMC Data Trust (needs Informatica IDMC)](v2-idmc-data-trust.md)**
+
+    ![IDMC Data Trust (needs Informatica IDMC)](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-idmc-data-trust/img/canvas.png){ loading=lazy }
+
+    <small>Deterministic (v2) · Informatica IDMC</small>
+
+</div>

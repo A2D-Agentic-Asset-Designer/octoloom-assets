@@ -1,6 +1,37 @@
+<span class="ol-pill">UI reference</span>
+
 # Canvases and editors
 
-The editors, the canvas tools and the panels around them.
+<p class="lede">The editors, the canvas tools and the panels around them.</p>
+
+<figure markdown>
+![A deterministic (2.0) network: broker, agents, MCP server and LLM](../assets/ui/network-v2-annot-light.webp#only-light){ loading=lazy }
+![A deterministic (2.0) network: broker, agents, MCP server and LLM](../assets/ui/network-v2-annot-dark.webp#only-dark){ loading=lazy }
+<figcaption>A deterministic (2.0) network: broker, agents, MCP server and LLM</figcaption>
+</figure>
+
+| # | Control | What it does |
+|---|---|---|
+| <span class="ol-n">1</span> | **Agent Network 2.0** | Agent Network 2.0: AgentScript brokers (.agent) with explicit, deterministic flows. |
+| <span class="ol-n">2</span> | **Visual** | Visual canvas |
+| <span class="ol-n">3</span> | **Code** | YAML source |
+| <span class="ol-n">4</span> | **Network** | Open the Agent Network view of the deployed network |
+| <span class="ol-n">5</span> | **exchange.json** | Open the Exchange asset form of this project |
+| <span class="ol-n">6</span> | **Build & Deploy** | Validate, build, publish and deploy this network |
+| <span class="ol-n">7</span> | **Save** | Save the file (the YAML stays the source of truth) |
+| <span class="ol-n">8</span> | **Flow** | Open the broker flow (.agent) |
+| <span class="ol-n">9</span> | **Collapse card** | Collapse or expand the card body |
+| <span class="ol-n">10</span> | **Edit** | Edit the linked agents or MCP servers of this broker |
+| <span class="ol-n">11</span> | **Add to the network** | Add a broker, agent, MCP server, LLM or policy |
+| <span class="ol-n">12</span> | **Asset Palette** | Asset Palette (Exchange / A²D) |
+| <span class="ol-n">13</span> | **Auto layout** | Arrange the cards automatically |
+| <span class="ol-n">14</span> | **Minimize all components to their icons** | Minimize all components to their icons (click an icon to open or minimize one). Auto layout packs them. |
+| <span class="ol-n">15</span> | **Zoom out** | Zoom the canvas out |
+| <span class="ol-n">16</span> | **90%** | Reset to 100% |
+| <span class="ol-n">17</span> | **Zoom in** | Zoom the canvas in |
+| <span class="ol-n">18</span> | **Fit to screen** | Fit all cards into the view |
+| <span class="ol-n">19</span> | **Hide the minimap** | Show or hide the minimap |
+| <span class="ol-n">20</span> | **Explain anything** | Explain anything: click, then click any object (the guided tour starts from here too). Drag to move; double-click to reset its place |
 
 ## Agent network canvas
 
@@ -8,7 +39,7 @@ The canvas of one agent network file: brokers, agents, MCP servers, LLMs, connec
 
 **When to use it:** Designing or reviewing a network.
 
-**Examples:**
+**Examples and details:**
 
 - Drag from a port to another card to connect them
 - Select a card to edit it in the inspector
@@ -22,11 +53,17 @@ The canvas of one .agent file: its nodes (trigger, generator, router, sub-agent,
 
 **When to use it:** Designing the behaviour of one agent.
 
-**Examples:**
+**Examples and details:**
 
 - Add a node from the palette on the left
 - Select a node to edit it in the inspector
 - Switch to the code view to see the AgentScript
+
+<figure markdown>
+![A 2.0 broker flow: explorer, nodes and transitions](../assets/ui/agent-flow-light.webp#only-light){ loading=lazy }
+![A 2.0 broker flow: explorer, nodes and transitions](../assets/ui/agent-flow-dark.webp#only-dark){ loading=lazy }
+<figcaption>A 2.0 broker flow: explorer, nodes and transitions</figcaption>
+</figure>
 
 ## Inspector
 
@@ -34,18 +71,31 @@ The properties of the selected card or node. Edits go straight into the file.
 
 **When to use it:** After selecting something on the canvas.
 
-**Examples:**
+**Examples and details:**
 
 - Drag its left edge to resize it; the width is kept
 - Close it to give the canvas more room
 
+<figure markdown>
+![A broker with three policies, two folded](../assets/ui/policies-fold-light.webp#only-light){ loading=lazy }
+![A broker with three policies, two folded](../assets/ui/policies-fold-dark.webp#only-dark){ loading=lazy }
+<figcaption>A broker with three policies, two folded</figcaption>
+</figure>
+
 ## Canvas tools
+
+<div class="grid" markdown>
+
+![canvas-fabs](../assets/ui/canvas-fabs-light.webp#only-light){ loading=lazy }
+![canvas-fabs](../assets/ui/canvas-fabs-dark.webp#only-dark){ loading=lazy }
 
 The zoom bar, minimap and floating buttons of a canvas: zoom, fit, auto layout, Minimize all / Open all and the map of the whole canvas.
 
 **When to use it:** Finding your way in a large canvas.
 
-**Examples:**
+</div>
+
+**Examples and details:**
 
 - Fit shows every card
 - Click the minimap to jump there
@@ -53,22 +103,36 @@ The zoom bar, minimap and floating buttons of a canvas: zoom, fit, auto layout, 
 
 ## Flow outline
 
+<div class="grid" markdown>
+
+![flow-explorer](../assets/ui/flow-explorer-light.webp#only-light){ loading=lazy }
+![flow-explorer](../assets/ui/flow-explorer-dark.webp#only-dark){ loading=lazy }
+
 The outline of the .agent file on the left: every node by kind, and the palette of nodes you can add.
 
 **When to use it:** To find a node in a long flow or add a new one.
 
-**Examples:**
+</div>
+
+**Examples and details:**
 
 - Click a node in the outline to select it on the canvas
 - Drag a node kind from the palette onto the canvas
 
 ## Problems
 
+<div class="grid" markdown>
+
+![problems-bar](../assets/ui/problems-bar-light.webp#only-light){ loading=lazy }
+![problems-bar](../assets/ui/problems-bar-dark.webp#only-dark){ loading=lazy }
+
 The validation findings of this file and the project checks across agent-network.yaml, exchange.json and the broker .agent files: errors, warnings and hints with the object they are about. A finding with a fix has a button that applies it as one edit: one Undo reverts every file it changed, and nothing is saved until you save. The same findings are in the VS Code Problems panel with a light bulb quick fix. When you save agent-network.yaml or a .agent file, variables it uses that exchange.json does not declare are added there (unsaved; setting agentNetwork.syncVariablesOnSave turns this off).
 
 **When to use it:** Before a build or deploy; errors stop the build.
 
-**Examples:**
+</div>
+
+**Examples and details:**
 
 - Click a problem to select the card it is about; in a broker flow it also opens the field the problem is about (for example Go to or Prompt)
 - Collapse the bar with its chevron
@@ -86,11 +150,17 @@ The text of the file behind the canvas, with syntax colours (keys, values, strin
 
 **When to use it:** To check or change the exact YAML or AgentScript.
 
-**Examples:**
+**Examples and details:**
 
 - Switch between Visual and the source in the toolbar
 - Problems link to the line they are about
 - Ctrl/Cmd+F finds, Ctrl/Cmd+H replaces: the find box at the top right works like VS Code (Aa match case, ab whole word, .* regex, Enter / Shift+Enter next and previous)
+
+<figure markdown>
+![Code view of agent-network.yaml](../assets/ui/code-yaml-light.webp#only-light){ loading=lazy }
+![Code view of agent-network.yaml](../assets/ui/code-yaml-dark.webp#only-dark){ loading=lazy }
+<figcaption>Code view of agent-network.yaml</figcaption>
+</figure>
 
 ## exchange.json editor
 
@@ -98,12 +168,18 @@ A form over the exchange.json of a project: its name, version, variables and the
 
 **When to use it:** Before publishing, or when a dependency or variable changes.
 
-**Examples:**
+**Examples and details:**
 
 - Bump the version before a new publish
 - Click the lock on Protected Exchange defaults to change the Group ID, click it again to lock it
 - "main is net.yaml": click Set main to agent-network.yaml
 - Network description empty: click Copy the exchange.json description, it never overwrites one that is there
+
+<figure markdown>
+![The exchange.json form with protected defaults locked](../assets/ui/exchange-locked-light.webp#only-light){ loading=lazy }
+![The exchange.json form with protected defaults locked](../assets/ui/exchange-locked-dark.webp#only-dark){ loading=lazy }
+<figcaption>The exchange.json form with protected defaults locked</figcaption>
+</figure>
 
 ## Minimize to icons
 
@@ -111,7 +187,7 @@ Shrinks a card to just its icon tile and name, so large networks and flows show 
 
 **When to use it:** Reviewing or presenting a network with many brokers, agents and MCP servers, or a long AgentScript flow.
 
-**Examples:**
+**Examples and details:**
 
 - Minimize all (canvas button): every card becomes an icon; press it again (Open all) to restore every card
 - Click the icon tile in a card header to minimize only that card
@@ -125,20 +201,33 @@ Patterns insert several wired nodes at once from + Step or the right-click menu:
 
 **When to use it:** You need a common flow shape: replace the placeholder instructions and conditions afterwards. Matching instruction templates (Error handling, Retry, Ask the user, Guardrail screen) are in the Insert template picker.
 
-**Examples:**
+**Examples and details:**
 
 - Error handling: subagent status ok / failed → router → reply or FAILED with the error
 - Retry once: attempt → router → second attempt with the first error → router → FAILED
 - Human in the loop: generator complete yes / no → question reply or continue
 - Guardrail check: generator allowed / blocked → REJECTED with reason or continue
 
+<figure markdown>
+![+ Step → Patterns: ready-made flow fragments](../assets/ui/agent-patterns-light.webp#only-light){ loading=lazy }
+![+ Step → Patterns: ready-made flow fragments](../assets/ui/agent-patterns-dark.webp#only-dark){ loading=lazy }
+<figcaption>+ Step → Patterns: ready-made flow fragments</figcaption>
+</figure>
+
 ## Toolbar
+
+<div class="grid" markdown>
+
+![toolbar-network](../assets/ui/toolbar-network-light.webp#only-light){ loading=lazy }
+![toolbar-network](../assets/ui/toolbar-network-dark.webp#only-dark){ loading=lazy }
 
 The actions of this file: switch between the canvas and its source, the guided tour (Guide) and the file actions.
 
 **When to use it:** Any time; hover a button for what it does.
 
-**Examples:**
+</div>
+
+**Examples and details:**
 
 - Guide replays the tour of this canvas
 - To learn what a card or tool is, use the floating info button

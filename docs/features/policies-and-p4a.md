@@ -1,4 +1,39 @@
+<span class="ol-pill">Connect and secure</span>
+
 # Policies and P4A
+
+<p class="lede"><strong>Agent Fabric gateway policies on a broker or a connection (rate limiting, JWT validation, PII detection, schema validation, …), including the P4A policies.</strong> Security and traffic rules travel with the network and are applied at deploy.</p>
+
+!!! info "Where to find it"
+    Broker / connection inspector → **Policies**
+
+<figure markdown>
+![The policy picker](../assets/ui/policy-picker-light.webp#only-light){ loading=lazy }
+![The policy picker](../assets/ui/policy-picker-dark.webp#only-dark){ loading=lazy }
+<figcaption>The policy picker</figcaption>
+</figure>
+
+## How to use it
+
+1. Select a broker or a connection, open **Policies** and click **Add policy**.
+2. Pick a policy in the picker (Agent Fabric, P4A, your organization) and fill in its settings.
+3. Fold a policy to its title to keep the inspector short.
+
+## More screenshots
+
+<figure markdown>
+![A broker with three policies, two folded](../assets/ui/policies-fold-light.webp#only-light){ loading=lazy }
+![A broker with three policies, two folded](../assets/ui/policies-fold-dark.webp#only-dark){ loading=lazy }
+<figcaption>A broker with three policies, two folded</figcaption>
+</figure>
+
+<figure markdown>
+![Protected broker settings](../assets/ui/broker-protected-light.webp#only-light){ loading=lazy }
+![Protected broker settings](../assets/ui/broker-protected-dark.webp#only-dark){ loading=lazy }
+<figcaption>Protected broker settings</figcaption>
+</figure>
+
+## In detail
 
 <img src="https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/screenshots/policies-p4a.png" width="320" align="right" alt="Policy picker with Agent Fabric, org and P4A policies" />
 
@@ -12,23 +47,28 @@ The picker lists **every policy for every component** (broker, agent, MCP server
 
 Each applied policy has a **chevron** to collapse it to its title row: the binding name, direction, policy asset and number of settings. With two or more policies they start collapsed, and **Collapse all** / **Expand all** sits in the *Policies* header. Octoloom remembers your choice per policy.
 
-![Policies section with one policy expanded and two collapsed](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/screenshots/policies-fold.png)
-
 Octoloom writes the policy into the YAML (v1 `spec.policies`; v2 `policies.inbound|outbound` on a connection or `interfaces.a2a.policies` on a broker) and adds its `exchange.json` dependency (classifier `schema`). For **custom headers next to OAuth**, such as a `client_id` header that client ID enforcement requires, add *Header Injection* to the connection and edit the headers in place.
 
 <br clear="right"/>
 
 ## Buttons and components
 
-The same text as the in-app **Explain** button (click the floating info button, then the item).
+The same text as the in-app **Explain** button (click the floating **i**, then the item).
 
 ### Policy
+
+<div class="grid" markdown>
+
+![card-policy](../assets/ui/card-policy-light.webp#only-light){ loading=lazy }
+![card-policy](../assets/ui/card-policy-dark.webp#only-dark){ loading=lazy }
 
 An Agent Fabric gateway policy applied to a connection or broker interface: every MuleSoft-provided policy Anypoint offers on an Agent Fabric instance (Basic Authentication, Client ID Enforcement, JWT Validation, IP Allowlist, CORS, rate limiting, PII detection, header injection, schema validation, prompt decoration, …), your organization's own policies and P4A policies.
 
 **When to use it:** Governance: protect upstreams, mask personal data, add headers, enforce limits. Add policy lists every policy for every component; switch to "Only for brokers" (or A2A agents, MCP servers, LLMs) to narrow it. Each applied policy collapses to its title with its chevron; with two or more they start collapsed, and Collapse all / Expand all is in the Policies header.
 
-**Examples:**
+</div>
+
+**Examples and details:**
 
 - On a v2 canvas the Context card (context.policies and connections without an owner) sits left of the brokers; its orange Context port connects to each broker's Context row
 - http-basic-authentication (Basic Authentication - Simple) on the broker

@@ -5,28 +5,28 @@ site_url: https://a2d-agentic-asset-designer.github.io/octoloom-assets/
 repo_url: https://github.com/A2D-Agentic-Asset-Designer/octoloom-assets
 repo_name: octoloom-assets
 edit_uri: ""
-copyright: Octoloom for Agent Fabric 0.9.27
+copyright: 'Octoloom for Agent Fabric 0.9.27 · <a href="https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom">VS Code Marketplace</a>'
 theme:
   name: material
+  custom_dir: docs-src/overrides
   logo: assets/loomi.png
   favicon: assets/loomi.png
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: indigo
-      accent: light blue
+      primary: custom
+      accent: custom
       toggle:
         icon: material/weather-night
         name: Dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: indigo
-      accent: light blue
+      primary: custom
+      accent: custom
       toggle:
         icon: material/weather-sunny
         name: Light mode
   features:
-    - navigation.tabs
     - navigation.sections
     - navigation.top
     - navigation.indexes
@@ -35,8 +35,26 @@ theme:
     - search.highlight
     - content.code.copy
     - toc.follow
+    - navigation.instant
+    - content.tabs.link
+  font:
+    text: Inter
+    code: JetBrains Mono
 extra_css:
   - assets/extra.css
+extra_javascript:
+  - assets/marketplace.js
+extra:
+  version: "0.9.27"
+  installs: "125"
+  marketplace: https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom
+  social:
+    - icon: material/microsoft-visual-studio-code
+      link: https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom
+      name: Octoloom on the VS Code Marketplace
+    - icon: fontawesome/brands/github
+      link: https://github.com/A2D-Agentic-Asset-Designer/octoloom-assets
+      name: octoloom-assets on GitHub
 markdown_extensions:
   - admonition
   - attr_list
@@ -45,6 +63,8 @@ markdown_extensions:
   - toc:
       permalink: true
   - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
   - pymdownx.superfences
   - pymdownx.highlight
   - pymdownx.emoji:
@@ -53,55 +73,52 @@ markdown_extensions:
 plugins:
   - search
 nav:
-  - "Home": index.md
-  - "Getting started": getting-started.md
-  - "Tutorials":
-      - "All tutorials": tutorials/index.md
-      - "Probabilistic (v1)":
-          - "Employee Onboarding": tutorials/v1-employee-onboarding.md
-          - "Employee Onboarding: governed": tutorials/v1-employee-onboarding-governed.md
-          - "Customer Service Broker": tutorials/v1-customer-service.md
-          - "Customer Service Broker: governed": tutorials/v1-customer-service-governed.md
-          - "IT Helpdesk": tutorials/v1-it-helpdesk.md
-          - "IT Helpdesk: governed": tutorials/v1-it-helpdesk-governed.md
-          - "Travel & Expense": tutorials/v1-travel-expense.md
-          - "Travel & Expense: governed": tutorials/v1-travel-expense-governed.md
-          - "Procurement Assistant": tutorials/v1-procurement.md
-          - "Procurement Assistant: governed": tutorials/v1-procurement-governed.md
-          - "HR Leave Requests": tutorials/v1-hr-leave.md
-          - "HR Leave Requests: governed": tutorials/v1-hr-leave-governed.md
-          - "HR Leave Requests: secured": tutorials/v1-hr-leave-secured.md
-          - "Patient Intake (demo data)": tutorials/v1-patient-intake.md
-          - "Patient Intake (demo data): governed": tutorials/v1-patient-intake-governed.md
-          - "Patient Intake (demo data): secured": tutorials/v1-patient-intake-secured.md
-          - "Hotel Concierge (fully mocked)": tutorials/v1-hotel-concierge.md
-          - "Library Services (fully mocked)": tutorials/v1-library-services.md
-          - "Fleet Maintenance (fully mocked)": tutorials/v1-fleet-maintenance.md
-          - "IDMC Customer Data Steward (needs Informatica IDMC)": tutorials/v1-idmc-customer-steward.md
-      - "Deterministic (v2)":
-          - "Insurance Claims (FNOL to Payout)": tutorials/v2-insurance-claims.md
-          - "Insurance Claims (FNOL to Payout): governed": tutorials/v2-insurance-claims-governed.md
-          - "Retail Returns": tutorials/v2-retail-returns.md
-          - "Retail Returns: governed": tutorials/v2-retail-returns-governed.md
-          - "Loan Origination": tutorials/v2-loan-origination.md
-          - "Loan Origination: governed": tutorials/v2-loan-origination-governed.md
-          - "Field Service Dispatch": tutorials/v2-field-service.md
-          - "Field Service Dispatch: governed": tutorials/v2-field-service-governed.md
-          - "Marketing Campaign Studio": tutorials/v2-campaign-studio.md
-          - "Marketing Campaign Studio: governed": tutorials/v2-campaign-studio-governed.md
-          - "Supply Chain Disruption": tutorials/v2-supply-chain.md
-          - "Supply Chain Disruption: governed": tutorials/v2-supply-chain-governed.md
-          - "Supply Chain Disruption: secured": tutorials/v2-supply-chain-secured.md
-          - "KYC / AML Onboarding": tutorials/v2-kyc-onboarding.md
-          - "KYC / AML Onboarding: governed": tutorials/v2-kyc-onboarding-governed.md
-          - "KYC / AML Onboarding: secured": tutorials/v2-kyc-onboarding-secured.md
-          - "IT Incident Response": tutorials/v2-incident-response.md
-          - "IT Incident Response: governed": tutorials/v2-incident-response-governed.md
-          - "IT Incident Response: secured": tutorials/v2-incident-response-secured.md
-          - "Event Ticketing (fully mocked)": tutorials/v2-event-ticketing.md
-          - "Warranty Repair (fully mocked)": tutorials/v2-warranty-repair.md
-          - "Utility Outage (fully mocked)": tutorials/v2-utility-outage.md
-          - "IDMC Data Trust (needs Informatica IDMC)": tutorials/v2-idmc-data-trust.md
+  - "Get started":
+      - "Introduction": index.md
+      - "Getting started": getting-started.md
+      - "Install from the Marketplace": https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom
+  - "Using Octoloom":
+      - "All features": features/index.md
+      - "Start":
+          - "Home page": features/welcome-page.md
+          - "Setup & Connect": features/setup-connect.md
+          - "New project": features/new-project-from-templates.md
+          - "Network from Exchange": features/agent-network-from-exchange.md
+      - "Design":
+          - "Network canvas": features/network-canvas-agent-network-yaml.md
+          - "Broker flow editor": features/broker-flow-editor-brokers-agent.md
+          - "Asset Palette": features/asset-palette-agent-fabric-and-a2d.md
+          - "Code view": features/code-view-yaml-agentscript-json.md
+          - "exchange.json form": features/asset-editor-exchange-json.md
+          - "Minimize to icons": features/minimize-to-icons.md
+      - "Connect and secure":
+          - "LLM provider": features/broker-llm-provider.md
+          - "LLM authentication": features/llm-authentication-api-key-or-oauth-2-0-jwt.md
+          - "Policies and P4A": features/policies-and-p4a.md
+      - "Govern":
+          - "Governance": features/governance-rulesets-for-brokers-agents-and-mcp-servers.md
+          - "Coverage map": features/coverage-map.md
+      - "Deploy and run":
+          - "Projects & Deploy": features/projects-deploy.md
+      - "Chat and observe":
+          - "Broker chat": features/broker-chat.md
+          - "Agent Network Tracer": features/agent-network-tracer.md
+      - "Help":
+          - "Explain anything": features/explain-anything.md
+  - "UI reference":
+      - "Overview": reference/index.md
+      - "Broker flow nodes": reference/flow-nodes.md
+      - "Network components": reference/network-components.md
+      - "Canvases and editors": reference/canvases-editors.md
+      - "Toolbar buttons": reference/toolbar-buttons.md
+      - "Projects & Deploy buttons": reference/projects-deploy.md
+      - "Side bar, Home and New project": reference/side-bar-home.md
+      - "Chat, Share and Tracer": reference/chat-tracer.md
+      - "Governance": reference/governance.md
+      - "Help": reference/help.md
+      - "Guided tours": reference/guided-tours.md
+      - "Commands": reference/commands.md
+      - "Settings": reference/settings.md
   - "Templates":
       - "All templates": catalog/index.md
       - "Probabilistic":
@@ -149,42 +166,54 @@ nav:
           - "Warranty Repair (fully mocked)": catalog/v2-warranty-repair.md
           - "Utility Outage (fully mocked)": catalog/v2-utility-outage.md
           - "IDMC Data Trust (needs Informatica IDMC)": catalog/v2-idmc-data-trust.md
-  - "Features":
-      - "Overview": features/index.md
-      - "Welcome page": features/welcome-page.md
-      - "Coverage map": features/coverage-map.md
-      - "New project: from templates": features/new-project-from-templates.md
-      - "Agent network from Exchange": features/agent-network-from-exchange.md
-      - "Network canvas (agent-network.yaml)": features/network-canvas-agent-network-yaml.md
-      - "Broker LLM provider": features/broker-llm-provider.md
-      - "LLM authentication: API key or OAuth 2.0 (JWT)": features/llm-authentication-api-key-or-oauth-2-0-jwt.md
-      - "Policies and P4A": features/policies-and-p4a.md
-      - "Broker flow editor (brokers/*.agent)": features/broker-flow-editor-brokers-agent.md
-      - "Code view (YAML, AgentScript, JSON)": features/code-view-yaml-agentscript-json.md
-      - "Asset editor (exchange.json)": features/asset-editor-exchange-json.md
-      - "Asset palette: Agent Fabric and A²D": features/asset-palette-agent-fabric-and-a2d.md
-      - "Projects & Deploy": features/projects-deploy.md
-      - "Setup & Connect": features/setup-connect.md
-      - "Governance: rulesets for brokers, agents and MCP servers": features/governance-rulesets-for-brokers-agents-and-mcp-servers.md
-      - "Minimize to icons": features/minimize-to-icons.md
-      - "Explain anything": features/explain-anything.md
-      - "Broker chat": features/broker-chat.md
-      - "Agent Network Tracer": features/agent-network-tracer.md
-  - "UI reference":
-      - "Overview": reference/index.md
-      - "Broker flow nodes": reference/flow-nodes.md
-      - "Network components": reference/network-components.md
-      - "Canvases and editors": reference/canvases-editors.md
-      - "Toolbar buttons": reference/toolbar-buttons.md
-      - "Projects & Deploy buttons": reference/projects-deploy.md
-      - "Side bar, Home and New project": reference/side-bar-home.md
-      - "Chat, Share and Tracer": reference/chat-tracer.md
-      - "Governance": reference/governance.md
-      - "Help": reference/help.md
-      - "Guided tours": reference/guided-tours.md
-      - "Commands": reference/commands.md
-      - "Settings": reference/settings.md
-  - "Skills":
+  - "Tutorials":
+      - "All tutorials": tutorials/index.md
+      - "Probabilistic (v1)":
+          - "Employee Onboarding": tutorials/v1-employee-onboarding.md
+          - "Employee Onboarding: governed": tutorials/v1-employee-onboarding-governed.md
+          - "Customer Service Broker": tutorials/v1-customer-service.md
+          - "Customer Service Broker: governed": tutorials/v1-customer-service-governed.md
+          - "IT Helpdesk": tutorials/v1-it-helpdesk.md
+          - "IT Helpdesk: governed": tutorials/v1-it-helpdesk-governed.md
+          - "Travel & Expense": tutorials/v1-travel-expense.md
+          - "Travel & Expense: governed": tutorials/v1-travel-expense-governed.md
+          - "Procurement Assistant": tutorials/v1-procurement.md
+          - "Procurement Assistant: governed": tutorials/v1-procurement-governed.md
+          - "HR Leave Requests": tutorials/v1-hr-leave.md
+          - "HR Leave Requests: governed": tutorials/v1-hr-leave-governed.md
+          - "HR Leave Requests: secured": tutorials/v1-hr-leave-secured.md
+          - "Patient Intake (demo data)": tutorials/v1-patient-intake.md
+          - "Patient Intake (demo data): governed": tutorials/v1-patient-intake-governed.md
+          - "Patient Intake (demo data): secured": tutorials/v1-patient-intake-secured.md
+          - "Hotel Concierge (fully mocked)": tutorials/v1-hotel-concierge.md
+          - "Library Services (fully mocked)": tutorials/v1-library-services.md
+          - "Fleet Maintenance (fully mocked)": tutorials/v1-fleet-maintenance.md
+          - "IDMC Customer Data Steward (needs Informatica IDMC)": tutorials/v1-idmc-customer-steward.md
+      - "Deterministic (v2)":
+          - "Insurance Claims (FNOL to Payout)": tutorials/v2-insurance-claims.md
+          - "Insurance Claims (FNOL to Payout): governed": tutorials/v2-insurance-claims-governed.md
+          - "Retail Returns": tutorials/v2-retail-returns.md
+          - "Retail Returns: governed": tutorials/v2-retail-returns-governed.md
+          - "Loan Origination": tutorials/v2-loan-origination.md
+          - "Loan Origination: governed": tutorials/v2-loan-origination-governed.md
+          - "Field Service Dispatch": tutorials/v2-field-service.md
+          - "Field Service Dispatch: governed": tutorials/v2-field-service-governed.md
+          - "Marketing Campaign Studio": tutorials/v2-campaign-studio.md
+          - "Marketing Campaign Studio: governed": tutorials/v2-campaign-studio-governed.md
+          - "Supply Chain Disruption": tutorials/v2-supply-chain.md
+          - "Supply Chain Disruption: governed": tutorials/v2-supply-chain-governed.md
+          - "Supply Chain Disruption: secured": tutorials/v2-supply-chain-secured.md
+          - "KYC / AML Onboarding": tutorials/v2-kyc-onboarding.md
+          - "KYC / AML Onboarding: governed": tutorials/v2-kyc-onboarding-governed.md
+          - "KYC / AML Onboarding: secured": tutorials/v2-kyc-onboarding-secured.md
+          - "IT Incident Response": tutorials/v2-incident-response.md
+          - "IT Incident Response: governed": tutorials/v2-incident-response-governed.md
+          - "IT Incident Response: secured": tutorials/v2-incident-response-secured.md
+          - "Event Ticketing (fully mocked)": tutorials/v2-event-ticketing.md
+          - "Warranty Repair (fully mocked)": tutorials/v2-warranty-repair.md
+          - "Utility Outage (fully mocked)": tutorials/v2-utility-outage.md
+          - "IDMC Data Trust (needs Informatica IDMC)": tutorials/v2-idmc-data-trust.md
+  - "Skills for AI assistants":
       - "Overview": skills/index.md
       - "agent-network-a2d-mocks": skills/agent-network-a2d-mocks.md
       - "agent-network-deploy-test": skills/agent-network-deploy-test.md
