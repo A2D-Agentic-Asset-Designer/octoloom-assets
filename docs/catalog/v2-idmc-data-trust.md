@@ -73,3 +73,5 @@ Keep the Client ID and Client Secret out of the files: Octoloom asks for them at
 The hits, scores and records come from your own IDMC org, so they differ from org to org.
 
 Each prompt takes one path of the flow; open the `.agent` file to see the steps on the flow canvas.
+
+**Live progress** (the antenna button next to Send) is on by default: while the broker works, the chat lists the progress updates of the flow (one per step) and keeps them above the answer.

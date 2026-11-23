@@ -6,6 +6,7 @@
   - **Java 17+**. Octoloom uses `JAVA_HOME` / `agentNetwork.javaHome`, otherwise it installs a portable Temurin 17 from Adoptium.
   - **anypoint-cli-v4** with the **Agent Fabric plugin**, installed into the extension's private storage.
 - For **Run locally** (v2 only): **Docker Desktop**, running.
+- For the **IDMC** tab (Headless IDMC): an Informatica org with the **AI Engineering** license, on a pod that runs Headless IDMC (`hdm.<pod>`).
 
 Portable installs stay inside the extension's storage folder and do not change your system `PATH`.
 

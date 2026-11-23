@@ -47,7 +47,7 @@
 ## How to use it
 
 1. Pick **Deployed** or **Local** and the broker.
-2. Type a message, or click a skill chip. With **Live** on, progress updates appear while the broker works.
+2. Type a message, or click a skill chip. With **Live** on, progress updates appear while the broker works: every v2 template sends one before each step of its flow.
 3. Under a reply, click the **trace** icon to see every call, or the **Tracer** icon to open the task.
 4. Use **Authentication** if the broker needs credentials, **Share** to invite testers.
 

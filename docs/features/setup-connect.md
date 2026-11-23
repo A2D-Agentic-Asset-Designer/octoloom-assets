@@ -75,6 +75,6 @@ One-time setup in the Octoloom side bar, most important first: Connections to Ag
 - Connect Agent Fabric, then pick the environment with the globe button
 - Publish and deploy into a sub business group: pick it with the branch button next to the globe (the connected app needs scopes in that group, otherwise only the root organization is listed)
 - Connect A²D with an API key to drag designed agents and MCP servers from the Asset Palette
-- Connect Headless IDMC: pick the pod of your org (for example North America, dm-us), then log in with your IDMC user. The IDMC tab of the Asset Palette lists the shared and composite Informatica MCP servers
+- Connect Headless IDMC: pick the pod of your org (for example North America, dm-us), then log in with your IDMC user. The IDMC tab of the Asset Palette lists the shared and composite Informatica MCP servers. Headless IDMC needs the AI Engineering license in your Informatica org and a pod that runs it (the hdm.<pod> host); without them the IDMC tab says so
 - Install missing tools after a fresh machine setup; the refresh button checks again
 - Switch all Octoloom views to light or dark, independent of the VS Code theme

@@ -1,0 +1,49 @@
+{
+ "name": "assets-idmc-hdm",
+ "view": "assets",
+ "themes": [
+  "dark",
+  "light"
+ ],
+ "size": "500,760",
+ "state": {
+  "src": "idmc"
+ },
+ "messages": [
+  {
+   "type": "status",
+   "status": {
+    "anypoint": {
+     "host": "anypoint.mulesoft.com",
+     "org": "Demo Org",
+     "env": "Sandbox"
+    },
+    "a2d": true,
+    "idmc": {
+     "pod": "dmp-xx",
+     "org": "Demo Data Org",
+     "user": "demo.user"
+    }
+   }
+  },
+  {
+   "type": "assets",
+   "source": "idmc",
+   "assets": [],
+   "error": "Headless IDMC isn't available on pod dmp-xx (no hdm.dmp-xx.example.com host). Headless IDMC needs the AI Engineering license in your Informatica org and a pod that runs Headless IDMC (the hdm.<pod> host). Ask your Informatica administrator.",
+   "errorDetail": {
+    "summary": "Headless IDMC isn't available on pod dmp-xx (no hdm.dmp-xx.example.com host). Headless IDMC needs the AI Engineering license in your Informatica org and a pod that runs Headless IDMC (the hdm.<pod> host). Ask your Informatica administrator.",
+    "source": "Headless IDMC",
+    "method": "GET",
+    "url": "https://hdm.dmp-xx.example.com/mcp-registry/v0.1/servers?limit=100",
+    "cause": {
+     "code": "ENOTFOUND",
+     "message": "getaddrinfo ENOTFOUND hdm.dmp-xx.example.com",
+     "hostname": "hdm.dmp-xx.example.com"
+    },
+    "hint": "Headless IDMC needs the AI Engineering license in your Informatica org and a pod that runs Headless IDMC (the hdm.<pod> host). Ask your Informatica administrator. Was: Headless IDMC: could not reach hdm.dmp-xx.example.com: ENOTFOUND"
+   }
+  }
+ ],
+ "after": "setTimeout(()=>document.querySelector('.notice.err .btn')?.click(),100)"
+}

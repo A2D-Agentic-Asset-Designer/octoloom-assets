@@ -20,15 +20,16 @@
 | <span class="ol-n">3</span> | **Setup & Connect** | Connect Anypoint, A²D and IDMC |
 | <span class="ol-n">4</span> | **Getting started** | Open the Getting started tutorial on GitHub |
 | <span class="ol-n">5</span> | **All template tutorials** | Open the list of template tutorials on GitHub |
-| <span class="ol-n">6</span> | **Open folder** | Open the folder in this window |
-| <span class="ol-n">7</span> | **Open the coverage map** | Open the coverage map: policies, governance, authentication and where the assets of every agent network come from |
-| <span class="ol-n">8</span> | **Explain anything** | Explain anything: click, then click any object (the guided tour starts from here too). Drag to move; double-click to reset its place |
+| <span class="ol-n">6</span> | **Open the Octoloom documentation site** | Open the Octoloom documentation site (octoloom.a2d-ai.com): every view, button and component with screenshots |
+| <span class="ol-n">7</span> | **Open folder** | Open the folder in this window |
+| <span class="ol-n">8</span> | **Open the coverage map** | Open the coverage map: policies, governance, authentication and where the assets of every agent network come from |
+| <span class="ol-n">9</span> | **Explain anything** | Explain anything: click, then click any object (the guided tour starts from here too). Drag to move; double-click to reset its place |
 
 ## How to use it
 
 1. Click **New Probabilistic Network** or **New Deterministic Network** to open New project with that style.
 2. Under **Recently built**, click a card to open its canvas, or *Open folder* to open it in this window.
-3. Under **Tutorials**, open *Getting started* or the tutorial list.
+3. Under **Tutorials**, open *Getting started*, the tutorial list or **Documentation** (this site).
 4. Under **Your statistics**, click **Coverage map** to see policy, auth and governance coverage.
 
 ## More screenshots
@@ -55,7 +56,7 @@ When VS Code starts, Octoloom opens its **Welcome** page next to the VS Code one
   - the top 3 LLM providers.
 - **How it is counted:** totals come from the projects Octoloom has seen in your workspaces. Builds, deploys and publishes count when they succeed. Projects built before 0.6.7 are picked up from their `target/` folder. The numbers stay on your machine (no telemetry).
 - **Version:** under the title you see the installed Octoloom version. When the Visual Studio Marketplace has a newer one, a link (*0.9.26 available on the Marketplace*) opens Octoloom in the Extensions view so you can update. **Setup & Connect → Tooling** shows the same in its Octoloom row.
-- **Tutorials:** *Getting started* (a 10-step tour of Octoloom) and *All template tutorials*: one per template, with **Just use it** (create, deploy, chat) and **Learn step by step** (canvas, broker flow, policies, deploy, chat, Tracer, with screenshots) and **Build it from scratch** (an empty project, then every card, connection and policy added by hand, with screenshots). They live in [octoloom-assets/tutorials](../tutorials/index.md).
+- **Tutorials:** *Getting started* (a 10-step tour of Octoloom) and *All template tutorials*: one per template, with **Just use it** (create, deploy, chat) and **Learn step by step** (canvas, broker flow, policies, deploy, chat, Tracer, with screenshots) and **Build it from scratch** (an empty project, then every card, connection and policy added by hand, with screenshots). They live in [octoloom-assets/tutorials](../tutorials/index.md). **Documentation** opens the [Octoloom documentation site](https://octoloom.a2d-ai.com/).
 - **Turning it off:** clear *Show on startup* or set `agentNetwork.showWelcome`.
 
 
@@ -66,7 +67,7 @@ The same text as the in-app **Explain** button (click the floating **i**, then t
 
 ### Octoloom Welcome
 
-The start page of Octoloom: create a Probabilistic or Deterministic network, open the tutorials (Getting started and one per template, on GitHub), reopen one of the five agent network projects built last on this machine, and see your totals. The totals count workspaces, network projects (and the Probabilistic / Deterministic ratio), brokers, agents, MCP servers, Exchange, A²D and IDMC assets, governed assets (brokers, agents and MCP servers with at least one policy), policies in networks, deployments, publishes and the top 3 LLM providers. Everything is counted locally on this user profile from the projects Octoloom has seen; nothing is sent anywhere. Under the title you see the installed Octoloom version, and a link when the Marketplace has a newer one.
+The start page of Octoloom: create a Probabilistic or Deterministic network, open the tutorials (Getting started and one per template, on GitHub), reopen one of the five agent network projects built last on this machine, and see your totals. The totals count workspaces, network projects (and the Probabilistic / Deterministic ratio), brokers, agents, MCP servers, Exchange, A²D and IDMC assets, governed assets (brokers, agents and MCP servers with at least one policy), policies in networks, deployments, publishes and the top 3 LLM providers. Everything is counted locally on this user profile from the projects Octoloom has seen; nothing is sent anywhere. Under the title you see the installed Octoloom version, and a link when the Marketplace has a newer one. The Tutorials section also links the Octoloom documentation site.
 
 **When to use it:** It opens when VS Code starts (turn it off with the checkbox or the agentNetwork.showWelcome setting), not when you click the Octoloom icon. Open it any time with the home button in Projects & Deploy or the Octoloom: Welcome command.
 
@@ -81,7 +82,7 @@ The start page of Octoloom: create a Probabilistic or Deterministic network, ope
 
 ### Tutorials
 
-Links to the Octoloom tutorials on GitHub (octoloom-assets/tutorials): Getting started, a tour of Octoloom from Setup & Connect to chat, trace and share, and one tutorial per template project. Each template tutorial has three paths: Just use it (create, deploy, chat in 3 steps), Learn step by step (the canvas, the broker flow, policies, validate, build, deploy, chat and trace, explained with screenshots) and Build it from scratch (start from an empty project and add every broker, agent, MCP server, LLM, connection and policy yourself, with screenshots).
+Links to the Octoloom tutorials on GitHub (octoloom-assets/tutorials): Getting started, a tour of Octoloom from Setup & Connect to chat, trace and share, and one tutorial per template project. Each template tutorial has three paths: Just use it (create, deploy, chat in 3 steps), Learn step by step (the canvas, the broker flow, policies, validate, build, deploy, chat and trace, explained with screenshots) and Build it from scratch (start from an empty project and add every broker, agent, MCP server, LLM, connection and policy yourself, with screenshots). The Documentation link opens the Octoloom documentation site (octoloom.a2d-ai.com): every view, button and component explained with screenshots, all templates and tutorials, and the version history.
 
 **When to use it:** You are new to Octoloom, or want to see what a template does before you create it. The links open in your browser.
 

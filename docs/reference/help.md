@@ -17,7 +17,7 @@
 ![explain-button](../assets/ui/explain-button-light.webp#only-light){ loading=lazy }
 ![explain-button](../assets/ui/explain-button-dark.webp#only-dark){ loading=lazy }
 
-The floating info button on every Octoloom editor and panel (canvases, broker flow, chat, Governance, Welcome, New project). Turn it on, then click any card, panel, tool or canvas: instead of acting, the view tells you what that object is, when to use it and examples. Nothing is changed while it is on.
+The floating info button on every Octoloom editor and panel (canvases, broker flow, chat, Governance, Welcome, New project). Turn it on, then click any card, panel, tool or canvas: instead of acting, the view tells you what that object is, when to use it and examples. Nothing is changed while it is on. Every card has a Docs link that opens the Octoloom documentation site (octoloom.a2d-ai.com) with a search for the object.
 
 **When to use it:** Whenever you are unsure what something on screen does. Drag the button anywhere; every Octoloom tab follows, so it stays in the same place when you switch tabs.
 

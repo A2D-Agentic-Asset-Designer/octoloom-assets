@@ -27,17 +27,15 @@
 | <span class="ol-n">13</span> | **Deterministic** | Deterministic: run actions, set variables (no LLM) |
 | <span class="ol-n">14</span> | **Router** | Branch on conditions |
 | <span class="ol-n">15</span> | **Reply** | Send a status message or artifact to the caller |
-| <span class="ol-n">16</span> | **Collapse card** | Collapse or expand the card body |
-| <span class="ol-n">17</span> | **Step** | Add next step |
-| <span class="ol-n">18</span> | **Add node** | Add a step to the flow |
-| <span class="ol-n">19</span> | **Auto layout** | Discard manual positions |
-| <span class="ol-n">20</span> | **Minimize all** | Minimize all nodes to their icons (click an icon to open or minimize one). Auto layout packs them. |
-| <span class="ol-n">21</span> | **Zoom out** | Zoom the canvas out |
-| <span class="ol-n">22</span> | **43%** | Reset to 100% |
-| <span class="ol-n">23</span> | **Zoom in** | Zoom the canvas in |
-| <span class="ol-n">24</span> | **Fit to screen** | Fit all cards into the view |
-| <span class="ol-n">25</span> | **Hide the minimap** | Show or hide the minimap |
-| <span class="ol-n">26</span> | **Explain anything** | Explain anything: click, then click any object (the guided tour starts from here too). Drag to move; double-click to reset its place |
+| <span class="ol-n">16</span> | **Add node** | Add a step to the flow |
+| <span class="ol-n">17</span> | **Auto layout** | Discard manual positions |
+| <span class="ol-n">18</span> | **Minimize all** | Minimize all nodes to their icons (click an icon to open or minimize one). Auto layout packs them. |
+| <span class="ol-n">19</span> | **Zoom out** | Zoom the canvas out |
+| <span class="ol-n">20</span> | **27%** | Reset to 100% |
+| <span class="ol-n">21</span> | **Zoom in** | Zoom the canvas in |
+| <span class="ol-n">22</span> | **Fit to screen** | Fit all cards into the view |
+| <span class="ol-n">23</span> | **Hide the minimap** | Show or hide the minimap |
+| <span class="ol-n">24</span> | **Explain anything** | Explain anything: click, then click any object (the guided tour starts from here too). Drag to move; double-click to reset its place |
 
 ## Trigger
 

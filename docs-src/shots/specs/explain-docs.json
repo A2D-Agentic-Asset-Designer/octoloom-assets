@@ -1,0 +1,27 @@
+{
+ "name": "explain-docs",
+ "view": "network",
+ "themes": [
+  "dark",
+  "light"
+ ],
+ "size": "1400,860",
+ "messages": [
+  {
+   "type": "doc",
+   "kind": "network",
+   "fileName": "agent-network.yaml",
+   "uri": "file:///demo/it-helpdesk/agent-network.yaml",
+   "text": "@file:media/templates/v1-it-helpdesk/agent-network.yaml",
+   "guidesSeen": [
+    "v1",
+    "v2",
+    "agent"
+   ],
+   "network": {
+    "version": "v1"
+   }
+  }
+ ],
+ "after": "document.querySelector('.xb-btn')?.click(); setTimeout(() => { const n = document.querySelector('.nc.k-broker') || document.querySelector('.nc'); const r = n.getBoundingClientRect(); const o = { bubbles: true, clientX: r.left + 20, clientY: r.top + 12 }; n.dispatchEvent(new PointerEvent('pointermove', o)); n.dispatchEvent(new MouseEvent('click', o)); ; setTimeout(() => { const f = document.querySelector('.xb-foot'); if (f) f.scrollIntoView({block: 'end'}); }, 250); }, 150)"
+}

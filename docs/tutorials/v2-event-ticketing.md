@@ -109,7 +109,7 @@ The square status light goes from blue (deploying) to green (**Deployed and runn
 
 ### Step 7. Chat with the broker
 
-Click **Open chat** on the deployment box. On the left is the network (the cards light up as they are called), and on the right is the conversation with its task states. Paste the prompts one at a time:
+Click **Open chat** on the deployment box. On the left is the network (the cards light up as they are called), and on the right is the conversation with its task states. **Live progress** (the antenna button next to Send) is on by default: while the broker works, the chat lists its progress updates (*Extracting the event id and the number of seats...*, *Checking the free seats with the Events MCP...*) and keeps them above the answer. Paste the prompts one at a time:
 
 ![Event Ticketing (fully mocked) in the broker chat](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-event-ticketing/img/chat.png)
 

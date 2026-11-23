@@ -53,6 +53,12 @@
 <figcaption>A connection error with its details</figcaption>
 </figure>
 
+<figure markdown>
+![A pod without Headless IDMC: the message names the AI Engineering license](../assets/ui/assets-idmc-hdm-light.webp#only-light){ loading=lazy }
+![A pod without Headless IDMC: the message names the AI Engineering license](../assets/ui/assets-idmc-hdm-dark.webp#only-dark){ loading=lazy }
+<figcaption>A pod without Headless IDMC: the message names the AI Engineering license</figcaption>
+</figure>
+
 ## In detail
 
 <img src="https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/screenshots/palette.png" width="260" align="right" alt="Asset palette, Agent Fabric tab" />
@@ -64,6 +70,7 @@
 - **Agent Fabric** tab: MCP servers, A2A agents and LLMs published in Exchange for your organization. You can include public assets.
 - When loading assets fails, the error has an **info** button with the details: HTTP status, the server's answer, the network cause and the URL.
 - **A²D** tab: your A²D prototype MCP servers and agents with their hosted mocks, filtered by A²D project.
+- **IDMC** tab: the shared Informatica MCP servers of your pod and the composite MCP servers of your org. Headless IDMC needs the **AI Engineering** license in your Informatica org and a pod that runs Headless IDMC (the `hdm.<pod>` host; for example `dmp-em` has none). Without them the tab says so in plain words, and connecting warns you.
 - Search, filter (All / MCP / Agents, plus LLMs on the Agent Fabric and A²D tabs; IDMC has no LLMs), and switch between card and row layouts.
 - Expand a card to see its URL, Exchange coordinates, tools and skills.
 - **Drag** an asset onto the canvas, or click **+**, to add it to the active network:
@@ -82,7 +89,7 @@ The same text as the in-app **Explain** button (click the floating **i**, then t
 
 ### Assets
 
-The assets you can add to a network: agents and MCP servers from Exchange, A²D, Headless IDMC and your project, and LLMs from Exchange and A²D. Each card is one asset. The Agent Fabric and A²D tabs have the LLMs filter; IDMC has MCP servers and agents only. A²D LLMs are LLM mocks: fake OpenAI, Azure OpenAI or Gemini LLMs hosted by A²D that answer from scenarios (broker answers, tool calls, errors, delays), so a network runs without a real model key. Dropping one adds a project LLM (registry.llms in v2, llmProviders in v1) and an LLM connection to the mock URL, with no Exchange dependency; a mock that accepts any key gets the placeholder key a2d-mock-key, and dropped on a broker it becomes the broker LLM with the first model of the mock. The IDMC tab lists the shared Informatica MCP servers of your pod and the composite MCP servers of your org; adding one sets its IDS-SESSION-ID authentication from the secret variable idmc.sessionId in exchange.json. LLMs (the LLMs filter) are published LLM assets: dropping one on a broker adds an exchange.json dependency (llm-metadata), an LLM connection with a URL variable and a secret apiKey variable, and makes it the broker LLM. The LLM is referenced, never copied, so publish creates no new LLM asset. LLMs with an input format (such as MuleSoft openai) work in Deterministic (v2) networks only; the Probabilistic (v1) build rejects them (error 3061).
+The assets you can add to a network: agents and MCP servers from Exchange, A²D, Headless IDMC and your project, and LLMs from Exchange and A²D. Each card is one asset. The Agent Fabric and A²D tabs have the LLMs filter; IDMC has MCP servers and agents only. A²D LLMs are LLM mocks: fake OpenAI, Azure OpenAI or Gemini LLMs hosted by A²D that answer from scenarios (broker answers, tool calls, errors, delays), so a network runs without a real model key. Dropping one adds a project LLM (registry.llms in v2, llmProviders in v1) and an LLM connection to the mock URL, with no Exchange dependency; a mock that accepts any key gets the placeholder key a2d-mock-key, and dropped on a broker it becomes the broker LLM with the first model of the mock. The IDMC tab lists the shared Informatica MCP servers of your pod and the composite MCP servers of your org (it needs the AI Engineering license in your Informatica org and a pod that runs Headless IDMC); adding one sets its IDS-SESSION-ID authentication from the secret variable idmc.sessionId in exchange.json. LLMs (the LLMs filter) are published LLM assets: dropping one on a broker adds an exchange.json dependency (llm-metadata), an LLM connection with a URL variable and a secret apiKey variable, and makes it the broker LLM. The LLM is referenced, never copied, so publish creates no new LLM asset. LLMs with an input format (such as MuleSoft openai) work in Deterministic (v2) networks only; the Probabilistic (v1) build rejects them (error 3061).
 
 **When to use it:** While building a network, to find what to drag onto the canvas.
 

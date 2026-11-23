@@ -17,9 +17,10 @@
 | <span class="ol-n">3</span> | **Setup & Connect** | Connect Anypoint, A²D and IDMC |
 | <span class="ol-n">4</span> | **Getting started** | Open the Getting started tutorial on GitHub |
 | <span class="ol-n">5</span> | **All template tutorials** | Open the list of template tutorials on GitHub |
-| <span class="ol-n">6</span> | **Open folder** | Open the folder in this window |
-| <span class="ol-n">7</span> | **Open the coverage map** | Open the coverage map: policies, governance, authentication and where the assets of every agent network come from |
-| <span class="ol-n">8</span> | **Explain anything** | Explain anything: click, then click any object (the guided tour starts from here too). Drag to move; double-click to reset its place |
+| <span class="ol-n">6</span> | **Open the Octoloom documentation site** | Open the Octoloom documentation site (octoloom.a2d-ai.com): every view, button and component with screenshots |
+| <span class="ol-n">7</span> | **Open folder** | Open the folder in this window |
+| <span class="ol-n">8</span> | **Open the coverage map** | Open the coverage map: policies, governance, authentication and where the assets of every agent network come from |
+| <span class="ol-n">9</span> | **Explain anything** | Explain anything: click, then click any object (the guided tour starts from here too). Drag to move; double-click to reset its place |
 
 ## Setup & Connect
 
@@ -33,7 +34,7 @@ One-time setup in the Octoloom side bar, most important first: Connections to Ag
 - Connect Agent Fabric, then pick the environment with the globe button
 - Publish and deploy into a sub business group: pick it with the branch button next to the globe (the connected app needs scopes in that group, otherwise only the root organization is listed)
 - Connect A²D with an API key to drag designed agents and MCP servers from the Asset Palette
-- Connect Headless IDMC: pick the pod of your org (for example North America, dm-us), then log in with your IDMC user. The IDMC tab of the Asset Palette lists the shared and composite Informatica MCP servers
+- Connect Headless IDMC: pick the pod of your org (for example North America, dm-us), then log in with your IDMC user. The IDMC tab of the Asset Palette lists the shared and composite Informatica MCP servers. Headless IDMC needs the AI Engineering license in your Informatica org and a pod that runs it (the hdm.<pod> host); without them the IDMC tab says so
 - Install missing tools after a fresh machine setup; the refresh button checks again
 - Switch all Octoloom views to light or dark, independent of the VS Code theme
 
@@ -45,7 +46,7 @@ One-time setup in the Octoloom side bar, most important first: Connections to Ag
 
 ## Assets
 
-The assets you can add to a network: agents and MCP servers from Exchange, A²D, Headless IDMC and your project, and LLMs from Exchange and A²D. Each card is one asset. The Agent Fabric and A²D tabs have the LLMs filter; IDMC has MCP servers and agents only. A²D LLMs are LLM mocks: fake OpenAI, Azure OpenAI or Gemini LLMs hosted by A²D that answer from scenarios (broker answers, tool calls, errors, delays), so a network runs without a real model key. Dropping one adds a project LLM (registry.llms in v2, llmProviders in v1) and an LLM connection to the mock URL, with no Exchange dependency; a mock that accepts any key gets the placeholder key a2d-mock-key, and dropped on a broker it becomes the broker LLM with the first model of the mock. The IDMC tab lists the shared Informatica MCP servers of your pod and the composite MCP servers of your org; adding one sets its IDS-SESSION-ID authentication from the secret variable idmc.sessionId in exchange.json. LLMs (the LLMs filter) are published LLM assets: dropping one on a broker adds an exchange.json dependency (llm-metadata), an LLM connection with a URL variable and a secret apiKey variable, and makes it the broker LLM. The LLM is referenced, never copied, so publish creates no new LLM asset. LLMs with an input format (such as MuleSoft openai) work in Deterministic (v2) networks only; the Probabilistic (v1) build rejects them (error 3061).
+The assets you can add to a network: agents and MCP servers from Exchange, A²D, Headless IDMC and your project, and LLMs from Exchange and A²D. Each card is one asset. The Agent Fabric and A²D tabs have the LLMs filter; IDMC has MCP servers and agents only. A²D LLMs are LLM mocks: fake OpenAI, Azure OpenAI or Gemini LLMs hosted by A²D that answer from scenarios (broker answers, tool calls, errors, delays), so a network runs without a real model key. Dropping one adds a project LLM (registry.llms in v2, llmProviders in v1) and an LLM connection to the mock URL, with no Exchange dependency; a mock that accepts any key gets the placeholder key a2d-mock-key, and dropped on a broker it becomes the broker LLM with the first model of the mock. The IDMC tab lists the shared Informatica MCP servers of your pod and the composite MCP servers of your org (it needs the AI Engineering license in your Informatica org and a pod that runs Headless IDMC); adding one sets its IDS-SESSION-ID authentication from the secret variable idmc.sessionId in exchange.json. LLMs (the LLMs filter) are published LLM assets: dropping one on a broker adds an exchange.json dependency (llm-metadata), an LLM connection with a URL variable and a secret apiKey variable, and makes it the broker LLM. The LLM is referenced, never copied, so publish creates no new LLM asset. LLMs with an input format (such as MuleSoft openai) work in Deterministic (v2) networks only; the Probabilistic (v1) build rejects them (error 3061).
 
 **When to use it:** While building a network, to find what to drag onto the canvas.
 
@@ -86,7 +87,7 @@ A network can declare its own LLM (registry.llms in v2, llmProviders in v1): eve
 
 ## Octoloom Welcome
 
-The start page of Octoloom: create a Probabilistic or Deterministic network, open the tutorials (Getting started and one per template, on GitHub), reopen one of the five agent network projects built last on this machine, and see your totals. The totals count workspaces, network projects (and the Probabilistic / Deterministic ratio), brokers, agents, MCP servers, Exchange, A²D and IDMC assets, governed assets (brokers, agents and MCP servers with at least one policy), policies in networks, deployments, publishes and the top 3 LLM providers. Everything is counted locally on this user profile from the projects Octoloom has seen; nothing is sent anywhere. Under the title you see the installed Octoloom version, and a link when the Marketplace has a newer one.
+The start page of Octoloom: create a Probabilistic or Deterministic network, open the tutorials (Getting started and one per template, on GitHub), reopen one of the five agent network projects built last on this machine, and see your totals. The totals count workspaces, network projects (and the Probabilistic / Deterministic ratio), brokers, agents, MCP servers, Exchange, A²D and IDMC assets, governed assets (brokers, agents and MCP servers with at least one policy), policies in networks, deployments, publishes and the top 3 LLM providers. Everything is counted locally on this user profile from the projects Octoloom has seen; nothing is sent anywhere. Under the title you see the installed Octoloom version, and a link when the Marketplace has a newer one. The Tutorials section also links the Octoloom documentation site.
 
 **When to use it:** It opens when VS Code starts (turn it off with the checkbox or the agentNetwork.showWelcome setting), not when you click the Octoloom icon. Open it any time with the home button in Projects & Deploy or the Octoloom: Welcome command.
 
@@ -101,7 +102,7 @@ The start page of Octoloom: create a Probabilistic or Deterministic network, ope
 
 ## Tutorials
 
-Links to the Octoloom tutorials on GitHub (octoloom-assets/tutorials): Getting started, a tour of Octoloom from Setup & Connect to chat, trace and share, and one tutorial per template project. Each template tutorial has three paths: Just use it (create, deploy, chat in 3 steps), Learn step by step (the canvas, the broker flow, policies, validate, build, deploy, chat and trace, explained with screenshots) and Build it from scratch (start from an empty project and add every broker, agent, MCP server, LLM, connection and policy yourself, with screenshots).
+Links to the Octoloom tutorials on GitHub (octoloom-assets/tutorials): Getting started, a tour of Octoloom from Setup & Connect to chat, trace and share, and one tutorial per template project. Each template tutorial has three paths: Just use it (create, deploy, chat in 3 steps), Learn step by step (the canvas, the broker flow, policies, validate, build, deploy, chat and trace, explained with screenshots) and Build it from scratch (start from an empty project and add every broker, agent, MCP server, LLM, connection and policy yourself, with screenshots). The Documentation link opens the Octoloom documentation site (octoloom.a2d-ai.com): every view, button and component explained with screenshots, all templates and tutorials, and the version history.
 
 **When to use it:** You are new to Octoloom, or want to see what a template does before you create it. The links open in your browser.
 

@@ -22,7 +22,7 @@ SHOTS = {
     'exchange-import': 1, 'projects-new-exchange': 0,
     'projects-deploy': 1, 'deploy-form': 1, 'deploy-auth': 0, 'run-local-vars': 0, 'projects-explain': 0,
     'setup-connect': 1, 'setup-connect-update': 0, 'setup-connect-idmc': 0,
-    'assets-llm': 1, 'assets-a2d-llm': 0, 'assets-idmc': 0, 'assets-error-detail': 0,
+    'assets-llm': 1, 'assets-a2d-llm': 0, 'assets-idmc': 0, 'assets-error-detail': 0, 'assets-idmc-hdm': 0,
     'network-v2': 1, 'network-v1': 1, 'network-v2-context': 0, 'broker-protected': 0, 'policies-fold': 0, 'policy-picker': 0,
     'network-problems-fix': 0, 'network-v1-exchange-llm': 0, 'network-mcp-url': 0, 'network-fab-tip': 0,
     'agent-flow': 1, 'agent-patterns': 0,
@@ -32,7 +32,7 @@ SHOTS = {
     'chat-share-a2d': 0, 'chat-share-web': 0, 'chat-share-a2d-review': 0, 'chat-narrow': 0,
     'tracer': 1, 'tracer-mini': 0,
     'governance': 1, 'governance-fix-all': 0,
-    'explain-anything': 0, 'explain-guide': 0,
+    'explain-anything': 0, 'explain-guide': 0, 'explain-docs': 0,
 }
 # canvas card crops: (spec, css selector, output name)
 CROPS = [
@@ -122,15 +122,19 @@ def annotate(png, controls, scale, out):
 
 def main():
     os.makedirs(OUTDIR, exist_ok=True); os.makedirs(TMP, exist_ok=True)
+    only = set(filter(None, os.environ.get('ONLY', '').split(',')))  # ONLY=a,b re-renders just these views
+    todo = {n: a for n, a in SHOTS.items() if not only or n in only}
     specs = []
-    for n in SHOTS:  # every view in both themes
-        sp = json.load(open(os.path.join(SPECS, f'{n}.json'))); sp['themes'] = ['dark', 'light']
+    for n in todo:  # every view in both themes
+        own = os.path.join(HERE, 'specs', f'{n}.json')  # docs-only specs (no change in the extension repo)
+        sp = json.load(open(own if os.path.exists(own) else os.path.join(SPECS, f'{n}.json'))); sp['themes'] = ['dark', 'light']
         if sp.get('messagesFile'): sp['messagesFile'] = os.path.join(SPECS, sp['messagesFile'])
         f = os.path.join(TMP, f'spec-{n}.json'); json.dump(sp, open(f, 'w')); specs.append(f)
     subprocess.run(['node', '.claude/skills/octoloom-screenshot/shot.mjs', *specs], cwd=REPO, check=True,
                    env={**os.environ, 'OUT': TMP}, stdout=subprocess.DEVNULL)
-    index = {}
-    for n, ann in SHOTS.items():
+    idx = os.path.join(OUTDIR, 'index.json')
+    index = json.load(open(idx)) if only and os.path.exists(idx) else {}
+    for n, ann in todo.items():
         spec = json.load(open(os.path.join(TMP, f'spec-{n}.json')))
         size = spec.get('size') or '1500,900'
         themes = spec.get('themes') or ['dark']
@@ -154,7 +158,8 @@ def main():
                     save(im.crop(box), os.path.join(OUTDIR, f'{cname}-{th}.webp'), maxw=1200)
         index[n] = entry
         print(n, len(entry.get('controls', [])), 'controls')
-    json.dump(index, open(os.path.join(OUTDIR, 'index.json'), 'w'), indent=1, ensure_ascii=False)
+    index = {n: index[n] for n in SHOTS if n in index}
+    json.dump(index, open(idx, 'w'), indent=1, ensure_ascii=False)
 
 
 main()

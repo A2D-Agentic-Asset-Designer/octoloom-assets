@@ -2,7 +2,7 @@
 
 # Version history
 
-<p class="lede">Every Octoloom release from the very first, newest first: what changed, in plain words, and who made it happen. <b>59 versions</b>, <b>206 changes</b>.</p>
+<p class="lede">Every Octoloom release from the very first, newest first: what changed, in plain words, and who made it happen. <b>59 versions</b>, <b>209 changes</b>.</p>
 
 ## Contributors
 
@@ -12,7 +12,19 @@ Everyone who suggested or built a change. A change counts for the person who fil
 
 ## 0.9.28
 
-<span class="ol-ver-meta">in development</span>
+<span class="ol-ver-meta">2026-11-23 · released</span>
+
+- **Documentation site from Home and Explain**. Home → Tutorials has a **Documentation** link to [octoloom.a2d-ai.com](https://octoloom.a2d-ai.com/), and every Explain card has a **Docs** link that opens the site with a search for that object.
+
+    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+
+- **Headless IDMC: clear message instead of "fetch failed"**. When the pod has no Headless IDMC host (for example `dmp-em`), the IDMC tab says so and names what Headless IDMC needs: the **AI Engineering** license in your Informatica org and a pod that runs it. 401/403 answers from the IDMC MCP services carry the same hint, and connecting warns when the pod has no Headless IDMC. Explain, README and Requirements name the license.
+
+    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+
+- **Templates: live progress in the chat**. Every deterministic (v2) template now tells the caller what it does next: before each step its flow sends a *working* status update with a plain sentence (*Checking the free seats with the Events MCP...*, *Issuing the e-tickets through the Ticketing agent...*), then goes on. With **Live** on, the chat lists them while the broker works. The updates are ordinary Reply nodes in `brokers/*.agent` (no LLM call) that you can edit or remove in the flow editor. Brokers already deployed keep their flow until you redeploy them from a new project. The template READMEs (*Try it*) and the tutorials mention the **Live progress** toggle (antenna next to Send, on by default).
+
+    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Docs: meet Loomi**. The Octoloom octopus has a name: **Loomi** (he/him). The README introduces him and the logo alt texts name him.
 
