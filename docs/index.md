@@ -20,8 +20,8 @@ deploys them with the Anypoint CLI and lets you chat with the deployed broker an
 <a class="ol-stat" href="https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom"><b class="ol-installs" data-fallback="129">129</b><span>Marketplace installs</span></a>
 <a class="ol-stat" href="https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom&ssr=false#review-details"><b><span class="ol-rating">5.0</span> ★</b><span><span class="ol-ratings">3</span> ratings</span></a>
 <div class="ol-stat"><b class="ol-version">0.9.28</b><span>Latest version</span></div>
-<a class="ol-stat" href="catalog/index.md"><b>43</b><span>Templates (20 v1 · 23 v2)</span></a>
-<a class="ol-stat" href="tutorials/index.md"><b>43</b><span>Tutorials</span></a>
+<a class="ol-stat" href="catalog/"><b>43</b><span>Templates (20 v1 · 23 v2)</span></a>
+<a class="ol-stat" href="tutorials/"><b>43</b><span>Tutorials</span></a>
 </div>
 
 [Install from the Marketplace](https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom){ .md-button .md-button--primary }

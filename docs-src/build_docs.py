@@ -301,8 +301,8 @@ deploys them with the Anypoint CLI and lets you chat with the deployed broker an
 <a class="ol-stat" href="{MARKET}"><b class="ol-installs" data-fallback="{mk['installs']:,}">{mk['installs']:,}</b><span>Marketplace installs</span></a>
 <a class="ol-stat" href="{MARKET}&ssr=false#review-details"><b><span class="ol-rating">{mk['rating']:.1f}</span> ★</b><span><span class="ol-ratings">{mk['ratings']}</span> ratings</span></a>
 <div class="ol-stat"><b class="ol-version">{mk['version']}</b><span>Latest version</span></div>
-<a class="ol-stat" href="catalog/index.md"><b>{len(INDEX)}</b><span>Templates ({n_v1} v1 · {n_v2} v2)</span></a>
-<a class="ol-stat" href="tutorials/index.md"><b>{len(INDEX)}</b><span>Tutorials</span></a>
+<a class="ol-stat" href="catalog/"><b>{len(INDEX)}</b><span>Templates ({n_v1} v1 · {n_v2} v2)</span></a>
+<a class="ol-stat" href="tutorials/"><b>{len(INDEX)}</b><span>Tutorials</span></a>
 </div>
 
 [Install from the Marketplace]({MARKET}){{ .md-button .md-button--primary }}
