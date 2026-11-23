@@ -89,7 +89,51 @@ def stripped(t, m):
         x = '# @dialect: AGENTFABRIC=1.0\n\n' + x.lstrip()
         x = re.sub(r'^trigger \w+:', f'trigger {camel(nk)}Trigger:', x, flags=re.M)
         flow = (nf, x)
+    if t.get('mocked'):
+        y, ex, flow = as_dropped(t, y, ex, flow)
     return y, ex, flow
+
+
+def mock_name(t):
+    return 'Octoloom ' + t['title'].replace(' (fully mocked)', '') + ' LLM'
+
+
+def as_dropped(t, y, ex, flow):
+    """The LLM part of a fully mocked template exactly as dropping its A²D LLM mock from the palette writes it
+    (src/model/netEdits.ts addA2dLlm): key a2d-<slug> / a2d_<slug>, connection <key>-connection / <key>_connection,
+    variable group camel(key) with url + apiKey (placeholder a2d-mock-key). No rename by hand."""
+    v = t['version']; name = mock_name(t)
+    key = 'a2d-' + slug(name) if v == 'v1' else 'a2d_' + slug(name, '_')
+    conn = key + ('-connection' if v == 'v1' else '_connection')
+    grp = re.sub(r'[-_.]+(\w)', lambda m: m.group(1).upper(), key)
+    url = ex['metadata']['variables']['a2dLlm']['url']['default']
+    if v == 'v1':
+        (ok, old), = y['llmProviders'].items()
+        oc = next(k for k, c in y['connections'].items() if c.get('kind') == 'llm')
+        y['llmProviders'] = {key: {'label': f'{name} (A²D mock)', 'description': f'Scripted OpenAI-compatible LLM for the Octoloom {t["assetId"].rsplit("-", 1)[0]} template (fully mocked).', 'metadata': {'platform': 'OpenAI', 'models': ['gpt-5-mini']}}}
+        cs = {}
+        for k, c in y['connections'].items():
+            if k == oc: cs[conn] = {'kind': 'llm', 'ref': {'name': key}, 'spec': {'url': '${%s.url}' % grp, 'configuration': {'apiKey': '${%s.apiKey}' % grp}}}
+            else: cs[k] = c
+        y['connections'] = cs
+        for b in y['brokers'].values(): b['spec']['llm']['ref'] = {'name': key}
+    else:
+        reg = y['registry']; (ok, old), = reg['llms'].items()
+        reg['llms'] = {key: {'info': {'label': f'{name} (A²D mock)', 'description': f'Scripted OpenAI-compatible LLM for the Octoloom {t["assetId"].rsplit("-", 1)[0]} template (fully mocked).'}, 'metadata': {'platform': 'OpenAI', 'models': ['gpt-5-mini']}}}
+        cc = y['context']['connections']
+        oc = next(k for k, c in cc.items() if c.get('kind') == 'llm')
+        y['context']['connections'] = {**{k: c for k, c in cc.items() if k != oc}, conn: {'kind': 'llm', 'ref': {'name': key}, 'url': '${%s.url}' % grp, 'authentication': {'kind': 'apiKey', 'apiKey': '${%s.apiKey}' % grp}}}
+        flow = (flow[0], flow[1].replace(f'llm://{oc}"', f'llm://{conn}"'))
+    vs = ex['metadata']['variables']
+    vs.pop('a2dLlm', None)
+    vs[grp] = {'url': {'description': f'{name} (LLM) endpoint URL', 'default': url, 'secret': False},
+               'apiKey': {'description': f'{name} (A²D LLM mock) API key: any non-empty value works', 'default': 'a2d-mock-key', 'secret': True}}
+    return y, ex, flow
+
+
+def mock_keys(t):
+    v = t['version']; key = 'a2d-' + slug(mock_name(t)) if v == 'v1' else 'a2d_' + slug(mock_name(t), '_')
+    return key, key + ('-connection' if v == 'v1' else '_connection'), re.sub(r'[-_.]+(\w)', lambda m: m.group(1).upper(), key)
 
 
 def project_name(t):
@@ -258,14 +302,19 @@ def path3(t, m, img, n0=1):
           f"- **Name**: `{project_name(t)}` (the Exchange asset id; a different name from the template, so both can live in one org)",
           '- **Parent folder**: pick a folder, then click **Create blank project**.', '',
           img('scratch-new', 'Blank project with a starter broker'), '',
-          ('The starter broker is an LLM broker with an OpenAI LLM (`openai` provider, `openai-connection`) and default instructions. The LLM is already done.' if v == 'v1'
-           else f"The starter broker `{bk}` has an OpenAI LLM connection (`openai_connection`, MuleSoft's published OpenAI LLM) and a flow `{flow[0]}` with a trigger, one subagent and the built-in `done` reply. The LLM is already done."), '']
+          ('The starter broker is an LLM broker with an OpenAI LLM (`openai` provider, `openai-connection`) and default instructions.' if v == 'v1'
+           else f"The starter broker `{bk}` has an OpenAI LLM connection (`openai_connection`, MuleSoft's published OpenAI LLM) and a flow `{flow[0]}` with a trigger, one subagent and the built-in `done` reply.")
+          + (' This template doesn\'t use OpenAI: the next step replaces that LLM with the A²D LLM mock.' if t.get('mocked') else ' The LLM is already done.'), '']
 
     if t.get('mocked'):
         step('Switch the LLM to the A²D LLM mock')
-        L += ["This template needs no OpenAI key: its LLM is an **A²D LLM mock** with scripted answers. Open the **Asset Palette** (Octoloom side bar), pick the **A²D** tab and the **LLMs** filter, then drag **Octoloom " + t['title'].replace(' (fully mocked)', '') + " LLM** onto the broker card.", '',
-              ('- It adds the project LLM ' + ('(`llmProviders`)' if v == 'v1' else '(`registry.llms`)') + ' and a connection to the mock URL with the placeholder key `a2d-mock-key`, and switches the broker to the mock\'s first model. No Exchange dependency is added.'),
-              "- Rename the variable group to `a2dLlm` in `exchange.json` (the template uses `${a2dLlm.url}` and `${a2dLlm.apiKey}`), and remove the starter OpenAI connection and its `openai` variables.", '']
+        lk, lc, lg = mock_keys(t)
+        L += ["This template needs no OpenAI key: its LLM is an **A²D LLM mock** with scripted answers. Open the **Asset Palette** (Octoloom side bar), pick the **A²D** tab and the **LLMs** filter, then drag **" + mock_name(t) + "** onto the broker card. The drop writes everything the LLM needs:", '',
+              f"- the project LLM `{lk}` " + ('(`llmProviders`)' if v == 'v1' else '(`registry.llms`)') + f" and its connection `{lc}` to the mock URL (no Exchange dependency);",
+              f"- the variables `{lg}.url` (the mock URL) and `{lg}.apiKey` (the placeholder key `a2d-mock-key`, any value works) in `exchange.json`;",
+              ('- the broker LLM: the broker now uses the mock with its model `gpt-5-mini`.' if v == 'v1' else f"- the broker LLM: the flow's `default` model now targets `llm://{lc}` with the model `gpt-5-mini`."), '',
+              "Keep these names: the rest of this tutorial uses them. Then remove the starter OpenAI LLM: select its card (**" + ('OpenAI' if v == 'v1' else 'openai') + "**, below the broker) and click **Remove from network** (trash icon) in the inspector. It removes the OpenAI connection" + (' and its `exchange.json` dependency' if v == 'v2' else '') + ". The Problems bar then shows **Variable openai.apiKey is declared in exchange.json but not used**: click **Remove it**.", '',
+              img('scratch-llm', 'The A²D LLM mock on the broker after the drop'), '']
 
     if ag:
         step('Add the agents')
@@ -328,7 +377,10 @@ def path3(t, m, img, n0=1):
             key = f'{g}.{nme}' if nme else g
             if d.get('secret'): sec.append(key); continue
             L.append(f"| `{key}` | {'`' + str(d.get('default')) + '`' if d.get('default') not in ('', None) else '(your ingress gateway URL)' if 'ingressgw' in key else '(empty)'} |")
-    L += ['', f"Leave the secret variables ({', '.join('`' + s + '`' for s in sec)}) empty: deploy asks for them and never stores them." if sec else '', '',
+    mk = [x for x in sec if t.get('mocked') and x == mock_keys(t)[2] + '.apiKey']
+    sec = [x for x in sec if x not in mk]
+    L += ['', f"Leave the secret variables ({', '.join('`' + s + '`' for s in sec)}) empty: deploy asks for them and never stores them." if sec else '',
+          *([f"`{mk[0]}` keeps its default `a2d-mock-key` from the drop: the mock accepts any key, so deploy needs no real one."] if mk else []), '',
           img('scratch-vars', 'The exchange.json form with the variables'), '']
     if v == 'v2':
         L += ['Also click **Remove it** on any **declared but not used** variable that the Problems bar shows.', '']
@@ -353,7 +405,7 @@ def path3(t, m, img, n0=1):
         for x in sp.get('instructions') or []: L.append(f'- {x}')
         L += ['', f"Set **Max number of loops** `{sp.get('maxNumberOfLoops', 25)}`, **Max consecutive errors** `{sp.get('maxConsecutiveErrors', 3)}` and **Task timeout (s)** `{sp.get('taskTimeoutSecs', 60)}`."]
         eff = ((sp.get('llm') or {}).get('configuration') or {}).get('openAI', {}).get('reasoningEffort')
-        if eff: L.append(f"Under **Model parameters → OpenAI**, set **Reasoning effort** to `{eff}`. The broker then answers within the gateway timeout.")
+        if eff and not t.get('mocked'): L.append(f"Under **Model parameters → OpenAI**, set **Reasoning effort** to `{eff}`. The broker then answers within the gateway timeout.")
         L += ['', f"Optionally, fill the broker's **Agent card (A2A 0.3.0)** description: *{b['card'].get('description', '')}*", '', img('scratch-broker', 'The broker instructions and limits'), '']
     else:
         step('Link the agents and MCP servers to the broker' if ag else 'Link the MCP servers to the broker')
@@ -370,7 +422,7 @@ def path3(t, m, img, n0=1):
         step('Build the broker flow')
         llm = (bd.get('llm') or {}).get('default') or {}
         L += [f"On the broker card (or in its inspector), click **Open broker flow**. Then set up the flow:", '',
-              f"1. **Settings → Language Settings**: on the `default` model, set **Reasoning effort (OpenAI)** to `{llm.get('reasoning_effort', 'MINIMAL')}`.",
+              f"1. **Settings → Language Settings**: on the `default` model, set **Reasoning effort (OpenAI)** to `{llm.get('reasoning_effort', 'MINIMAL')}`" + (' (the mock ignores it; it keeps the flow ready for a real model, like the template)' if t.get('mocked') else '') + ".",
               f"2. **Settings → System Messages**: set the instructions to: *{(bd.get('system') or {}).get('instructions', '')}*",
               '3. Select the `assistant` subagent and delete it (trash icon). The trigger and the built-in `done` reply stay.',
               '4. Add the steps below in order. Select the step that comes before, click **Add node**, pick the kind and choose **Empty**, then set its **API name** in **General**. Octoloom wires each new step after the selected one, and you set the exact next step in the inspector.', '',
@@ -460,7 +512,7 @@ def specs3(t, m, net_base):
     net = {'version': v}
     if v == 'v2':
         net['brokerFiles'] = {bk: flow[0]}
-        net['brokerTargets'] = {bk: ['openai_connection']}
+        net['brokerTargets'] = {bk: [mock_keys(t)[1] if t.get('mocked') else 'openai_connection']}
         net['dependencies'] = net_base.get('dependencies', {})
     def doc(upto, targets=None, extra=None):
         nn = copy.deepcopy(net)
@@ -472,6 +524,8 @@ def specs3(t, m, net_base):
     sp = [{'name': 'scratch-new', 'view': 'newProject', 'size': '1300,1000', 'messages': [
         {'type': 'newProjectInit', 'version': v, 'templates': '@json:media/templates/index.json#templates', 'source': 'bundled', 'folder': '/Users/demo/projects'}],
         'after': setter + "[...document.querySelectorAll('.np-tab')].find(b=>b.textContent.startsWith('Blank'))?.click(); setTimeout(()=>{document.querySelector('.np-blank .sw')?.click(); setTimeout(()=>{const f=[...document.querySelectorAll('.np-field')]; setv(f.find(x=>x.querySelector('span')?.textContent==='Broker name')?.querySelector('input'), %s); setv(f.find(x=>x.querySelector('span')?.textContent==='Name')?.querySelector('input'), %s); },80);},80)" % (json.dumps(bname if v == 'v2' else bk), json.dumps(project_name(t)))}]
+    if t.get('mocked'):
+        sp.append({'name': 'scratch-llm', 'view': 'network', 'size': S, 'messages': [doc('start'), sel(f'llm-{mock_keys(t)[0]}')]})
     sp.append({'name': 'scratch-add', 'view': 'network', 'size': S, 'messages': [doc('start')],
                'after': "setTimeout(()=>{const b=document.querySelector('button[title=\"Add to the network\"]'); const r=b.getBoundingClientRect(); b.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:r.x+r.width/2,clientY:r.y+r.height/2})); setTimeout(()=>{const s=[...document.querySelectorAll('.submenu .menu-item')].find(x=>x.querySelector('.mi-label')?.textContent==='Agent'); s?.click();},80);},150)"})
     if ag: sp.append({'name': 'scratch-agent', 'view': 'network', 'size': S, 'messages': [doc('agents'), sel(f'agent-{ag[0][0]}')]})
@@ -492,11 +546,11 @@ def specs3(t, m, net_base):
         sp.append({'name': 'scratch-broker', 'view': 'network', 'size': S, 'messages': [doc('links'), sel(f'broker-{bk}')],
                    'after': "setTimeout(()=>{const s=[...document.querySelectorAll('.inspector .fsection-t')].find(x=>x.textContent==='Instructions and limits'); const f=s?.closest('.fsection'); if(f&&!f.classList.contains('open')) f.querySelector('.fsection-h').click(); setTimeout(()=>f?.scrollIntoView({block:'start'}),100);},250)"})
     else:
-        sp.append({'name': 'scratch-link', 'view': 'network', 'size': S, 'messages': [doc('tools', ['openai_connection'])]})
+        sp.append({'name': 'scratch-link', 'view': 'network', 'size': S, 'messages': [doc('tools', [mock_keys(t)[1] if t.get('mocked') else 'openai_connection'])]})
         conns = {k: c['kind'] for k, c in y['context']['connections'].items()}
         nodes = [k for k, _ in agent_blocks(flow[1]) if re.match(r'^(generator|subagent|router|orchestrator|executor|echo) ', k)]
         trig = re.search(r'^trigger (\w+):', flow[1], re.M).group(1)
-        start = starter_flow(bk, bname).replace('subagent assistant:', 'REMOVED').split('REMOVED')[0].replace('    transition to @subagent.assistant\n', '').replace('  on_message: ->\n', '') + 'echo done:\n  kind: "a2a:status_update_event"\n  state: "TASK_STATE_COMPLETED"\n  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Done")]})\n'
+        start = starter_flow(bk, bname).replace('llm://openai_connection', 'llm://' + (mock_keys(t)[1] if t.get('mocked') else 'openai_connection')).replace('subagent assistant:', 'REMOVED').split('REMOVED')[0].replace('    transition to @subagent.assistant\n', '').replace('  on_message: ->\n', '') + 'echo done:\n  kind: "a2a:status_update_event"\n  state: "TASK_STATE_COMPLETED"\n  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Done")]})\n'
         adoc = lambda text: {'type': 'doc', 'kind': 'agent', 'fileName': flow[0].split('/')[-1], 'uri': f'file:///demo/{project_name(t)}/{flow[0]}', 'text': text, 'guidesSeen': ['v1', 'v2', 'agent'], 'agent': {'brokerKey': bk, 'connections': conns}}
         sp.append({'name': 'scratch-flow-add', 'view': 'agent', 'size': S, 'messages': [adoc(start), sel(f'trigger-{trig}')],
                    'after': "setTimeout(()=>{const b=[...document.querySelectorAll('button')].find(x=>x.textContent.trim()==='Add node'); const r=b.getBoundingClientRect(); b.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:r.x+10,clientY:r.y+10})); setTimeout(()=>{[...document.querySelectorAll('.submenu .menu-item')].find(x=>x.querySelector('.mi-label')?.textContent==='Generator')?.click();},80);},250)"})

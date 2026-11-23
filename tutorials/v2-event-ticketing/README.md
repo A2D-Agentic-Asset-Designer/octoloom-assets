@@ -141,14 +141,19 @@ Connect Octoloom first, as in [Path 2, Step 1](#step-1-connect-octoloom). Then, 
 
 ![Blank project with a starter broker](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-event-ticketing/img/scratch-new.png)
 
-The starter broker `ticketing_broker` has an OpenAI LLM connection (`openai_connection`, MuleSoft's published OpenAI LLM) and a flow `brokers/ticketing-broker.agent` with a trigger, one subagent and the built-in `done` reply. The LLM is already done.
+The starter broker `ticketing_broker` has an OpenAI LLM connection (`openai_connection`, MuleSoft's published OpenAI LLM) and a flow `brokers/ticketing-broker.agent` with a trigger, one subagent and the built-in `done` reply. This template doesn't use OpenAI: the next step replaces that LLM with the A²D LLM mock.
 
 ### Step 3.2. Switch the LLM to the A²D LLM mock
 
-This template needs no OpenAI key: its LLM is an **A²D LLM mock** with scripted answers. Open the **Asset Palette** (Octoloom side bar), pick the **A²D** tab and the **LLMs** filter, then drag **Octoloom Event Ticketing LLM** onto the broker card.
+This template needs no OpenAI key: its LLM is an **A²D LLM mock** with scripted answers. Open the **Asset Palette** (Octoloom side bar), pick the **A²D** tab and the **LLMs** filter, then drag **Octoloom Event Ticketing LLM** onto the broker card. The drop writes everything the LLM needs:
 
-- It adds the project LLM (`registry.llms`) and a connection to the mock URL with the placeholder key `a2d-mock-key`, and switches the broker to the mock's first model. No Exchange dependency is added.
-- Rename the variable group to `a2dLlm` in `exchange.json` (the template uses `${a2dLlm.url}` and `${a2dLlm.apiKey}`), and remove the starter OpenAI connection and its `openai` variables.
+- the project LLM `a2d_octoloom_event_ticketing_llm` (`registry.llms`) and its connection `a2d_octoloom_event_ticketing_llm_connection` to the mock URL (no Exchange dependency);
+- the variables `a2dOctoloomEventTicketingLlm.url` (the mock URL) and `a2dOctoloomEventTicketingLlm.apiKey` (the placeholder key `a2d-mock-key`, any value works) in `exchange.json`;
+- the broker LLM: the flow's `default` model now targets `llm://a2d_octoloom_event_ticketing_llm_connection` with the model `gpt-5-mini`.
+
+Keep these names: the rest of this tutorial uses them. Then remove the starter OpenAI LLM: select its card (**openai**, below the broker) and click **Remove from network** (trash icon) in the inspector. It removes the OpenAI connection and its `exchange.json` dependency. The Problems bar then shows **Variable openai.apiKey is declared in exchange.json but not used**: click **Remove it**.
+
+![The A²D LLM mock on the broker after the drop](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-event-ticketing/img/scratch-llm.png)
 
 ### Step 3.3. Add the agents
 
@@ -199,13 +204,14 @@ Then open `exchange.json` (it opens as a form) and, under **Variables**, set the
 
 | Variable | Default |
 |---|---|
-| `a2dLlm.url` | `https://www.a2d-ai.com/api/platform/31e90ff0-fafc-4029-9933-c5002fa9f2ea/llm/v1` |
 | `ticketingAgent.url` | `https://www.a2d-ai.com/api/platform/7fbe7677-8b25-4d43-b51a-e3169aaa56f9/a2a` |
 | `waitlistAgent.url` | `https://www.a2d-ai.com/api/platform/1c6d5b32-bcdd-418a-959f-2eb48a95917b/a2a` |
 | `eventsMcp.url` | `https://www.a2d-ai.com/api/platform/7809cb1b-39b8-41cf-aaaf-e0f2ff2838ed/` |
 | `bookingMcp.url` | `https://www.a2d-ai.com/api/platform/155023bf-2dc9-4e61-9020-6874a24c608c/` |
+| `a2dOctoloomEventTicketingLlm.url` | `https://www.a2d-ai.com/api/platform/31e90ff0-fafc-4029-9933-c5002fa9f2ea/llm/v1` |
 
-Leave the secret variables (`a2dLlm.apiKey`) empty: deploy asks for them and never stores them.
+
+`a2dOctoloomEventTicketingLlm.apiKey` keeps its default `a2d-mock-key` from the drop: the mock accepts any key, so deploy needs no real one.
 
 ![The exchange.json form with the variables](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-event-ticketing/img/scratch-vars.png)
 
@@ -233,7 +239,7 @@ Every agent and MCP card now has a **Broker** row with **Link to Ticketing Broke
 
 On the broker card (or in its inspector), click **Open broker flow**. Then set up the flow:
 
-1. **Settings → Language Settings**: on the `default` model, set **Reasoning effort (OpenAI)** to `MINIMAL`.
+1. **Settings → Language Settings**: on the `default` model, set **Reasoning effort (OpenAI)** to `MINIMAL` (the mock ignores it; it keeps the flow ready for a real model, like the template).
 2. **Settings → System Messages**: set the instructions to: *You are the box office of a concert hall. Reserve seats only when the event has free seats.*
 3. Select the `assistant` subagent and delete it (trash icon). The trigger and the built-in `done` reply stay.
 4. Add the steps below in order. Select the step that comes before, click **Add node**, pick the kind and choose **Empty**, then set its **API name** in **General**. Octoloom wires each new step after the selected one, and you set the exact next step in the inspector.

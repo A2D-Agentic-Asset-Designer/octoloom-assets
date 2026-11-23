@@ -135,14 +135,19 @@ Connect Octoloom first, as in [Path 2, Step 1](#step-1-connect-octoloom). Then, 
 
 ![Blank project with a starter broker](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-fleet-maintenance/img/scratch-new.png)
 
-The starter broker is an LLM broker with an OpenAI LLM (`openai` provider, `openai-connection`) and default instructions. The LLM is already done.
+The starter broker is an LLM broker with an OpenAI LLM (`openai` provider, `openai-connection`) and default instructions. This template doesn't use OpenAI: the next step replaces that LLM with the A²D LLM mock.
 
 ### Step 3.2. Switch the LLM to the A²D LLM mock
 
-This template needs no OpenAI key: its LLM is an **A²D LLM mock** with scripted answers. Open the **Asset Palette** (Octoloom side bar), pick the **A²D** tab and the **LLMs** filter, then drag **Octoloom Fleet Maintenance LLM** onto the broker card.
+This template needs no OpenAI key: its LLM is an **A²D LLM mock** with scripted answers. Open the **Asset Palette** (Octoloom side bar), pick the **A²D** tab and the **LLMs** filter, then drag **Octoloom Fleet Maintenance LLM** onto the broker card. The drop writes everything the LLM needs:
 
-- It adds the project LLM (`llmProviders`) and a connection to the mock URL with the placeholder key `a2d-mock-key`, and switches the broker to the mock's first model. No Exchange dependency is added.
-- Rename the variable group to `a2dLlm` in `exchange.json` (the template uses `${a2dLlm.url}` and `${a2dLlm.apiKey}`), and remove the starter OpenAI connection and its `openai` variables.
+- the project LLM `a2d-octoloom-fleet-maintenance-llm` (`llmProviders`) and its connection `a2d-octoloom-fleet-maintenance-llm-connection` to the mock URL (no Exchange dependency);
+- the variables `a2dOctoloomFleetMaintenanceLlm.url` (the mock URL) and `a2dOctoloomFleetMaintenanceLlm.apiKey` (the placeholder key `a2d-mock-key`, any value works) in `exchange.json`;
+- the broker LLM: the broker now uses the mock with its model `gpt-5-mini`.
+
+Keep these names: the rest of this tutorial uses them. Then remove the starter OpenAI LLM: select its card (**OpenAI**, below the broker) and click **Remove from network** (trash icon) in the inspector. It removes the OpenAI connection. The Problems bar then shows **Variable openai.apiKey is declared in exchange.json but not used**: click **Remove it**.
+
+![The A²D LLM mock on the broker after the drop](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-fleet-maintenance/img/scratch-llm.png)
 
 ### Step 3.3. Add the agents
 
@@ -198,15 +203,16 @@ Then open `exchange.json` (it opens as a form) and, under **Variables**, set the
 | Variable | Default |
 |---|---|
 | `ingressgw.url` | (your ingress gateway URL) |
-| `a2dLlm.url` | `https://www.a2d-ai.com/api/platform/7044ccde-ce42-4a54-b123-db2e9bb98587/llm/v1` |
 | `telematicsMcp.url` | `https://www.a2d-ai.com/api/platform/f3770ec2-ebc5-4422-9f38-765cea1af443/` |
 | `partsMcp.url` | `https://www.a2d-ai.com/api/platform/824ab59b-70b8-47e5-9f13-1f00e76ed915/` |
 | `workshopMcp.url` | `https://www.a2d-ai.com/api/platform/894fc5b4-5682-41f5-bd2f-60e4328cb6cc/` |
 | `fuelMcp.url` | `https://www.a2d-ai.com/api/platform/7049ba43-0e1f-4d5b-aa00-c6c8e8e385c1/` |
 | `dispatchAgent.url` | `https://www.a2d-ai.com/api/platform/96b57f4c-e1b8-4e17-ad3f-ce3fa13183aa/a2a` |
 | `warrantyAgent.url` | `https://www.a2d-ai.com/api/platform/15aff66a-3290-40de-bda6-0aef81a72d70/a2a` |
+| `a2dOctoloomFleetMaintenanceLlm.url` | `https://www.a2d-ai.com/api/platform/7044ccde-ce42-4a54-b123-db2e9bb98587/llm/v1` |
 
-Leave the secret variables (`a2dLlm.apiKey`) empty: deploy asks for them and never stores them.
+
+`a2dOctoloomFleetMaintenanceLlm.apiKey` keeps its default `a2d-mock-key` from the drop: the mock accepts any key, so deploy needs no real one.
 
 ![The exchange.json form with the variables](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-fleet-maintenance/img/scratch-vars.png)
 
@@ -244,7 +250,6 @@ Back in the broker inspector, open **Instructions and limits**. Replace the defa
 - Answer with the references and dates.
 
 Set **Max number of loops** `25`, **Max consecutive errors** `3` and **Task timeout (s)** `90`.
-Under **Model parameters → OpenAI**, set **Reasoning effort** to `MINIMAL`. The broker then answers within the gateway timeout.
 
 Optionally, fill the broker's **Agent card (A2A 0.3.0)** description: *A fleet broker checks telematics, orders parts, books the workshop and finds a replacement truck: two agents, four tool servers. Fully mocked: the LLM is an A²D LLM mock too, so no OpenAI key is needed.*
 

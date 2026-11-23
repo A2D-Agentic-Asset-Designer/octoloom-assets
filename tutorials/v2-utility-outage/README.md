@@ -144,14 +144,19 @@ Connect Octoloom first, as in [Path 2, Step 1](#step-1-connect-octoloom). Then, 
 
 ![Blank project with a starter broker](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-utility-outage/img/scratch-new.png)
 
-The starter broker `outage_broker` has an OpenAI LLM connection (`openai_connection`, MuleSoft's published OpenAI LLM) and a flow `brokers/outage-broker.agent` with a trigger, one subagent and the built-in `done` reply. The LLM is already done.
+The starter broker `outage_broker` has an OpenAI LLM connection (`openai_connection`, MuleSoft's published OpenAI LLM) and a flow `brokers/outage-broker.agent` with a trigger, one subagent and the built-in `done` reply. This template doesn't use OpenAI: the next step replaces that LLM with the A²D LLM mock.
 
 ### Step 3.2. Switch the LLM to the A²D LLM mock
 
-This template needs no OpenAI key: its LLM is an **A²D LLM mock** with scripted answers. Open the **Asset Palette** (Octoloom side bar), pick the **A²D** tab and the **LLMs** filter, then drag **Octoloom Utility Outage LLM** onto the broker card.
+This template needs no OpenAI key: its LLM is an **A²D LLM mock** with scripted answers. Open the **Asset Palette** (Octoloom side bar), pick the **A²D** tab and the **LLMs** filter, then drag **Octoloom Utility Outage LLM** onto the broker card. The drop writes everything the LLM needs:
 
-- It adds the project LLM (`registry.llms`) and a connection to the mock URL with the placeholder key `a2d-mock-key`, and switches the broker to the mock's first model. No Exchange dependency is added.
-- Rename the variable group to `a2dLlm` in `exchange.json` (the template uses `${a2dLlm.url}` and `${a2dLlm.apiKey}`), and remove the starter OpenAI connection and its `openai` variables.
+- the project LLM `a2d_octoloom_utility_outage_llm` (`registry.llms`) and its connection `a2d_octoloom_utility_outage_llm_connection` to the mock URL (no Exchange dependency);
+- the variables `a2dOctoloomUtilityOutageLlm.url` (the mock URL) and `a2dOctoloomUtilityOutageLlm.apiKey` (the placeholder key `a2d-mock-key`, any value works) in `exchange.json`;
+- the broker LLM: the flow's `default` model now targets `llm://a2d_octoloom_utility_outage_llm_connection` with the model `gpt-5-mini`.
+
+Keep these names: the rest of this tutorial uses them. Then remove the starter OpenAI LLM: select its card (**openai**, below the broker) and click **Remove from network** (trash icon) in the inspector. It removes the OpenAI connection and its `exchange.json` dependency. The Problems bar then shows **Variable openai.apiKey is declared in exchange.json but not used**: click **Remove it**.
+
+![The A²D LLM mock on the broker after the drop](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-utility-outage/img/scratch-llm.png)
 
 ### Step 3.3. Add the agents
 
@@ -208,14 +213,15 @@ Then open `exchange.json` (it opens as a form) and, under **Variables**, set the
 
 | Variable | Default |
 |---|---|
-| `a2dLlm.url` | `https://www.a2d-ai.com/api/platform/95a3d68c-3353-453d-9d4b-1d6ebec98e49/llm/v1` |
 | `commsAgent.url` | `https://www.a2d-ai.com/api/platform/b6db9afd-bd96-47e4-be74-3fd2d76070e8/a2a` |
 | `creditAgent.url` | `https://www.a2d-ai.com/api/platform/aeee10e9-aca6-4cdd-b357-5565c35e42a3/a2a` |
 | `crewAgent.url` | `https://www.a2d-ai.com/api/platform/30d2929e-8970-4f62-a9c0-6ab74edd014d/a2a` |
 | `gridMcp.url` | `https://www.a2d-ai.com/api/platform/0162bf7a-b628-4631-974f-e2ae3737ecda/` |
 | `fieldTicketMcp.url` | `https://www.a2d-ai.com/api/platform/6195b27b-2993-4800-98ce-c789473c1bf2/` |
+| `a2dOctoloomUtilityOutageLlm.url` | `https://www.a2d-ai.com/api/platform/95a3d68c-3353-453d-9d4b-1d6ebec98e49/llm/v1` |
 
-Leave the secret variables (`a2dLlm.apiKey`) empty: deploy asks for them and never stores them.
+
+`a2dOctoloomUtilityOutageLlm.apiKey` keeps its default `a2d-mock-key` from the drop: the mock accepts any key, so deploy needs no real one.
 
 ![The exchange.json form with the variables](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-utility-outage/img/scratch-vars.png)
 
@@ -243,7 +249,7 @@ Every agent and MCP card now has a **Broker** row with **Link to Outage Broker**
 
 On the broker card (or in its inspector), click **Open broker flow**. Then set up the flow:
 
-1. **Settings → Language Settings**: on the `default` model, set **Reasoning effort (OpenAI)** to `MINIMAL`.
+1. **Settings → Language Settings**: on the `default` model, set **Reasoning effort (OpenAI)** to `MINIMAL` (the mock ignores it; it keeps the flow ready for a real model, like the template).
 2. **Settings → System Messages**: set the instructions to: *You are the outage desk of a power utility. Send a crew only when the grid does not already know the outage.*
 3. Select the `assistant` subagent and delete it (trash icon). The trigger and the built-in `done` reply stay.
 4. Add the steps below in order. Select the step that comes before, click **Add node**, pick the kind and choose **Empty**, then set its **API name** in **General**. Octoloom wires each new step after the selected one, and you set the exact next step in the inspector.

@@ -133,14 +133,19 @@ Connect Octoloom first, as in [Path 2, Step 1](#step-1-connect-octoloom). Then, 
 
 ![Blank project with a starter broker](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-library-services/img/scratch-new.png)
 
-The starter broker is an LLM broker with an OpenAI LLM (`openai` provider, `openai-connection`) and default instructions. The LLM is already done.
+The starter broker is an LLM broker with an OpenAI LLM (`openai` provider, `openai-connection`) and default instructions. This template doesn't use OpenAI: the next step replaces that LLM with the A²D LLM mock.
 
 ### Step 3.2. Switch the LLM to the A²D LLM mock
 
-This template needs no OpenAI key: its LLM is an **A²D LLM mock** with scripted answers. Open the **Asset Palette** (Octoloom side bar), pick the **A²D** tab and the **LLMs** filter, then drag **Octoloom Library Services LLM** onto the broker card.
+This template needs no OpenAI key: its LLM is an **A²D LLM mock** with scripted answers. Open the **Asset Palette** (Octoloom side bar), pick the **A²D** tab and the **LLMs** filter, then drag **Octoloom Library Services LLM** onto the broker card. The drop writes everything the LLM needs:
 
-- It adds the project LLM (`llmProviders`) and a connection to the mock URL with the placeholder key `a2d-mock-key`, and switches the broker to the mock's first model. No Exchange dependency is added.
-- Rename the variable group to `a2dLlm` in `exchange.json` (the template uses `${a2dLlm.url}` and `${a2dLlm.apiKey}`), and remove the starter OpenAI connection and its `openai` variables.
+- the project LLM `a2d-octoloom-library-services-llm` (`llmProviders`) and its connection `a2d-octoloom-library-services-llm-connection` to the mock URL (no Exchange dependency);
+- the variables `a2dOctoloomLibraryServicesLlm.url` (the mock URL) and `a2dOctoloomLibraryServicesLlm.apiKey` (the placeholder key `a2d-mock-key`, any value works) in `exchange.json`;
+- the broker LLM: the broker now uses the mock with its model `gpt-5-mini`.
+
+Keep these names: the rest of this tutorial uses them. Then remove the starter OpenAI LLM: select its card (**OpenAI**, below the broker) and click **Remove from network** (trash icon) in the inspector. It removes the OpenAI connection. The Problems bar then shows **Variable openai.apiKey is declared in exchange.json but not used**: click **Remove it**.
+
+![The A²D LLM mock on the broker after the drop](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-library-services/img/scratch-llm.png)
 
 ### Step 3.3. Add the agents
 
@@ -194,14 +199,15 @@ Then open `exchange.json` (it opens as a form) and, under **Variables**, set the
 | Variable | Default |
 |---|---|
 | `ingressgw.url` | (your ingress gateway URL) |
-| `a2dLlm.url` | `https://www.a2d-ai.com/api/platform/481c1eeb-aee4-4564-8aea-ab3bfa0cf437/llm/v1` |
 | `membersMcp.url` | `https://www.a2d-ai.com/api/platform/310f9554-6afd-4317-a988-d127916162c5/` |
 | `loansMcp.url` | `https://www.a2d-ai.com/api/platform/d36da069-20df-4d9a-b7ef-d0d4bf8b9376/` |
 | `catalogMcp.url` | `https://www.a2d-ai.com/api/platform/1230b66d-12f8-4c14-8946-8b3bcac9c0b3/` |
 | `holdsAgent.url` | `https://www.a2d-ai.com/api/platform/7d0ba84c-7885-41da-ae73-04856e41d1bb/a2a` |
 | `eventsAgent.url` | `https://www.a2d-ai.com/api/platform/440d6653-af85-4673-a741-e3cbed29c968/a2a` |
+| `a2dOctoloomLibraryServicesLlm.url` | `https://www.a2d-ai.com/api/platform/481c1eeb-aee4-4564-8aea-ab3bfa0cf437/llm/v1` |
 
-Leave the secret variables (`a2dLlm.apiKey`) empty: deploy asks for them and never stores them.
+
+`a2dOctoloomLibraryServicesLlm.apiKey` keeps its default `a2d-mock-key` from the drop: the mock accepts any key, so deploy needs no real one.
 
 ![The exchange.json form with the variables](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-library-services/img/scratch-vars.png)
 
@@ -237,7 +243,6 @@ Back in the broker inspector, open **Instructions and limits**. Replace the defa
 - Answer with titles, due dates and references.
 
 Set **Max number of loops** `25`, **Max consecutive errors** `3` and **Task timeout (s)** `90`.
-Under **Model parameters → OpenAI**, set **Reasoning effort** to `MINIMAL`. The broker then answers within the gateway timeout.
 
 Optionally, fill the broker's **Agent card (A2A 0.3.0)** description: *A library broker answers member, loan, catalog and event questions with two agents and three tool servers. Fully mocked: the LLM is an A²D LLM mock too, so no OpenAI key is needed.*
 

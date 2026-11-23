@@ -141,14 +141,19 @@ Connect Octoloom first, as in [Path 2, Step 1](#step-1-connect-octoloom). Then, 
 
 ![Blank project with a starter broker](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-warranty-repair/img/scratch-new.png)
 
-The starter broker `repair_broker` has an OpenAI LLM connection (`openai_connection`, MuleSoft's published OpenAI LLM) and a flow `brokers/repair-broker.agent` with a trigger, one subagent and the built-in `done` reply. The LLM is already done.
+The starter broker `repair_broker` has an OpenAI LLM connection (`openai_connection`, MuleSoft's published OpenAI LLM) and a flow `brokers/repair-broker.agent` with a trigger, one subagent and the built-in `done` reply. This template doesn't use OpenAI: the next step replaces that LLM with the A²D LLM mock.
 
 ### Step 3.2. Switch the LLM to the A²D LLM mock
 
-This template needs no OpenAI key: its LLM is an **A²D LLM mock** with scripted answers. Open the **Asset Palette** (Octoloom side bar), pick the **A²D** tab and the **LLMs** filter, then drag **Octoloom Warranty Repair LLM** onto the broker card.
+This template needs no OpenAI key: its LLM is an **A²D LLM mock** with scripted answers. Open the **Asset Palette** (Octoloom side bar), pick the **A²D** tab and the **LLMs** filter, then drag **Octoloom Warranty Repair LLM** onto the broker card. The drop writes everything the LLM needs:
 
-- It adds the project LLM (`registry.llms`) and a connection to the mock URL with the placeholder key `a2d-mock-key`, and switches the broker to the mock's first model. No Exchange dependency is added.
-- Rename the variable group to `a2dLlm` in `exchange.json` (the template uses `${a2dLlm.url}` and `${a2dLlm.apiKey}`), and remove the starter OpenAI connection and its `openai` variables.
+- the project LLM `a2d_octoloom_warranty_repair_llm` (`registry.llms`) and its connection `a2d_octoloom_warranty_repair_llm_connection` to the mock URL (no Exchange dependency);
+- the variables `a2dOctoloomWarrantyRepairLlm.url` (the mock URL) and `a2dOctoloomWarrantyRepairLlm.apiKey` (the placeholder key `a2d-mock-key`, any value works) in `exchange.json`;
+- the broker LLM: the flow's `default` model now targets `llm://a2d_octoloom_warranty_repair_llm_connection` with the model `gpt-5-mini`.
+
+Keep these names: the rest of this tutorial uses them. Then remove the starter OpenAI LLM: select its card (**openai**, below the broker) and click **Remove from network** (trash icon) in the inspector. It removes the OpenAI connection and its `exchange.json` dependency. The Problems bar then shows **Variable openai.apiKey is declared in exchange.json but not used**: click **Remove it**.
+
+![The A²D LLM mock on the broker after the drop](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-warranty-repair/img/scratch-llm.png)
 
 ### Step 3.3. Add the agents
 
@@ -203,13 +208,14 @@ Then open `exchange.json` (it opens as a form) and, under **Variables**, set the
 
 | Variable | Default |
 |---|---|
-| `a2dLlm.url` | `https://www.a2d-ai.com/api/platform/30cf197e-273b-451b-91fb-e34e1888901e/llm/v1` |
 | `repairAgent.url` | `https://www.a2d-ai.com/api/platform/783a4158-1abf-45ee-840d-daa0efb3b37c/a2a` |
 | `notifyAgent.url` | `https://www.a2d-ai.com/api/platform/f623e618-a913-4caa-beba-b927c7175abb/a2a` |
 | `quoteAgent.url` | `https://www.a2d-ai.com/api/platform/bd36453c-218b-4c2f-b198-94a82fd187ce/a2a` |
 | `deviceRegistryMcp.url` | `https://www.a2d-ai.com/api/platform/2716466b-4a56-4875-ba58-fe7b10a2f7a5/` |
+| `a2dOctoloomWarrantyRepairLlm.url` | `https://www.a2d-ai.com/api/platform/30cf197e-273b-451b-91fb-e34e1888901e/llm/v1` |
 
-Leave the secret variables (`a2dLlm.apiKey`) empty: deploy asks for them and never stores them.
+
+`a2dOctoloomWarrantyRepairLlm.apiKey` keeps its default `a2d-mock-key` from the drop: the mock accepts any key, so deploy needs no real one.
 
 ![The exchange.json form with the variables](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-warranty-repair/img/scratch-vars.png)
 
@@ -233,7 +239,7 @@ Every agent and MCP card now has a **Broker** row with **Link to Repair Broker**
 
 On the broker card (or in its inspector), click **Open broker flow**. Then set up the flow:
 
-1. **Settings → Language Settings**: on the `default` model, set **Reasoning effort (OpenAI)** to `MINIMAL`.
+1. **Settings → Language Settings**: on the `default` model, set **Reasoning effort (OpenAI)** to `MINIMAL` (the mock ignores it; it keeps the flow ready for a real model, like the template).
 2. **Settings → System Messages**: set the instructions to: *You are the repair desk of an electronics brand. Repair free of charge only when the registry says the device is covered.*
 3. Select the `assistant` subagent and delete it (trash icon). The trigger and the built-in `done` reply stay.
 4. Add the steps below in order. Select the step that comes before, click **Add node**, pick the kind and choose **Empty**, then set its **API name** in **General**. Octoloom wires each new step after the selected one, and you set the exact next step in the inspector.
