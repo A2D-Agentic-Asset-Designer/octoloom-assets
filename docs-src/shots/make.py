@@ -84,7 +84,11 @@ def dump(name, size, sels, extra=0):
     r = json.loads(H.unescape(m.group(1))) if m else None
     want = int(h)
     if r and 'H' in r and r['H'] != want and extra == 0:  # dump-dom's viewport is shorter than --screenshot's
-        return dump(name, f'{w},{h}', sels, want - r['H'])
+        r2 = dump(name, f'{w},{h}', sels, want - r['H'])
+        # the controls line up with the taller probe, but the canvas cards are fitted to the first layout
+        # pass (the same one the screenshot draws them in), so the card crops keep the first probe's rects
+        if r2: r2['crops'] = r.get('crops', r2.get('crops'))
+        return r2
     return r
 
 

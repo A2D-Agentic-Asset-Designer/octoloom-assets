@@ -8,7 +8,7 @@ hide:
 
 ![Loomi, the Octoloom octopus](assets/loomi.png){ .hero-logo }
 
-<span class="ol-pill">VS Code extension for MuleSoft Agent Fabric</span>
+<span class="ol-pill">VS Code extension for Agent Fabric</span>
 
 # Octoloom for Agent Fabric
 
