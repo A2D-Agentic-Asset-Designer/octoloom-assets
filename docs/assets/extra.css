@@ -1,0 +1,21 @@
+/* Octoloom docs (octoloom#301): Loomi blue, framed screenshots. */
+:root {
+  --md-primary-fg-color: #022ac0;
+  --md-primary-fg-color--light: #066afe;
+  --md-primary-fg-color--dark: #002775;
+  --md-accent-fg-color: #00b3ff;
+}
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #0b1a4a;
+  --md-accent-fg-color: #90d0fe;
+}
+.md-header__button.md-logo img { height: 1.8rem; }
+.hero { text-align: center; margin: 0.5rem 0 1.5rem; }
+.hero h1 { margin: 0.2rem 0 0.4rem; font-weight: 700; }
+.hero-logo { width: 140px; }
+.md-typeset img:not(.hero-logo):not(.emojione):not(.twemoji) {
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 6px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+}
+.md-typeset td img, .md-typeset .hero img { border: 0; box-shadow: none; }

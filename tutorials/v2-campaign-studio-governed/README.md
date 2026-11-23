@@ -81,6 +81,9 @@ Double-click the broker card (or open `brokers/campaign-broker.agent`). The flow
 | `scheduled` | Echo | Ends the flow with the `scheduled` reply. |
 | `socialReady` | Echo | Ends the flow with the `socialReady` reply. |
 | `rejected` | Echo | Ends the flow with the `rejected` reply. |
+| `progressBrief` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressCreateCampaign` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressScheduleEmail` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
 
 Click a step to edit it in the inspector. **+ Step** adds a node, and **+ Step → Patterns** inserts whole shapes such as retry, human in the loop or a guardrail check. **Code** shows the `.agent` text with completion.
 
@@ -259,7 +262,7 @@ On the broker card (or in its inspector), click **Open broker flow**. Then set u
 
 ![Add node in the flow editor](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-campaign-studio-governed/img/scratch-flow-add.png)
 
-Select the trigger and, under **Go to**, pick `brief` once that step exists.
+Select the trigger and, under **Go to**, pick `progressBrief` once that step exists.
 
 #### Generator `brief`
 
@@ -272,7 +275,7 @@ Select the trigger and, under **Go to**, pick `brief` once that step exists.
   - `segment_id` (string): Audience segment id
   - `channel` (string): Campaign channel · **Allowed values** `email`, `social`
   - `theme` (string): Campaign theme
-- **Next step (on exit) → Go to**: `createCampaign`
+- **Next step (on exit) → Go to**: `progressCreateCampaign`
 
 #### Orchestrator `createCampaign`
 
@@ -300,7 +303,7 @@ Select the trigger and, under **Go to**, pick `brief` once that step exists.
 #### Router `launchRouter`
 
 - **Description** Approved email campaigns are scheduled; approved social posts are handed over; the rest are returned.
-- **Routes** (**+**): **Label** Email approved · **When** `@orchestrator.createCampaign.output.approved == "yes" and @generator.brief.output.channel == "email"` · **Go to** `scheduleEmail`
+- **Routes** (**+**): **Label** Email approved · **When** `@orchestrator.createCampaign.output.approved == "yes" and @generator.brief.output.channel == "email"` · **Go to** `progressScheduleEmail`
 - **Routes** (**+**): **Label** Social approved · **When** `@orchestrator.createCampaign.output.approved == "yes"` · **Go to** `socialReady`
 - **Otherwise → Go to**: `rejected`
 
@@ -327,6 +330,24 @@ Select the trigger and, under **Go to**, pick `brief` once that step exists.
 
 - **Use expression**, then **Message (expression)**: `"Campaign not approved: " + @orchestrator.createCampaign.output.summary`
 - **Task state**: `TASK_STATE_COMPLETED`
+
+#### Reply `progressBrief`
+
+- **Message text**: Turning the request into a campaign brief...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `brief`
+
+#### Reply `progressCreateCampaign`
+
+- **Message text**: Checking the audience, writing the copy, getting compliance approval and a forecast...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `createCampaign`
+
+#### Reply `progressScheduleEmail`
+
+- **Message text**: Scheduling the approved email campaign...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `scheduleEmail`
 
 ![The finished broker flow](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-campaign-studio-governed/img/scratch-flow.png)
 

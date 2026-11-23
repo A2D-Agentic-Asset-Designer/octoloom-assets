@@ -80,6 +80,10 @@ Double-click the broker card (or open `brokers/claims-broker.agent`). The flow e
 | `referred` | Echo | Ends the flow with the `referred` reply. |
 | `settleClaim` | Orchestrator | Creates the claim, gets a settlement and pays it. |
 | `settled` | Echo | Ends the flow with the `settled` reply. |
+| `progressClassifyClaim` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressAssessClaim` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressReferToSiu` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressSettleClaim` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
 
 Click a step to edit it in the inspector. **+ Step** adds a node, and **+ Step → Patterns** inserts whole shapes such as retry, human in the loop or a guardrail check. **Code** shows the `.agent` text with completion.
 
@@ -251,7 +255,7 @@ On the broker card (or in its inspector), click **Open broker flow**. Then set u
 
 ![Add node in the flow editor](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-insurance-claims/img/scratch-flow-add.png)
 
-Select the trigger and, under **Go to**, pick `classifyClaim` once that step exists.
+Select the trigger and, under **Go to**, pick `progressClassifyClaim` once that step exists.
 
 #### Generator `classifyClaim`
 
@@ -269,7 +273,7 @@ Select the trigger and, under **Go to**, pick `classifyClaim` once that step exi
   - `policy_id` (string): Policy id, e.g. POL-5001
   - `loss_type` (string): Type of loss · **Allowed values** `motor`, `property`
   - `summary` (string): One-line loss summary
-- **Next step (on exit) → Go to**: `assessClaim`
+- **Next step (on exit) → Go to**: `progressAssessClaim`
 
 #### Orchestrator `assessClaim`
 
@@ -297,8 +301,8 @@ Select the trigger and, under **Go to**, pick `classifyClaim` once that step exi
 
 - **Description** Not covered: stop. High fraud risk: refer to SIU. Otherwise settle.
 - **Routes** (**+**): **Label** Not covered · **When** `@orchestrator.assessClaim.output.covered == "no"` · **Go to** `notCovered`
-- **Routes** (**+**): **Label** High fraud risk · **When** `@orchestrator.assessClaim.output.fraud_risk == "high"` · **Go to** `referToSiu`
-- **Otherwise → Go to**: `settleClaim`
+- **Routes** (**+**): **Label** High fraud risk · **When** `@orchestrator.assessClaim.output.fraud_risk == "high"` · **Go to** `progressReferToSiu`
+- **Otherwise → Go to**: `progressSettleClaim`
 
 #### Reply `notCovered`
 
@@ -339,6 +343,30 @@ Select the trigger and, under **Go to**, pick `classifyClaim` once that step exi
 
 - **Use expression**, then **Message (expression)**: `@orchestrator.settleClaim.output`
 - **Task state**: `TASK_STATE_COMPLETED`
+
+#### Reply `progressClassifyClaim`
+
+- **Message text**: Classifying the loss and reading the policy id...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `classifyClaim`
+
+#### Reply `progressAssessClaim`
+
+- **Message text**: Recording the FNOL, checking coverage and screening for fraud...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `assessClaim`
+
+#### Reply `progressReferToSiu`
+
+- **Message text**: Referring the claim to the special investigations unit...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `referToSiu`
+
+#### Reply `progressSettleClaim`
+
+- **Message text**: Creating the claim, getting a settlement and paying it...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `settleClaim`
 
 ![The finished broker flow](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-insurance-claims/img/scratch-flow.png)
 

@@ -77,6 +77,11 @@ Double-click the broker card (or open `brokers/returns-broker.agent`). The flow 
 | `returnAccepted` | Echo | Ends the flow with the `returnAccepted` reply. |
 | `explainDecline` | Subagent | Explains why the return is declined and offers alternatives. |
 | `returnDeclined` | Echo | Ends the flow with the `returnDeclined` reply. |
+| `progressExtractReturn` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressEligibilityGate` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressCreateRma` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressRefund` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressExplainDecline` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
 
 Click a step to edit it in the inspector. **+ Step** adds a node, and **+ Step → Patterns** inserts whole shapes such as retry, human in the loop or a guardrail check. **Code** shows the `.agent` text with completion.
 
@@ -227,7 +232,7 @@ On the broker card (or in its inspector), click **Open broker flow**. Then set u
 
 ![Add node in the flow editor](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-retail-returns/img/scratch-flow-add.png)
 
-Select the trigger and, under **Go to**, pick `extractReturn` once that step exists.
+Select the trigger and, under **Go to**, pick `progressExtractReturn` once that step exists.
 
 #### Generator `extractReturn`
 
@@ -244,7 +249,7 @@ Select the trigger and, under **Go to**, pick `extractReturn` once that step exi
 - **Structured output** (**Add field** for each):
   - `order_id` (string): Order id, e.g. ORD-1001, or UNKNOWN
   - `reason` (string): Short return reason
-- **Next step (on exit) → Go to**: `eligibilityGate`
+- **Next step (on exit) → Go to**: `progressEligibilityGate`
 
 #### Subagent `eligibilityGate`
 
@@ -268,8 +273,8 @@ Select the trigger and, under **Go to**, pick `extractReturn` once that step exi
 #### Router `eligibilityRouter`
 
 - **Description** Eligible orders get an RMA and a refund; the others get advice.
-- **Routes** (**+**): **Label** Eligible · **When** `@subagent.eligibilityGate.output.eligible == "yes"` · **Go to** `createRma`
-- **Otherwise → Go to**: `explainDecline`
+- **Routes** (**+**): **Label** Eligible · **When** `@subagent.eligibilityGate.output.eligible == "yes"` · **Go to** `progressCreateRma`
+- **Otherwise → Go to**: `progressExplainDecline`
 
 #### Executor `createRma`
 
@@ -278,7 +283,7 @@ Select the trigger and, under **Go to**, pick `extractReturn` once that step exi
   - **Action** `create_rma`
     - **Bind argument** `order_id` = `@generator.extractReturn.output.order_id`
     - **Bind argument** `reason` = `@generator.extractReturn.output.reason`
-- **Next step (on exit) → Go to**: `refund`
+- **Next step (on exit) → Go to**: `progressRefund`
 
 #### Subagent `refund`
 
@@ -309,6 +314,36 @@ Select the trigger and, under **Go to**, pick `extractReturn` once that step exi
 
 - **Use expression**, then **Message (expression)**: `@subagent.explainDecline.output`
 - **Task state**: `TASK_STATE_COMPLETED`
+
+#### Reply `progressExtractReturn`
+
+- **Message text**: Extracting the order id and the return reason from the request...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `extractReturn`
+
+#### Reply `progressEligibilityGate`
+
+- **Message text**: Checking return eligibility with the Orders MCP...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `eligibilityGate`
+
+#### Reply `progressCreateRma`
+
+- **Message text**: Creating the return authorisation...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `createRma`
+
+#### Reply `progressRefund`
+
+- **Message text**: Issuing the refund through the Refund agent...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `refund`
+
+#### Reply `progressExplainDecline`
+
+- **Message text**: Explaining why the return is declined and looking for alternatives...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `explainDecline`
 
 ![The finished broker flow](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-retail-returns/img/scratch-flow.png)
 

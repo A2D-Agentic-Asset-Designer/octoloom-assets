@@ -77,6 +77,11 @@ Double-click the broker card (or open `brokers/ticketing-broker.agent`). The flo
 | `booked` | Echo | Ends the flow with the `booked` reply. |
 | `joinWaitlist` | Subagent | Puts the customer on the waitlist. |
 | `waitlisted` | Echo | Ends the flow with the `waitlisted` reply. |
+| `progressExtractBooking` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressAvailabilityGate` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressReserveSeats` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressIssueTickets` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressJoinWaitlist` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
 
 Click a step to edit it in the inspector. **+ Step** adds a node, and **+ Step → Patterns** inserts whole shapes such as retry, human in the loop or a guardrail check. **Code** shows the `.agent` text with completion.
 
@@ -246,7 +251,7 @@ On the broker card (or in its inspector), click **Open broker flow**. Then set u
 
 ![Add node in the flow editor](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-event-ticketing/img/scratch-flow-add.png)
 
-Select the trigger and, under **Go to**, pick `extractBooking` once that step exists.
+Select the trigger and, under **Go to**, pick `progressExtractBooking` once that step exists.
 
 #### Generator `extractBooking`
 
@@ -263,7 +268,7 @@ Select the trigger and, under **Go to**, pick `extractBooking` once that step ex
 - **Structured output** (**Add field** for each):
   - `event_id` (string): Event id, e.g. EV-501, or UNKNOWN
   - `seats` (string): Number of seats
-- **Next step (on exit) → Go to**: `availabilityGate`
+- **Next step (on exit) → Go to**: `progressAvailabilityGate`
 
 #### Subagent `availabilityGate`
 
@@ -287,8 +292,8 @@ Select the trigger and, under **Go to**, pick `extractBooking` once that step ex
 #### Router `availabilityRouter`
 
 - **Description** Free seats are reserved and ticketed; sold-out events go to the waitlist.
-- **Routes** (**+**): **Label** Available · **When** `@subagent.availabilityGate.output.available == "yes"` · **Go to** `reserveSeats`
-- **Otherwise → Go to**: `joinWaitlist`
+- **Routes** (**+**): **Label** Available · **When** `@subagent.availabilityGate.output.available == "yes"` · **Go to** `progressReserveSeats`
+- **Otherwise → Go to**: `progressJoinWaitlist`
 
 #### Executor `reserveSeats`
 
@@ -297,7 +302,7 @@ Select the trigger and, under **Go to**, pick `extractBooking` once that step ex
   - **Action** `reserve_seats`
     - **Bind argument** `event_id` = `@generator.extractBooking.output.event_id`
     - **Bind argument** `seats` = `@generator.extractBooking.output.seats`
-- **Next step (on exit) → Go to**: `issueTickets`
+- **Next step (on exit) → Go to**: `progressIssueTickets`
 
 #### Subagent `issueTickets`
 
@@ -328,6 +333,36 @@ Select the trigger and, under **Go to**, pick `extractBooking` once that step ex
 
 - **Use expression**, then **Message (expression)**: `"No seats left for " + @generator.extractBooking.output.event_id + " (" + @subagent.availabilityGate.output.detail + "). " + @subagent.joinWaitlist.output`
 - **Task state**: `TASK_STATE_COMPLETED`
+
+#### Reply `progressExtractBooking`
+
+- **Message text**: Extracting the event id and the number of seats...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `extractBooking`
+
+#### Reply `progressAvailabilityGate`
+
+- **Message text**: Checking the free seats with the Events MCP...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `availabilityGate`
+
+#### Reply `progressReserveSeats`
+
+- **Message text**: Reserving the seats...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `reserveSeats`
+
+#### Reply `progressIssueTickets`
+
+- **Message text**: Issuing the e-tickets through the Ticketing agent...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `issueTickets`
+
+#### Reply `progressJoinWaitlist`
+
+- **Message text**: Putting the customer on the waitlist...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `joinWaitlist`
 
 ![The finished broker flow](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-event-ticketing/img/scratch-flow.png)
 

@@ -79,6 +79,10 @@ Double-click the broker card (or open `brokers/field-service-broker.agent`). The
 | `resolvedRemotely` | Echo | Ends the flow with the `resolvedRemotely` reply. |
 | `dispatchVisit` | Orchestrator | Checks parts and weather, reserves the part and books a technician. |
 | `dispatched` | Echo | Ends the flow with the `dispatched` reply. |
+| `progressParseRequest` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressDiagnose` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressInformCustomer` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressDispatchVisit` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
 
 Click a step to edit it in the inspector. **+ Step** adds a node, and **+ Step → Patterns** inserts whole shapes such as retry, human in the loop or a guardrail check. **Code** shows the `.agent` text with completion.
 
@@ -248,7 +252,7 @@ On the broker card (or in its inspector), click **Open broker flow**. Then set u
 
 ![Add node in the flow editor](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-field-service/img/scratch-flow-add.png)
 
-Select the trigger and, under **Go to**, pick `parseRequest` once that step exists.
+Select the trigger and, under **Go to**, pick `progressParseRequest` once that step exists.
 
 #### Generator `parseRequest`
 
@@ -260,7 +264,7 @@ Select the trigger and, under **Go to**, pick `parseRequest` once that step exis
 - **Structured output** (**Add field** for each):
   - `asset_id` (string): Asset id
   - `symptom` (string): Reported symptom
-- **Next step (on exit) → Go to**: `diagnose`
+- **Next step (on exit) → Go to**: `progressDiagnose`
 
 #### Subagent `diagnose`
 
@@ -287,8 +291,8 @@ Select the trigger and, under **Go to**, pick `parseRequest` once that step exis
 #### Router `fixRouter`
 
 - **Description** Remote fixes only need a customer update; the rest are dispatched.
-- **Routes** (**+**): **Label** Fixed remotely · **When** `@subagent.diagnose.output.remote_fix == "yes"` · **Go to** `informCustomer`
-- **Otherwise → Go to**: `dispatchVisit`
+- **Routes** (**+**): **Label** Fixed remotely · **When** `@subagent.diagnose.output.remote_fix == "yes"` · **Go to** `progressInformCustomer`
+- **Otherwise → Go to**: `progressDispatchVisit`
 
 #### Subagent `informCustomer`
 
@@ -326,6 +330,30 @@ Select the trigger and, under **Go to**, pick `parseRequest` once that step exis
 
 - **Use expression**, then **Message (expression)**: `@orchestrator.dispatchVisit.output`
 - **Task state**: `TASK_STATE_COMPLETED`
+
+#### Reply `progressParseRequest`
+
+- **Message text**: Extracting the asset id and the symptom...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `parseRequest`
+
+#### Reply `progressDiagnose`
+
+- **Message text**: Looking up the asset and running remote diagnostics...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `diagnose`
+
+#### Reply `progressInformCustomer`
+
+- **Message text**: Telling the customer the fault was fixed remotely...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `informCustomer`
+
+#### Reply `progressDispatchVisit`
+
+- **Message text**: Checking parts and weather, reserving the part and booking a technician...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `dispatchVisit`
 
 ![The finished broker flow](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-field-service/img/scratch-flow.png)
 

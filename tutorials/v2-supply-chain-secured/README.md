@@ -90,6 +90,12 @@ Double-click the broker card (or open `brokers/disruption-broker.agent`). The fl
 | `rerouted` | Echo | Ends the flow with the `rerouted` reply. |
 | `resourced` | Echo | Ends the flow with the `resourced` reply. |
 | `planned` | Echo | Ends the flow with the `planned` reply. |
+| `progressExtractDisruption` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressAssessImpact` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressReroute` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressInformCustomers` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressResource` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressMitigationPlan` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
 
 Click a step to edit it in the inspector. **+ Step** adds a node, and **+ Step → Patterns** inserts whole shapes such as retry, human in the loop or a guardrail check. **Code** shows the `.agent` text with completion.
 
@@ -311,7 +317,7 @@ On the broker card (or in its inspector), click **Open broker flow**. Then set u
 
 ![Add node in the flow editor](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-supply-chain-secured/img/scratch-flow-add.png)
 
-Select the trigger and, under **Go to**, pick `extractDisruption` once that step exists.
+Select the trigger and, under **Go to**, pick `progressExtractDisruption` once that step exists.
 
 #### Generator `extractDisruption`
 
@@ -328,7 +334,7 @@ Select the trigger and, under **Go to**, pick `extractDisruption` once that step
 - **Structured output** (**Add field** for each):
   - `shipment_id` (string): Shipment id, e.g. SHP-4401
   - `kind` (string): Kind of disruption · **Allowed values** `delay`, `shortage`
-- **Next step (on exit) → Go to**: `assessImpact`
+- **Next step (on exit) → Go to**: `progressAssessImpact`
 
 #### Subagent `assessImpact`
 
@@ -352,9 +358,9 @@ Select the trigger and, under **Go to**, pick `extractDisruption` once that step
 #### Router `mitigationRouter`
 
 - **Description** Severe delays are rerouted, shortages get a new supplier, the rest a plan.
-- **Routes** (**+**): **Label** Severe delay · **When** `@subagent.assessImpact.output.severity == "severe" and @generator.extractDisruption.output.kind == "delay"` · **Go to** `reroute`
-- **Routes** (**+**): **Label** Shortage · **When** `@generator.extractDisruption.output.kind == "shortage"` · **Go to** `resource`
-- **Otherwise → Go to**: `mitigationPlan`
+- **Routes** (**+**): **Label** Severe delay · **When** `@subagent.assessImpact.output.severity == "severe" and @generator.extractDisruption.output.kind == "delay"` · **Go to** `progressReroute`
+- **Routes** (**+**): **Label** Shortage · **When** `@generator.extractDisruption.output.kind == "shortage"` · **Go to** `progressResource`
+- **Otherwise → Go to**: `progressMitigationPlan`
 
 #### Executor `reroute`
 
@@ -362,7 +368,7 @@ Select the trigger and, under **Go to**, pick `extractDisruption` once that step
 - **Steps (do)**: **Run action**
   - **Action** `reroute_shipment`
     - **Bind argument** `shipment_id` = `@generator.extractDisruption.output.shipment_id`
-- **Next step (on exit) → Go to**: `informCustomers`
+- **Next step (on exit) → Go to**: `progressInformCustomers`
 
 #### Subagent `informCustomers`
 
@@ -414,6 +420,42 @@ Select the trigger and, under **Go to**, pick `extractDisruption` once that step
 
 - **Use expression**, then **Message (expression)**: `"No stock-out expected. " + @subagent.mitigationPlan.output`
 - **Task state**: `TASK_STATE_COMPLETED`
+
+#### Reply `progressExtractDisruption`
+
+- **Message text**: Extracting the shipment id and the kind of disruption...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `extractDisruption`
+
+#### Reply `progressAssessImpact`
+
+- **Message text**: Reading the shipment and the stock cover of its SKU, rating the impact...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `assessImpact`
+
+#### Reply `progressReroute`
+
+- **Message text**: Switching the shipment to a faster mode...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `reroute`
+
+#### Reply `progressInformCustomers`
+
+- **Message text**: Telling the affected customers the new date...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `informCustomers`
+
+#### Reply `progressResource`
+
+- **Message text**: Finding an alternative supplier, checking its risk and placing the order...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `resource`
+
+#### Reply `progressMitigationPlan`
+
+- **Message text**: Stock covers the delay: planning with the logistics agent...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `mitigationPlan`
 
 ![The finished broker flow](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-supply-chain-secured/img/scratch-flow.png)
 

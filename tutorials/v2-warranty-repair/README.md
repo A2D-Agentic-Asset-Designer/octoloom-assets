@@ -77,6 +77,11 @@ Double-click the broker card (or open `brokers/repair-broker.agent`). The flow e
 | `repairBooked` | Echo | Ends the flow with the `repairBooked` reply. |
 | `quoteRepair` | Subagent | Quotes a paid repair. |
 | `quoted` | Echo | Ends the flow with the `quoted` reply. |
+| `progressExtractDevice` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressWarrantyGate` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressBookRepair` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressNotifyOwner` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressQuoteRepair` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
 
 Click a step to edit it in the inspector. **+ Step** adds a node, and **+ Step → Patterns** inserts whole shapes such as retry, human in the loop or a guardrail check. **Code** shows the `.agent` text with completion.
 
@@ -246,7 +251,7 @@ On the broker card (or in its inspector), click **Open broker flow**. Then set u
 
 ![Add node in the flow editor](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-warranty-repair/img/scratch-flow-add.png)
 
-Select the trigger and, under **Go to**, pick `extractDevice` once that step exists.
+Select the trigger and, under **Go to**, pick `progressExtractDevice` once that step exists.
 
 #### Generator `extractDevice`
 
@@ -263,7 +268,7 @@ Select the trigger and, under **Go to**, pick `extractDevice` once that step exi
 - **Structured output** (**Add field** for each):
   - `serial` (string): Serial number, e.g. SN-1001, or UNKNOWN
   - `issue` (string): Short description of the issue
-- **Next step (on exit) → Go to**: `warrantyGate`
+- **Next step (on exit) → Go to**: `progressWarrantyGate`
 
 #### Subagent `warrantyGate`
 
@@ -287,8 +292,8 @@ Select the trigger and, under **Go to**, pick `extractDevice` once that step exi
 #### Router `warrantyRouter`
 
 - **Description** Covered devices get a free repair and a confirmation; the others get a quote.
-- **Routes** (**+**): **Label** Covered · **When** `@subagent.warrantyGate.output.covered == "yes"` · **Go to** `bookRepair`
-- **Otherwise → Go to**: `quoteRepair`
+- **Routes** (**+**): **Label** Covered · **When** `@subagent.warrantyGate.output.covered == "yes"` · **Go to** `progressBookRepair`
+- **Otherwise → Go to**: `progressQuoteRepair`
 
 #### Subagent `bookRepair`
 
@@ -298,7 +303,7 @@ Select the trigger and, under **Go to**, pick `extractDevice` once that step exi
   > Book a warranty repair for {!@generator.extractDevice.output.serial}: {!@generator.extractDevice.output.issue}. Request: {!@request.payload.message.parts[0].text}
 
 - **Actions** (**+ Add action…**): `repair_agent`
-- **Next step (on exit) → Go to**: `notifyOwner`
+- **Next step (on exit) → Go to**: `progressNotifyOwner`
 
 #### Subagent `notifyOwner`
 
@@ -329,6 +334,36 @@ Select the trigger and, under **Go to**, pick `extractDevice` once that step exi
 
 - **Use expression**, then **Message (expression)**: `"Not covered: " + @subagent.warrantyGate.output.detail + ". " + @subagent.quoteRepair.output`
 - **Task state**: `TASK_STATE_COMPLETED`
+
+#### Reply `progressExtractDevice`
+
+- **Message text**: Extracting the serial number and the issue...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `extractDevice`
+
+#### Reply `progressWarrantyGate`
+
+- **Message text**: Checking the warranty with the Device Registry MCP...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `warrantyGate`
+
+#### Reply `progressBookRepair`
+
+- **Message text**: Booking the warranty repair through the Repair agent...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `bookRepair`
+
+#### Reply `progressNotifyOwner`
+
+- **Message text**: Confirming the repair through the Notification agent...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `notifyOwner`
+
+#### Reply `progressQuoteRepair`
+
+- **Message text**: Quoting a paid repair...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `quoteRepair`
 
 ![The finished broker flow](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-warranty-repair/img/scratch-flow.png)
 

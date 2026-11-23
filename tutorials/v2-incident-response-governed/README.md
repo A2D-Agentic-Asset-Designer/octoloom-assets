@@ -86,6 +86,12 @@ Double-click the broker card (or open `brokers/incident-broker.agent`). The flow
 | `specialistDone` | Echo | Ends the flow with the `specialistDone` reply. |
 | `dbDone` | Echo | Ends the flow with the `dbDone` reply. |
 | `appDone` | Echo | Ends the flow with the `appDone` reply. |
+| `progressClassifyIncident` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressOpenTicket` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressMajorIncident` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressNetwork` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressDatabase` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressApplication` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
 
 Click a step to edit it in the inspector. **+ Step** adds a node, and **+ Step → Patterns** inserts whole shapes such as retry, human in the loop or a guardrail check. **Code** shows the `.agent` text with completion.
 
@@ -278,7 +284,7 @@ On the broker card (or in its inspector), click **Open broker flow**. Then set u
 
 ![Add node in the flow editor](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-incident-response-governed/img/scratch-flow-add.png)
 
-Select the trigger and, under **Go to**, pick `classifyIncident` once that step exists.
+Select the trigger and, under **Go to**, pick `progressClassifyIncident` once that step exists.
 
 #### Generator `classifyIncident`
 
@@ -297,7 +303,7 @@ Select the trigger and, under **Go to**, pick `classifyIncident` once that step 
   - `service` (string): Affected service
   - `priority` (string): Incident priority · **Allowed values** `p1`, `p2`, `p3`
   - `area` (string): Technical area · **Allowed values** `network`, `database`, `application`
-- **Next step (on exit) → Go to**: `openTicket`
+- **Next step (on exit) → Go to**: `progressOpenTicket`
 
 #### Executor `openTicket`
 
@@ -311,10 +317,10 @@ Select the trigger and, under **Go to**, pick `classifyIncident` once that step 
 #### Router `priorityRouter`
 
 - **Description** P1 is a major incident; the rest go to the specialist of the area.
-- **Routes** (**+**): **Label** P1 · **When** `@generator.classifyIncident.output.priority == "p1"` · **Go to** `majorIncident`
-- **Routes** (**+**): **Label** Network · **When** `@generator.classifyIncident.output.area == "network"` · **Go to** `network`
-- **Routes** (**+**): **Label** Database · **When** `@generator.classifyIncident.output.area == "database"` · **Go to** `database`
-- **Otherwise → Go to**: `application`
+- **Routes** (**+**): **Label** P1 · **When** `@generator.classifyIncident.output.priority == "p1"` · **Go to** `progressMajorIncident`
+- **Routes** (**+**): **Label** Network · **When** `@generator.classifyIncident.output.area == "network"` · **Go to** `progressNetwork`
+- **Routes** (**+**): **Label** Database · **When** `@generator.classifyIncident.output.area == "database"` · **Go to** `progressDatabase`
+- **Otherwise → Go to**: `progressApplication`
 
 #### Orchestrator `majorIncident`
 
@@ -381,6 +387,42 @@ Select the trigger and, under **Go to**, pick `classifyIncident` once that step 
 
 - **Use expression**, then **Message (expression)**: `@generator.classifyIncident.output.service + " (" + @generator.classifyIncident.output.priority + "): " + @subagent.application.output`
 - **Task state**: `TASK_STATE_COMPLETED`
+
+#### Reply `progressClassifyIncident`
+
+- **Message text**: Classifying the incident: service, priority and area...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `classifyIncident`
+
+#### Reply `progressOpenTicket`
+
+- **Message text**: Opening the incident ticket...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `openTicket`
+
+#### Reply `progressMajorIncident`
+
+- **Message text**: Major incident: paging on-call, triaging, fixing and posting a status update...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `majorIncident`
+
+#### Reply `progressNetwork`
+
+- **Message text**: Handing over to the network specialist...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `network`
+
+#### Reply `progressDatabase`
+
+- **Message text**: Handing over to the database specialist...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `database`
+
+#### Reply `progressApplication`
+
+- **Message text**: Handing over to the application specialist...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `application`
 
 ![The finished broker flow](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-incident-response-governed/img/scratch-flow.png)
 

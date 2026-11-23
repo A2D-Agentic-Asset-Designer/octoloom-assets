@@ -79,6 +79,12 @@ Double-click the broker card (or open `brokers/outage-broker.agent`). The flow e
 | `createTicket` | Executor | Creates the field ticket. |
 | `dispatchCrew` | Subagent | Dispatches a field crew. |
 | `crewDispatched` | Echo | Ends the flow with the `crewDispatched` reply. |
+| `progressExtractOutage` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressOutageGate` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressInformCustomer` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressOfferCredit` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressCreateTicket` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressDispatchCrew` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
 
 Click a step to edit it in the inspector. **+ Step** adds a node, and **+ Step → Patterns** inserts whole shapes such as retry, human in the loop or a guardrail check. **Code** shows the `.agent` text with completion.
 
@@ -256,7 +262,7 @@ On the broker card (or in its inspector), click **Open broker flow**. Then set u
 
 ![Add node in the flow editor](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-utility-outage/img/scratch-flow-add.png)
 
-Select the trigger and, under **Go to**, pick `extractOutage` once that step exists.
+Select the trigger and, under **Go to**, pick `progressExtractOutage` once that step exists.
 
 #### Generator `extractOutage`
 
@@ -273,7 +279,7 @@ Select the trigger and, under **Go to**, pick `extractOutage` once that step exi
 - **Structured output** (**Add field** for each):
   - `address_id` (string): Address id, e.g. ADDR-31, or UNKNOWN
   - `symptom` (string): What the customer sees
-- **Next step (on exit) → Go to**: `outageGate`
+- **Next step (on exit) → Go to**: `progressOutageGate`
 
 #### Subagent `outageGate`
 
@@ -297,8 +303,8 @@ Select the trigger and, under **Go to**, pick `extractOutage` once that step exi
 #### Router `outageRouter`
 
 - **Description** Known outages get updates and a credit; new ones get a ticket and a crew.
-- **Routes** (**+**): **Label** Known · **When** `@subagent.outageGate.output.known == "yes"` · **Go to** `informCustomer`
-- **Otherwise → Go to**: `createTicket`
+- **Routes** (**+**): **Label** Known · **When** `@subagent.outageGate.output.known == "yes"` · **Go to** `progressInformCustomer`
+- **Otherwise → Go to**: `progressCreateTicket`
 
 #### Subagent `informCustomer`
 
@@ -308,7 +314,7 @@ Select the trigger and, under **Go to**, pick `extractOutage` once that step exi
   > Enable outage updates for {!@generator.extractOutage.output.address_id}. Report: {!@request.payload.message.parts[0].text}
 
 - **Actions** (**+ Add action…**): `comms_agent`
-- **Next step (on exit) → Go to**: `offerCredit`
+- **Next step (on exit) → Go to**: `progressOfferCredit`
 
 #### Subagent `offerCredit`
 
@@ -332,7 +338,7 @@ Select the trigger and, under **Go to**, pick `extractOutage` once that step exi
   - **Action** `create_ticket`
     - **Bind argument** `address_id` = `@generator.extractOutage.output.address_id`
     - **Bind argument** `symptom` = `@generator.extractOutage.output.symptom`
-- **Next step (on exit) → Go to**: `dispatchCrew`
+- **Next step (on exit) → Go to**: `progressDispatchCrew`
 
 #### Subagent `dispatchCrew`
 
@@ -348,6 +354,42 @@ Select the trigger and, under **Go to**, pick `extractOutage` once that step exi
 
 - **Use expression**, then **Message (expression)**: `"New problem at " + @generator.extractOutage.output.address_id + ": a field ticket is open. " + @subagent.dispatchCrew.output`
 - **Task state**: `TASK_STATE_COMPLETED`
+
+#### Reply `progressExtractOutage`
+
+- **Message text**: Extracting the address id and the symptom...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `extractOutage`
+
+#### Reply `progressOutageGate`
+
+- **Message text**: Looking up known outages with the Grid MCP...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `outageGate`
+
+#### Reply `progressInformCustomer`
+
+- **Message text**: Enabling status updates through the Customer Comms agent...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `informCustomer`
+
+#### Reply `progressOfferCredit`
+
+- **Message text**: Applying the outage bill credit through the Billing Credit agent...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `offerCredit`
+
+#### Reply `progressCreateTicket`
+
+- **Message text**: Creating the field ticket...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `createTicket`
+
+#### Reply `progressDispatchCrew`
+
+- **Message text**: Dispatching a field crew...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `dispatchCrew`
 
 ![The finished broker flow](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-utility-outage/img/scratch-flow.png)
 

@@ -1,0 +1,47 @@
+# Employee Onboarding
+
+> HR, IT and facilities agents plus directory and learning tools prepare a new hire for day one.
+
+| | |
+|---|---|
+| Style | Probabilistic (Agent Network 1.0) |
+| Kind | Use case |
+| Agents / MCP servers | 3 / 2 |
+| A2A protocol | 0.3.0 |
+| Policies | none |
+| Asset prefix | `octo_eo1` |
+| Tutorial | [Employee Onboarding: tutorial](../tutorials/v1-employee-onboarding.md) |
+| Files | [templates/v1-employee-onboarding](https://github.com/A2D-Agentic-Asset-Designer/octoloom-assets/tree/main/templates/v1-employee-onboarding) |
+
+![The network canvas](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-employee-onboarding/img/canvas.png)
+<small>The network canvas</small>
+
+![Chat with the deployed broker](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v1-employee-onboarding/img/chat.png)
+<small>Chat with the deployed broker</small>
+
+
+HR, IT and facilities agents plus directory and learning tools prepare a new hire for day one.
+
+- Style: Probabilistic (Agent Network 1.0): the LLM broker picks agents and tools from its instructions.
+- Agents: HR Records Agent (A2A 0.3.0, AgentForce), IT Provisioning Agent (A2A 0.3.0, Azure), Facilities Agent (A2A 0.3.0, MuleSoft)
+- MCP servers: Identity Directory MCP (lookup_employee, create_account); Learning MCP (list_courses, assign_training)
+
+All agents and MCP servers are public A2D mocks, so the network runs without any other system. No credentials are stored in this template.
+
+## Deploy in 3 steps
+
+1. **Setup & Connect**: connect Agent Fabric (connected app client ID and secret, organization). A²D is not needed: the mock URLs are already the defaults in `exchange.json`.
+2. In `exchange.json`, fill in `ingressgw.url` (ingress gateway base url). In **Projects & Deploy**, click **Deploy** on this project (or **Build & Deploy** in the editor) and pick your gateway. Octoloom asks for each secret variable; nothing you type is stored:
+   - `openai.apiKey`: your OpenAI API key (required)
+3. When the status light turns green (**Deployed and running**), click **Open chat** and paste a prompt below. The **Tracer** icon under a reply opens the task in the Agent Network Tracer, with each agent and tool call.
+
+## Try it
+
+- **Onboard employee E-1001 who starts Monday as a Sales Engineer**
+  - You should see: Identity Directory `lookup_employee` finds Jane Rivera (Sales Engineer, Lausanne, starts 2026-11-16). HR Records sends contract CT-2026-118, IT Provisioning orders laptop LT-5531 and `create_account` creates the account, Facilities books desk LS-3-14 and badge B-77812.
+- **Assign the onboarding training to E-1001**
+  - You should see: Learning MCP `list_courses` and `assign_training`: 3 courses assigned, due 2026-12-15.
+- **What is still open for the onboarding of E-1002?**
+  - You should see: Omar Haddad (Data Analyst, Remote). The broker asks the agents for the open items (contract, laptop, account, badge) and lists them.
+
+The broker is probabilistic: the LLM picks the agents and tools, so the wording and the order of the calls can change between runs. The ids and numbers come from the mocks and stay the same.

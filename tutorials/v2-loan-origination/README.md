@@ -83,6 +83,12 @@ Double-click the broker card (or open `brokers/loan-broker.agent`). The flow edi
 | `underwritten` | Echo | Ends the flow with the `underwritten` reply. |
 | `notifyDecline` | Subagent | Notifies the applicant of a decline. |
 | `declined` | Echo | Ends the flow with the `declined` reply. |
+| `progressParseApplication` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressAssess` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressBookLoan` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressNotifyApproval` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressUnderwrite` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressNotifyDecline` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
 
 Click a step to edit it in the inspector. **+ Step** adds a node, and **+ Step → Patterns** inserts whole shapes such as retry, human in the loop or a guardrail check. **Code** shows the `.agent` text with completion.
 
@@ -266,7 +272,7 @@ On the broker card (or in its inspector), click **Open broker flow**. Then set u
 
 ![Add node in the flow editor](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-loan-origination/img/scratch-flow-add.png)
 
-Select the trigger and, under **Go to**, pick `parseApplication` once that step exists.
+Select the trigger and, under **Go to**, pick `progressParseApplication` once that step exists.
 
 #### Generator `parseApplication`
 
@@ -284,7 +290,7 @@ Select the trigger and, under **Go to**, pick `parseApplication` once that step 
   - `applicant_id` (string): Applicant id, e.g. APP-100
   - `amount` (number): Requested amount in CHF
   - `product` (string): Loan product · **Allowed values** `personal`, `mortgage`
-- **Next step (on exit) → Go to**: `assess`
+- **Next step (on exit) → Go to**: `progressAssess`
 
 #### Orchestrator `assess`
 
@@ -309,9 +315,9 @@ Select the trigger and, under **Go to**, pick `parseApplication` once that step 
 #### Router `decisionRouter`
 
 - **Description** Approve books the loan, refer goes to underwriting, decline notifies.
-- **Routes** (**+**): **Label** Approve · **When** `@orchestrator.assess.output.decision == "approve"` · **Go to** `bookLoan`
-- **Routes** (**+**): **Label** Refer · **When** `@orchestrator.assess.output.decision == "refer"` · **Go to** `underwrite`
-- **Otherwise → Go to**: `notifyDecline`
+- **Routes** (**+**): **Label** Approve · **When** `@orchestrator.assess.output.decision == "approve"` · **Go to** `progressBookLoan`
+- **Routes** (**+**): **Label** Refer · **When** `@orchestrator.assess.output.decision == "refer"` · **Go to** `progressUnderwrite`
+- **Otherwise → Go to**: `progressNotifyDecline`
 
 #### Executor `bookLoan`
 
@@ -320,7 +326,7 @@ Select the trigger and, under **Go to**, pick `parseApplication` once that step 
   - **Action** `book_loan`
     - **Bind argument** `applicant_id` = `@generator.parseApplication.output.applicant_id`
     - **Bind argument** `amount` = `@generator.parseApplication.output.amount`
-- **Next step (on exit) → Go to**: `notifyApproval`
+- **Next step (on exit) → Go to**: `progressNotifyApproval`
 
 #### Subagent `notifyApproval`
 
@@ -366,6 +372,42 @@ Select the trigger and, under **Go to**, pick `parseApplication` once that step 
 
 - **Use expression**, then **Message (expression)**: `"Declined: " + @orchestrator.assess.output.summary`
 - **Task state**: `TASK_STATE_COMPLETED`
+
+#### Reply `progressParseApplication`
+
+- **Message text**: Extracting applicant, amount and product...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `parseApplication`
+
+#### Reply `progressAssess`
+
+- **Message text**: Running intake, KYC and the credit analysis...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `assess`
+
+#### Reply `progressBookLoan`
+
+- **Message text**: Booking the approved loan...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `bookLoan`
+
+#### Reply `progressNotifyApproval`
+
+- **Message text**: Generating the contract and notifying the applicant...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `notifyApproval`
+
+#### Reply `progressUnderwrite`
+
+- **Message text**: Sending borderline applications to underwriting...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `underwrite`
+
+#### Reply `progressNotifyDecline`
+
+- **Message text**: Notifying the applicant of a decline...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `notifyDecline`
 
 ![The finished broker flow](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-loan-origination/img/scratch-flow.png)
 

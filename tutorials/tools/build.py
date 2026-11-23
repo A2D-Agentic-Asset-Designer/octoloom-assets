@@ -224,6 +224,8 @@ def tutorial(t, m, nxt, prev):
               img(tid, 'flow', f'{t["title"]} broker flow'), '', '| Step | Kind | What it does |', '|---|---|---|']
         for kind, name, desc in flow_nodes(x):
             d = desc or {'trigger': 'Starts the flow when an A2A message arrives at the broker.', 'echo': f'Ends the flow with the `{name}` reply.'}.get(kind) or NODE.get(kind, kind)
+            if kind == 'echo' and name.startswith('progress') and not desc:
+                d = 'Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works.'
             L.append(f'| `{name}` | {NODE.get(kind, kind).split(" (")[0]} | {d} |')
         L += ['', 'Click a step to edit it in the inspector. **+ Step** adds a node, and **+ Step → Patterns** inserts whole shapes such as retry, human in the loop or a guardrail check. **Code** shows the `.agent` text with completion.', '']
         n += 1

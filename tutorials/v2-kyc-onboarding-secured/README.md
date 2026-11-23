@@ -89,6 +89,11 @@ Double-click the broker card (or open `brokers/kyc-broker.agent`). The flow edit
 | `opened` | Echo | Ends the flow with the `opened` reply. |
 | `reviewed` | Echo | Ends the flow with the `reviewed` reply. |
 | `caseOpened` | Echo | Ends the flow with the `caseOpened` reply. |
+| `progressExtractApplicant` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressScreening` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressOpenAccount` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressAnalystReview` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressOpenCase` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
 
 Click a step to edit it in the inspector. **+ Step** adds a node, and **+ Step → Patterns** inserts whole shapes such as retry, human in the loop or a guardrail check. **Code** shows the `.agent` text with completion.
 
@@ -288,7 +293,7 @@ On the broker card (or in its inspector), click **Open broker flow**. Then set u
 
 ![Add node in the flow editor](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-kyc-onboarding-secured/img/scratch-flow-add.png)
 
-Select the trigger and, under **Go to**, pick `extractApplicant` once that step exists.
+Select the trigger and, under **Go to**, pick `progressExtractApplicant` once that step exists.
 
 #### Generator `extractApplicant`
 
@@ -309,7 +314,7 @@ Select the trigger and, under **Go to**, pick `extractApplicant` once that step 
 #### Router `idRouter`
 
 - **Description** Without an applicant id nothing can be checked.
-- **Routes** (**+**): **Label** Has id · **When** `@generator.extractApplicant.output.applicant_id != "UNKNOWN"` · **Go to** `screening`
+- **Routes** (**+**): **Label** Has id · **When** `@generator.extractApplicant.output.applicant_id != "UNKNOWN"` · **Go to** `progressScreening`
 - **Otherwise → Go to**: `needId`
 
 #### Subagent `screening`
@@ -334,9 +339,9 @@ Select the trigger and, under **Go to**, pick `extractApplicant` once that step 
 #### Router `riskRouter`
 
 - **Description** Low risk opens the account, high risk opens a compliance case, medium goes to an analyst.
-- **Routes** (**+**): **Label** Low risk · **When** `@subagent.screening.output.band == "low"` · **Go to** `openAccount`
-- **Routes** (**+**): **Label** High risk · **When** `@subagent.screening.output.band == "high"` · **Go to** `openCase`
-- **Otherwise → Go to**: `analystReview`
+- **Routes** (**+**): **Label** Low risk · **When** `@subagent.screening.output.band == "low"` · **Go to** `progressOpenAccount`
+- **Routes** (**+**): **Label** High risk · **When** `@subagent.screening.output.band == "high"` · **Go to** `progressOpenCase`
+- **Otherwise → Go to**: `progressAnalystReview`
 
 #### Subagent `openAccount`
 
@@ -387,6 +392,36 @@ Select the trigger and, under **Go to**, pick `extractApplicant` once that step 
 
 - **Use expression**, then **Message (expression)**: `"No account opened for " + @generator.extractApplicant.output.applicant_id + ": a compliance case was opened. " + @subagent.screening.output.findings`
 - **Task state**: `TASK_STATE_COMPLETED`
+
+#### Reply `progressExtractApplicant`
+
+- **Message text**: Extracting the applicant id...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `extractApplicant`
+
+#### Reply `progressScreening`
+
+- **Message text**: Verifying the document, screening sanctions and scoring the risk...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `screening`
+
+#### Reply `progressOpenAccount`
+
+- **Message text**: Opening the account...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `openAccount`
+
+#### Reply `progressAnalystReview`
+
+- **Message text**: A KYC analyst reviews the medium-risk applicant...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `analystReview`
+
+#### Reply `progressOpenCase`
+
+- **Message text**: Opening a compliance case...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `openCase`
 
 ![The finished broker flow](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-kyc-onboarding-secured/img/scratch-flow.png)
 

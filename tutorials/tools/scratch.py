@@ -469,7 +469,8 @@ def path3(t, m, img, n0=1):
                 arg = mm.group(1).strip() if mm else msg
                 if re.fullmatch(r'"[^"]*"', arg): L.append(f"- **Message text**: {arg[1:-1]}")
                 else: L.append(f"- **Use expression**, then **Message (expression)**: {code(arg)}")
-                L.append('- **Task state**: `TASK_STATE_COMPLETED`')
+                st = str(x.get('state') or 'TASK_STATE_COMPLETED')
+                L.append(f'- **Task state**: `{st}`' + (' (a progress update: the chat shows it while the broker works, then the flow goes on)' if st == 'TASK_STATE_WORKING' else ''))
             nx = proc_target(x.get('on_exit'))
             if nx: L.append(f"- **Next step (on exit) → Go to**: `{nx}`")
             L.append('')

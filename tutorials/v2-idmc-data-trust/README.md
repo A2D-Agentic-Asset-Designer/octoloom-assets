@@ -83,6 +83,11 @@ Double-click the broker card (or open `brokers/data-trust-broker.agent`). The fl
 | `customerDone` | Echo | Ends the flow with the `customerDone` reply. |
 | `addressDone` | Echo | Ends the flow with the `addressDone` reply. |
 | `catalogDone` | Echo | Ends the flow with the `catalogDone` reply. |
+| `progressClassify` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressResolveCustomer` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressCustomerAddress` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressVerifyAddress` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
+| `progressCatalog` | Echo | Progress update (`TASK_STATE_WORKING`): tells the caller what comes next, then goes on to that step. With **Live** on, the chat shows it while the broker works. |
 
 Click a step to edit it in the inspector. **+ Step** adds a node, and **+ Step → Patterns** inserts whole shapes such as retry, human in the loop or a guardrail check. **Code** shows the `.agent` text with completion.
 
@@ -230,7 +235,7 @@ On the broker card (or in its inspector), click **Open broker flow**. Then set u
 
 ![Add node in the flow editor](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-idmc-data-trust/img/scratch-flow-add.png)
 
-Select the trigger and, under **Go to**, pick `classify` once that step exists.
+Select the trigger and, under **Go to**, pick `progressClassify` once that step exists.
 
 #### Generator `classify`
 
@@ -258,9 +263,9 @@ Select the trigger and, under **Go to**, pick `classify` once that step exists.
 #### Router `intentRouter`
 
 - **Description** Customer lookups go to MDM; address checks and catalog questions go straight to their servers.
-- **Routes** (**+**): **Label** Customer · **When** `@generator.classify.output.intent == "customer"` · **Go to** `resolveCustomer`
-- **Routes** (**+**): **Label** Catalog · **When** `@generator.classify.output.intent == "catalog"` · **Go to** `catalog`
-- **Otherwise → Go to**: `verifyAddress`
+- **Routes** (**+**): **Label** Customer · **When** `@generator.classify.output.intent == "customer"` · **Go to** `progressResolveCustomer`
+- **Routes** (**+**): **Label** Catalog · **When** `@generator.classify.output.intent == "catalog"` · **Go to** `progressCatalog`
+- **Otherwise → Go to**: `progressVerifyAddress`
 
 #### Subagent `resolveCustomer`
 
@@ -273,7 +278,7 @@ Select the trigger and, under **Go to**, pick `classify` once that step exists.
 - **Limits → Max loops**: `6`
 - **Structured output** (**Add field** for each):
   - `summary` (string): Business ID, name and address of the master record, or the error
-- **Next step (on exit) → Go to**: `customerAddress`
+- **Next step (on exit) → Go to**: `progressCustomerAddress`
 
 #### Subagent `customerAddress`
 
@@ -322,6 +327,36 @@ Select the trigger and, under **Go to**, pick `classify` once that step exists.
 
 - **Use expression**, then **Message (expression)**: `@subagent.catalog.output`
 - **Task state**: `TASK_STATE_COMPLETED`
+
+#### Reply `progressClassify`
+
+- **Message text**: Deciding whether the request is an address check, a catalog question or a customer lookup...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `classify`
+
+#### Reply `progressResolveCustomer`
+
+- **Message text**: Finding the customer master record in MDM SaaS...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `resolveCustomer`
+
+#### Reply `progressCustomerAddress`
+
+- **Message text**: Verifying the address (from the request or the master record)...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `customerAddress`
+
+#### Reply `progressVerifyAddress`
+
+- **Message text**: Verifying and standardizing the address...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `verifyAddress`
+
+#### Reply `progressCatalog`
+
+- **Message text**: Finding governed data assets in CDGC and reading their data quality score...
+- **Task state**: `TASK_STATE_WORKING` (a progress update: the chat shows it while the broker works, then the flow goes on)
+- **Next step (on exit) → Go to**: `catalog`
 
 ![The finished broker flow](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/tutorials/v2-idmc-data-trust/img/scratch-flow.png)
 
