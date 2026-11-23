@@ -84,3 +84,9 @@
 /* version page */
 .ol-ver-meta { display: inline-block; font-size: .64rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ol-muted); border: 1px solid var(--ol-border); border-radius: 999px; padding: .1rem .6rem; }
 .md-typeset .ol-by { display: block; font-size: .68rem; color: var(--ol-muted); margin-top: -.4rem; }
+/* header order: title, search, then theme toggle + Marketplace pill on the right; no repo widget */
+.md-header__source { display: none !important; }
+.md-header__inner > .md-header__title { order: 1; }
+.md-header__inner > .md-search { order: 2; margin-left: auto; }
+.md-header__inner > form.md-header__option { order: 3; margin-left: .4rem; }
+.md-header__inner > .ol-mk { order: 4; margin: 0 .2rem 0 .6rem; }
