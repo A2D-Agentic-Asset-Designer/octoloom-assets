@@ -75,7 +75,7 @@ The shield icon on the canvas runs the Agent Fabric rulesets (and your organizat
 
 ## 8. Chat and trace
 
-Click **Open chat** on the deployment, then paste a prompt from the template's **Try it** list.
+Click **Open chat** on the deployment, then paste a prompt from the template's **Try it** list. **Live progress** (the antenna button next to Send) is on by default: while a v2 broker works, the chat lists its progress updates (one per flow step) and keeps them above the answer.
 
 ![Broker chat](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/screenshots/chat.png)
 

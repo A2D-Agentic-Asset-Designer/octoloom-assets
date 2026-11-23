@@ -25,3 +25,5 @@ All agents and MCP servers are public A2D mocks, so the network runs without any
   - You should see: The order is not found, so it is not eligible: the flow takes the decline branch, no RMA.
 
 The broker is deterministic: the branches are fixed in the flow in `brokers/` (open the `.agent` file to see them). The LLM only reads the ids from your prompt and writes the reply text, so the same input takes the same branch.
+
+**Live progress** (the antenna button next to Send) is on by default: while the broker works, the chat lists the progress updates of the flow (one per step) and keeps them above the answer.

@@ -106,6 +106,29 @@ def targets(text):
     return sorted(set(re.findall(r'"(?:llm|a2a|mcp)://([\w.-]+)"', text)))
 
 # ---------- screenshots ----------
+def progress_texts(agent_text):
+    """The working-update sentences (#302) along ONE run of a v2 flow: from the trigger, follow the transitions,
+    and at a router take its first route (the happy path the first Try it prompt takes)."""
+    blocks, cur = {}, None
+    for line in agent_text.splitlines():
+        h = re.match(r'^(\w+) (\w+):\s*$', line)
+        if h: cur = f'{h.group(1)}.{h.group(2)}'; blocks[cur] = []; continue
+        if cur and (line.startswith(' ') or not line.strip()): blocks[cur].append(line)
+        elif line.strip(): cur = None
+    def nxt(body):
+        t = '\n'.join(body)
+        m = re.search(r'target:\s*@(\w+\.\w+)', t) or re.search(r'transition to @(\w+\.\w+)', t)
+        return m.group(1) if m else None
+    node = next((k for k in blocks if k.startswith('trigger.')), None)
+    out, seen = [], set()
+    while node and node in blocks and node not in seen:
+        seen.add(node)
+        if node.startswith('echo.progress'):
+            m = re.search(r'textPart\("([^"]+)"', '\n'.join(blocks[node]))
+            if m: out.append(m.group(1))
+        node = nxt(blocks[node])
+    return out
+
 def specs(t, m):
     tid, v = t['id'], t['version']
     rel = f'media/templates/{tid}'
@@ -136,9 +159,12 @@ def specs(t, m):
         url = f'https://gateway.example.com/{bk}/'
         reply = tp[0]['see']
         uses = {bk: net.get('brokerTargets', {}).get(bk, [])}
-        st = {'chat:broker': bk, 'chat:target': 'deployed', 'chat:left': 'network', 'chat:convs': {bk: {'turns': [
+        # #302: v2 flows send working updates before each step; with Live on the reply keeps them above the answer
+        prog = progress_texts(m['flows'][bk][1]) if v == 'v2' and bk in m.get('flows', {}) else []
+        steps = ([{'at': 1794500000600, 'state': 'submitted'}] + [{'at': 1794500001000 + i * 1200, 'state': 'working', 'text': x} for i, x in enumerate(prog)]) if prog else None
+        st = {'chat:broker': bk, 'chat:target': 'deployed', 'chat:left': 'network', **({'chat:stream': True} if prog else {}), 'chat:convs': {bk: {'turns': [
             {'id': 1, 'role': 'user', 'text': tp[0]['prompt'], 'at': 1794500000000},
-            {'id': 2, 'role': 'agent', 'text': reply, 'at': 1794500006000, 'reply': {'ok': True, 'text': '', 'state': 'completed', 'httpStatus': 200, 'ms': 6100, 'taskId': '7f3a9c1e-5b2d-4e8f-9a01-c2d3e4f5a6b7', 'contextId': 'c1'}}]}}}
+            {'id': 2, 'role': 'agent', 'text': reply, 'at': 1794500006000, **({'steps': steps} if steps else {}), 'reply': {'ok': True, 'text': '', 'state': 'completed', 'httpStatus': 200, 'ms': 6100, 'taskId': '7f3a9c1e-5b2d-4e8f-9a01-c2d3e4f5a6b7', 'contextId': 'c1'}}]}}}
         sp.append({'name': 'chat', 'view': 'chat', 'size': '1500,900', 'state': st, 'messages': [
             {'type': 'chatInit', 'dir': f'/tmp/{tid}', 'project': tid, 'version': v, 'network': f'@file:{rel}/agent-network.yaml',
              'brokers': [{'key': bk, 'name': bn, 'url': url, 'protocol': '1.0' if v == 'v2' else '0.3.0', 'skills': []}],
@@ -255,7 +281,7 @@ def tutorial(t, m, nxt, prev):
     L += ['', 'The square status light goes from blue (deploying) to green (**Deployed and running**). The deployment box lists every broker URL; click one to copy it.', '']
     n += 1
     L += [f'### Step {n}. Chat with the broker', '',
-          'Click **Open chat** on the deployment box. On the left is the network (the cards light up as they are called), and on the right is the conversation with its task states. Paste the prompts one at a time:', '',
+          'Click **Open chat** on the deployment box. On the left is the network (the cards light up as they are called), and on the right is the conversation with its task states.' + (' **Live progress** (the antenna button next to Send) is on by default: while the broker works, the chat lists its progress updates (*' + '*, *'.join(progress_texts(next(iter(m['flows'].values()))[1])[:2]) + '*) and keeps them above the answer.' if v == 'v2' and m.get('flows') and progress_texts(next(iter(m['flows'].values()))[1]) else '') + ' Paste the prompts one at a time:', '',
           img(tid, 'chat', f'{t["title"]} in the broker chat'), '', ('*The LLM is a scripted A²D LLM mock, so the broker gives the same answer every time; the ids in the table are checked by a live deploy.*' if t.get('mocked') else '*The reply in the screenshot is an illustration: it shows what the broker answers. The real wording changes from run to run.*'), '', '| Prompt | You should see |', '|---|---|']
     for p in tp: L.append(f"| `{p['prompt']}` | {p['see'].replace('|', '/')} |")
     L += ['', clean(next((l for l in reversed(m['readme'].splitlines()) if l.startswith('The broker is')), '')), '']
