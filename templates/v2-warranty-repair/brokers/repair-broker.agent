@@ -35,7 +35,7 @@ trigger repairBrokerTrigger:
   kind: "a2a"
   target: "brokers://octo_wr2_repair_broker/a2a"
   on_message: ->
-    transition to @generator.extractDevice
+    transition to @echo.progressExtractDevice
 
 # Step 1: one LLM call turns the request into a serial number and an issue.
 generator extractDevice:
@@ -56,7 +56,7 @@ generator extractDevice:
         type: "string"
         description: "Short description of the issue"
   on_exit: ->
-    transition to @subagent.warrantyGate
+    transition to @echo.progressWarrantyGate
 
 # Step 2: a gate. The subagent calls the Device Registry MCP and classifies the answer.
 subagent warrantyGate:
@@ -89,11 +89,11 @@ subagent warrantyGate:
 router warrantyRouter:
   description: "Covered devices get a free repair and a confirmation; the others get a quote."
   routes:
-    - target: @subagent.bookRepair
+    - target: @echo.progressBookRepair
       when: @subagent.warrantyGate.output.covered == "yes"
       label: "Covered"
   otherwise:
-    target: @subagent.quoteRepair
+    target: @echo.progressQuoteRepair
 
 # Step 3a: book the repair, then confirm it to the owner.
 subagent bookRepair:
@@ -105,7 +105,7 @@ subagent bookRepair:
     actions:
       repair: @actions.repair_agent
   on_exit: ->
-    transition to @subagent.notifyOwner
+    transition to @echo.progressNotifyOwner
 
 subagent notifyOwner:
   description: "Confirms the repair through the Notification agent."
@@ -139,3 +139,41 @@ echo quoted:
   kind: "a2a:status_update_event"
   state: "TASK_STATE_COMPLETED"
   message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Not covered: " + @subagent.warrantyGate.output.detail + ". " + @subagent.quoteRepair.output)]})
+
+# Progress updates (octoloom#302): each one tells the caller what the broker does next, then
+# moves on to that step. With Live on, the chat shows them while the broker works. No LLM call.
+
+echo progressExtractDevice:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Extracting the serial number and the issue...")]})
+  on_exit: ->
+    transition to @generator.extractDevice
+
+echo progressWarrantyGate:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Checking the warranty with the Device Registry MCP...")]})
+  on_exit: ->
+    transition to @subagent.warrantyGate
+
+echo progressBookRepair:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Booking the warranty repair through the Repair agent...")]})
+  on_exit: ->
+    transition to @subagent.bookRepair
+
+echo progressNotifyOwner:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Confirming the repair through the Notification agent...")]})
+  on_exit: ->
+    transition to @subagent.notifyOwner
+
+echo progressQuoteRepair:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Quoting a paid repair...")]})
+  on_exit: ->
+    transition to @subagent.quoteRepair

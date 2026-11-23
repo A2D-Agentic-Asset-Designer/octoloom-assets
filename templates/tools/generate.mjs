@@ -10,6 +10,7 @@ import { USECASES as USECASES0 } from './usecases.mjs';
 import { FLOWS as FLOWS0 } from './flows.mjs';
 import { TRY as TRY0 } from './tryit.mjs';
 import { MOCKED_USECASES, MOCKED_FLOWS, MOCKED_TRY } from './mocked.mjs';
+import { addProgress } from './progress.mjs';
 
 // #285: fully mocked templates (LLM on an A2D LLM mock too) come from mocked.mjs.
 const USECASES = [...USECASES0, ...MOCKED_USECASES];
@@ -200,7 +201,7 @@ trigger ${camel(u.broker.key)}Trigger:
 
 ${f.body.trim()}
 `;
-  return { files: { 'agent-network.yaml': dump(net), 'exchange.json': exchange(u, vars, [...(u.mocked ? [] : [OPENAI_DEP]), ...policyDeps(used)]), [`brokers/${file}.agent`]: agent }, policies: [...new Set(used.map((p) => p.assetId))] };
+  return { files: { 'agent-network.yaml': dump(net), 'exchange.json': exchange(u, vars, [...(u.mocked ? [] : [OPENAI_DEP]), ...policyDeps(used)]), [`brokers/${file}.agent`]: addProgress(agent) }, policies: [...new Set(used.map((p) => p.assetId))] };
 }
 
 function readme(u, t, technical, policies, secured, exchangeJson) {

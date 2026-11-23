@@ -39,7 +39,7 @@ trigger returnsBrokerTrigger:
   kind: "a2a"
   target: "brokers://octo_rr2g_returns_broker/a2a"
   on_message: ->
-    transition to @generator.extractReturn
+    transition to @echo.progressExtractReturn
 
 # Step 1: one LLM call turns the free-text request into structured fields.
 generator extractReturn:
@@ -60,7 +60,7 @@ generator extractReturn:
         type: "string"
         description: "Short return reason"
   on_exit: ->
-    transition to @subagent.eligibilityGate
+    transition to @echo.progressEligibilityGate
 
 # Step 2: a deterministic gate. The subagent calls one MCP tool and classifies its answer.
 subagent eligibilityGate:
@@ -93,11 +93,11 @@ subagent eligibilityGate:
 router eligibilityRouter:
   description: "Eligible orders get an RMA and a refund; the others get advice."
   routes:
-    - target: @executor.createRma
+    - target: @echo.progressCreateRma
       when: @subagent.eligibilityGate.output.eligible == "yes"
       label: "Eligible"
   otherwise:
-    target: @subagent.explainDecline
+    target: @echo.progressExplainDecline
 
 # Step 3a: no LLM. The RMA is created with bound arguments only.
 executor createRma:
@@ -107,7 +107,7 @@ executor createRma:
       with order_id = @generator.extractReturn.output.order_id
       with reason = @generator.extractReturn.output.reason
   on_exit: ->
-    transition to @subagent.refund
+    transition to @echo.progressRefund
 
 subagent refund:
   description: "Issues the refund through the Refund agent."
@@ -141,3 +141,41 @@ echo returnDeclined:
   kind: "a2a:status_update_event"
   state: "TASK_STATE_COMPLETED"
   message: a2a.message({messageId: uuid(), parts: [a2a.textPart(@subagent.explainDecline.output)]})
+
+# Progress updates (octoloom#302): each one tells the caller what the broker does next, then
+# moves on to that step. With Live on, the chat shows them while the broker works. No LLM call.
+
+echo progressExtractReturn:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Extracting the order id and the return reason from the request...")]})
+  on_exit: ->
+    transition to @generator.extractReturn
+
+echo progressEligibilityGate:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Checking return eligibility with the Orders MCP...")]})
+  on_exit: ->
+    transition to @subagent.eligibilityGate
+
+echo progressCreateRma:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Creating the return authorisation...")]})
+  on_exit: ->
+    transition to @executor.createRma
+
+echo progressRefund:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Issuing the refund through the Refund agent...")]})
+  on_exit: ->
+    transition to @subagent.refund
+
+echo progressExplainDecline:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Explaining why the return is declined and looking for alternatives...")]})
+  on_exit: ->
+    transition to @subagent.explainDecline

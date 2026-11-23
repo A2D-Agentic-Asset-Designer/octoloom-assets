@@ -49,7 +49,7 @@ trigger claimsBrokerTrigger:
   kind: "a2a"
   target: "brokers://octo_ic2g_claims_broker/a2a"
   on_message: ->
-    transition to @generator.classifyClaim
+    transition to @echo.progressClassifyClaim
 
 generator classifyClaim:
   description: "Classifies the loss and extracts the policy id."
@@ -75,7 +75,7 @@ generator classifyClaim:
         type: "string"
         description: "One-line loss summary"
   on_exit: ->
-    transition to @orchestrator.assessClaim
+    transition to @echo.progressAssessClaim
 
 # Coordinates several agents and tools; the LLM decides the order.
 orchestrator assessClaim:
@@ -121,11 +121,11 @@ router claimRouter:
     - target: @echo.notCovered
       when: @orchestrator.assessClaim.output.covered == "no"
       label: "Not covered"
-    - target: @executor.referToSiu
+    - target: @echo.progressReferToSiu
       when: @orchestrator.assessClaim.output.fraud_risk == "high"
       label: "High fraud risk"
   otherwise:
-    target: @orchestrator.settleClaim
+    target: @echo.progressSettleClaim
 
 echo notCovered:
   kind: "a2a:status_update_event"
@@ -168,3 +168,34 @@ echo settled:
   kind: "a2a:status_update_event"
   state: "TASK_STATE_COMPLETED"
   message: a2a.message({messageId: uuid(), parts: [a2a.textPart(@orchestrator.settleClaim.output)]})
+
+# Progress updates (octoloom#302): each one tells the caller what the broker does next, then
+# moves on to that step. With Live on, the chat shows them while the broker works. No LLM call.
+
+echo progressClassifyClaim:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Classifying the loss and reading the policy id...")]})
+  on_exit: ->
+    transition to @generator.classifyClaim
+
+echo progressAssessClaim:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Recording the FNOL, checking coverage and screening for fraud...")]})
+  on_exit: ->
+    transition to @orchestrator.assessClaim
+
+echo progressReferToSiu:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Referring the claim to the special investigations unit...")]})
+  on_exit: ->
+    transition to @executor.referToSiu
+
+echo progressSettleClaim:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Creating the claim, getting a settlement and paying it...")]})
+  on_exit: ->
+    transition to @orchestrator.settleClaim

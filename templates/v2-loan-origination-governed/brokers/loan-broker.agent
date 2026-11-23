@@ -56,7 +56,7 @@ trigger loanBrokerTrigger:
   kind: "a2a"
   target: "brokers://octo_lo2g_loan_broker/a2a"
   on_message: ->
-    transition to @generator.parseApplication
+    transition to @echo.progressParseApplication
 
 generator parseApplication:
   description: "Extracts applicant, amount and product."
@@ -82,7 +82,7 @@ generator parseApplication:
           - "personal"
           - "mortgage"
   on_exit: ->
-    transition to @orchestrator.assess
+    transition to @echo.progressAssess
 
 orchestrator assess:
   description: "Runs intake, KYC and the credit analysis."
@@ -120,14 +120,14 @@ orchestrator assess:
 router decisionRouter:
   description: "Approve books the loan, refer goes to underwriting, decline notifies."
   routes:
-    - target: @executor.bookLoan
+    - target: @echo.progressBookLoan
       when: @orchestrator.assess.output.decision == "approve"
       label: "Approve"
-    - target: @subagent.underwrite
+    - target: @echo.progressUnderwrite
       when: @orchestrator.assess.output.decision == "refer"
       label: "Refer"
   otherwise:
-    target: @subagent.notifyDecline
+    target: @echo.progressNotifyDecline
 
 executor bookLoan:
   description: "Books the approved loan."
@@ -136,7 +136,7 @@ executor bookLoan:
       with applicant_id = @generator.parseApplication.output.applicant_id
       with amount = @generator.parseApplication.output.amount
   on_exit: ->
-    transition to @subagent.notifyApproval
+    transition to @echo.progressNotifyApproval
 
 subagent notifyApproval:
   description: "Generates the contract and notifies the applicant."
@@ -186,3 +186,48 @@ echo declined:
   kind: "a2a:status_update_event"
   state: "TASK_STATE_COMPLETED"
   message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Declined: " + @orchestrator.assess.output.summary)]})
+
+# Progress updates (octoloom#302): each one tells the caller what the broker does next, then
+# moves on to that step. With Live on, the chat shows them while the broker works. No LLM call.
+
+echo progressParseApplication:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Extracting applicant, amount and product...")]})
+  on_exit: ->
+    transition to @generator.parseApplication
+
+echo progressAssess:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Running intake, KYC and the credit analysis...")]})
+  on_exit: ->
+    transition to @orchestrator.assess
+
+echo progressBookLoan:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Booking the approved loan...")]})
+  on_exit: ->
+    transition to @executor.bookLoan
+
+echo progressNotifyApproval:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Generating the contract and notifying the applicant...")]})
+  on_exit: ->
+    transition to @subagent.notifyApproval
+
+echo progressUnderwrite:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Sending borderline applications to underwriting...")]})
+  on_exit: ->
+    transition to @subagent.underwrite
+
+echo progressNotifyDecline:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Notifying the applicant of a decline...")]})
+  on_exit: ->
+    transition to @subagent.notifyDecline

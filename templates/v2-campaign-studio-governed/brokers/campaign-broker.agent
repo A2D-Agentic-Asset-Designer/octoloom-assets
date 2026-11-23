@@ -47,7 +47,7 @@ trigger campaignBrokerTrigger:
   kind: "a2a"
   target: "brokers://octo_cs2g_campaign_broker/a2a"
   on_message: ->
-    transition to @generator.brief
+    transition to @echo.progressBrief
 
 generator brief:
   description: "Turns the request into a campaign brief."
@@ -69,7 +69,7 @@ generator brief:
         type: "string"
         description: "Campaign theme"
   on_exit: ->
-    transition to @orchestrator.createCampaign
+    transition to @echo.progressCreateCampaign
 
 orchestrator createCampaign:
   description: "Checks the audience, writes copy, gets compliance approval and a forecast."
@@ -111,7 +111,7 @@ orchestrator createCampaign:
 router launchRouter:
   description: "Approved email campaigns are scheduled; approved social posts are handed over; the rest are returned."
   routes:
-    - target: @executor.scheduleEmail
+    - target: @echo.progressScheduleEmail
       when: @orchestrator.createCampaign.output.approved == "yes" and @generator.brief.output.channel == "email"
       label: "Email approved"
     - target: @echo.socialReady
@@ -143,3 +143,27 @@ echo rejected:
   kind: "a2a:status_update_event"
   state: "TASK_STATE_COMPLETED"
   message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Campaign not approved: " + @orchestrator.createCampaign.output.summary)]})
+
+# Progress updates (octoloom#302): each one tells the caller what the broker does next, then
+# moves on to that step. With Live on, the chat shows them while the broker works. No LLM call.
+
+echo progressBrief:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Turning the request into a campaign brief...")]})
+  on_exit: ->
+    transition to @generator.brief
+
+echo progressCreateCampaign:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Checking the audience, writing the copy, getting compliance approval and a forecast...")]})
+  on_exit: ->
+    transition to @orchestrator.createCampaign
+
+echo progressScheduleEmail:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Scheduling the approved email campaign...")]})
+  on_exit: ->
+    transition to @executor.scheduleEmail

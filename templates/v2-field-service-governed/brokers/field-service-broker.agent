@@ -47,7 +47,7 @@ trigger fieldServiceBrokerTrigger:
   kind: "a2a"
   target: "brokers://octo_fs2g_field_service_broker/a2a"
   on_message: ->
-    transition to @generator.parseRequest
+    transition to @echo.progressParseRequest
 
 generator parseRequest:
   description: "Extracts the asset id and the symptom."
@@ -63,7 +63,7 @@ generator parseRequest:
         type: "string"
         description: "Reported symptom"
   on_exit: ->
-    transition to @subagent.diagnose
+    transition to @echo.progressDiagnose
 
 subagent diagnose:
   description: "Looks up the asset and runs remote diagnostics."
@@ -103,11 +103,11 @@ subagent diagnose:
 router fixRouter:
   description: "Remote fixes only need a customer update; the rest are dispatched."
   routes:
-    - target: @subagent.informCustomer
+    - target: @echo.progressInformCustomer
       when: @subagent.diagnose.output.remote_fix == "yes"
       label: "Fixed remotely"
   otherwise:
-    target: @orchestrator.dispatchVisit
+    target: @echo.progressDispatchVisit
 
 subagent informCustomer:
   description: "Tells the customer the fault was fixed remotely."
@@ -150,3 +150,34 @@ echo dispatched:
   kind: "a2a:status_update_event"
   state: "TASK_STATE_COMPLETED"
   message: a2a.message({messageId: uuid(), parts: [a2a.textPart(@orchestrator.dispatchVisit.output)]})
+
+# Progress updates (octoloom#302): each one tells the caller what the broker does next, then
+# moves on to that step. With Live on, the chat shows them while the broker works. No LLM call.
+
+echo progressParseRequest:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Extracting the asset id and the symptom...")]})
+  on_exit: ->
+    transition to @generator.parseRequest
+
+echo progressDiagnose:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Looking up the asset and running remote diagnostics...")]})
+  on_exit: ->
+    transition to @subagent.diagnose
+
+echo progressInformCustomer:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Telling the customer the fault was fixed remotely...")]})
+  on_exit: ->
+    transition to @subagent.informCustomer
+
+echo progressDispatchVisit:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Checking parts and weather, reserving the part and booking a technician...")]})
+  on_exit: ->
+    transition to @orchestrator.dispatchVisit

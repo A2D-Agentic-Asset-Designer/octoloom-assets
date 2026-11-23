@@ -52,7 +52,7 @@ trigger incidentBrokerTrigger:
   kind: "a2a"
   target: "brokers://octo_ir2_incident_broker/a2a"
   on_message: ->
-    transition to @generator.classifyIncident
+    transition to @echo.progressClassifyIncident
 
 generator classifyIncident:
   description: "Classifies the incident: service, priority and area."
@@ -84,7 +84,7 @@ generator classifyIncident:
           - "database"
           - "application"
   on_exit: ->
-    transition to @executor.openTicket
+    transition to @echo.progressOpenTicket
 
 executor openTicket:
   description: "Every incident gets a ticket first (no LLM)."
@@ -98,17 +98,17 @@ executor openTicket:
 router priorityRouter:
   description: "P1 is a major incident; the rest go to the specialist of the area."
   routes:
-    - target: @orchestrator.majorIncident
+    - target: @echo.progressMajorIncident
       when: @generator.classifyIncident.output.priority == "p1"
       label: "P1"
-    - target: @subagent.network
+    - target: @echo.progressNetwork
       when: @generator.classifyIncident.output.area == "network"
       label: "Network"
-    - target: @subagent.database
+    - target: @echo.progressDatabase
       when: @generator.classifyIncident.output.area == "database"
       label: "Database"
   otherwise:
-    target: @subagent.application
+    target: @echo.progressApplication
 
 orchestrator majorIncident:
   description: "Pages on-call, triages, fixes and posts a status update."
@@ -185,3 +185,48 @@ echo appDone:
   kind: "a2a:status_update_event"
   state: "TASK_STATE_COMPLETED"
   message: a2a.message({messageId: uuid(), parts: [a2a.textPart(@generator.classifyIncident.output.service + " (" + @generator.classifyIncident.output.priority + "): " + @subagent.application.output)]})
+
+# Progress updates (octoloom#302): each one tells the caller what the broker does next, then
+# moves on to that step. With Live on, the chat shows them while the broker works. No LLM call.
+
+echo progressClassifyIncident:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Classifying the incident: service, priority and area...")]})
+  on_exit: ->
+    transition to @generator.classifyIncident
+
+echo progressOpenTicket:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Opening the incident ticket...")]})
+  on_exit: ->
+    transition to @executor.openTicket
+
+echo progressMajorIncident:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Major incident: paging on-call, triaging, fixing and posting a status update...")]})
+  on_exit: ->
+    transition to @orchestrator.majorIncident
+
+echo progressNetwork:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Handing over to the network specialist...")]})
+  on_exit: ->
+    transition to @subagent.network
+
+echo progressDatabase:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Handing over to the database specialist...")]})
+  on_exit: ->
+    transition to @subagent.database
+
+echo progressApplication:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Handing over to the application specialist...")]})
+  on_exit: ->
+    transition to @subagent.application

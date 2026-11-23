@@ -47,7 +47,7 @@ trigger kycBrokerTrigger:
   kind: "a2a"
   target: "brokers://octo_ko2s_kyc_broker/a2a"
   on_message: ->
-    transition to @generator.extractApplicant
+    transition to @echo.progressExtractApplicant
 
 generator extractApplicant:
   description: "Extracts the applicant id."
@@ -71,7 +71,7 @@ generator extractApplicant:
 router idRouter:
   description: "Without an applicant id nothing can be checked."
   routes:
-    - target: @subagent.screening
+    - target: @echo.progressScreening
       when: @generator.extractApplicant.output.applicant_id != "UNKNOWN"
       label: "Has id"
   otherwise:
@@ -110,14 +110,14 @@ subagent screening:
 router riskRouter:
   description: "Low risk opens the account, high risk opens a compliance case, medium goes to an analyst."
   routes:
-    - target: @subagent.openAccount
+    - target: @echo.progressOpenAccount
       when: @subagent.screening.output.band == "low"
       label: "Low risk"
-    - target: @executor.openCase
+    - target: @echo.progressOpenCase
       when: @subagent.screening.output.band == "high"
       label: "High risk"
   otherwise:
-    target: @subagent.analystReview
+    target: @echo.progressAnalystReview
 
 subagent openAccount:
   description: "Opens the account."
@@ -171,3 +171,41 @@ echo caseOpened:
   kind: "a2a:status_update_event"
   state: "TASK_STATE_COMPLETED"
   message: a2a.message({messageId: uuid(), parts: [a2a.textPart("No account opened for " + @generator.extractApplicant.output.applicant_id + ": a compliance case was opened. " + @subagent.screening.output.findings)]})
+
+# Progress updates (octoloom#302): each one tells the caller what the broker does next, then
+# moves on to that step. With Live on, the chat shows them while the broker works. No LLM call.
+
+echo progressExtractApplicant:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Extracting the applicant id...")]})
+  on_exit: ->
+    transition to @generator.extractApplicant
+
+echo progressScreening:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Verifying the document, screening sanctions and scoring the risk...")]})
+  on_exit: ->
+    transition to @subagent.screening
+
+echo progressOpenAccount:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Opening the account...")]})
+  on_exit: ->
+    transition to @subagent.openAccount
+
+echo progressAnalystReview:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("A KYC analyst reviews the medium-risk applicant...")]})
+  on_exit: ->
+    transition to @subagent.analystReview
+
+echo progressOpenCase:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Opening a compliance case...")]})
+  on_exit: ->
+    transition to @executor.openCase

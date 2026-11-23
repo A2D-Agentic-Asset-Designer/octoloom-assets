@@ -39,7 +39,7 @@ trigger ticketingBrokerTrigger:
   kind: "a2a"
   target: "brokers://octo_et2_ticketing_broker/a2a"
   on_message: ->
-    transition to @generator.extractBooking
+    transition to @echo.progressExtractBooking
 
 # Step 1: one LLM call turns the request into an event id and a seat count.
 generator extractBooking:
@@ -60,7 +60,7 @@ generator extractBooking:
         type: "string"
         description: "Number of seats"
   on_exit: ->
-    transition to @subagent.availabilityGate
+    transition to @echo.progressAvailabilityGate
 
 # Step 2: a gate. The subagent calls the Events MCP and classifies the answer.
 subagent availabilityGate:
@@ -93,11 +93,11 @@ subagent availabilityGate:
 router availabilityRouter:
   description: "Free seats are reserved and ticketed; sold-out events go to the waitlist."
   routes:
-    - target: @executor.reserveSeats
+    - target: @echo.progressReserveSeats
       when: @subagent.availabilityGate.output.available == "yes"
       label: "Available"
   otherwise:
-    target: @subagent.joinWaitlist
+    target: @echo.progressJoinWaitlist
 
 # Step 3a: no LLM. The seats are reserved with bound arguments only.
 executor reserveSeats:
@@ -107,7 +107,7 @@ executor reserveSeats:
       with event_id = @generator.extractBooking.output.event_id
       with seats = @generator.extractBooking.output.seats
   on_exit: ->
-    transition to @subagent.issueTickets
+    transition to @echo.progressIssueTickets
 
 subagent issueTickets:
   description: "Issues the e-tickets through the Ticketing agent."
@@ -141,3 +141,41 @@ echo waitlisted:
   kind: "a2a:status_update_event"
   state: "TASK_STATE_COMPLETED"
   message: a2a.message({messageId: uuid(), parts: [a2a.textPart("No seats left for " + @generator.extractBooking.output.event_id + " (" + @subagent.availabilityGate.output.detail + "). " + @subagent.joinWaitlist.output)]})
+
+# Progress updates (octoloom#302): each one tells the caller what the broker does next, then
+# moves on to that step. With Live on, the chat shows them while the broker works. No LLM call.
+
+echo progressExtractBooking:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Extracting the event id and the number of seats...")]})
+  on_exit: ->
+    transition to @generator.extractBooking
+
+echo progressAvailabilityGate:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Checking the free seats with the Events MCP...")]})
+  on_exit: ->
+    transition to @subagent.availabilityGate
+
+echo progressReserveSeats:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Reserving the seats...")]})
+  on_exit: ->
+    transition to @executor.reserveSeats
+
+echo progressIssueTickets:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Issuing the e-tickets through the Ticketing agent...")]})
+  on_exit: ->
+    transition to @subagent.issueTickets
+
+echo progressJoinWaitlist:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Putting the customer on the waitlist...")]})
+  on_exit: ->
+    transition to @subagent.joinWaitlist

@@ -52,7 +52,7 @@ trigger disruptionBrokerTrigger:
   kind: "a2a"
   target: "brokers://octo_sc2_disruption_broker/a2a"
   on_message: ->
-    transition to @generator.extractDisruption
+    transition to @echo.progressExtractDisruption
 
 generator extractDisruption:
   description: "Extracts the shipment id and the kind of disruption."
@@ -75,7 +75,7 @@ generator extractDisruption:
           - "delay"
           - "shortage"
   on_exit: ->
-    transition to @subagent.assessImpact
+    transition to @echo.progressAssessImpact
 
 subagent assessImpact:
   description: "Reads the shipment and the stock cover of its SKU and rates the impact."
@@ -108,14 +108,14 @@ subagent assessImpact:
 router mitigationRouter:
   description: "Severe delays are rerouted, shortages get a new supplier, the rest a plan."
   routes:
-    - target: @executor.reroute
+    - target: @echo.progressReroute
       when: @subagent.assessImpact.output.severity == "severe" and @generator.extractDisruption.output.kind == "delay"
       label: "Severe delay"
-    - target: @orchestrator.resource
+    - target: @echo.progressResource
       when: @generator.extractDisruption.output.kind == "shortage"
       label: "Shortage"
   otherwise:
-    target: @subagent.mitigationPlan
+    target: @echo.progressMitigationPlan
 
 executor reroute:
   description: "Switches the shipment to a faster mode (no LLM)."
@@ -123,7 +123,7 @@ executor reroute:
     run @actions.reroute_shipment
       with shipment_id = @generator.extractDisruption.output.shipment_id
   on_exit: ->
-    transition to @subagent.informCustomers
+    transition to @echo.progressInformCustomers
 
 subagent informCustomers:
   description: "Tells the affected customers the new date."
@@ -179,3 +179,48 @@ echo planned:
   kind: "a2a:status_update_event"
   state: "TASK_STATE_COMPLETED"
   message: a2a.message({messageId: uuid(), parts: [a2a.textPart("No stock-out expected. " + @subagent.mitigationPlan.output)]})
+
+# Progress updates (octoloom#302): each one tells the caller what the broker does next, then
+# moves on to that step. With Live on, the chat shows them while the broker works. No LLM call.
+
+echo progressExtractDisruption:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Extracting the shipment id and the kind of disruption...")]})
+  on_exit: ->
+    transition to @generator.extractDisruption
+
+echo progressAssessImpact:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Reading the shipment and the stock cover of its SKU, rating the impact...")]})
+  on_exit: ->
+    transition to @subagent.assessImpact
+
+echo progressReroute:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Switching the shipment to a faster mode...")]})
+  on_exit: ->
+    transition to @executor.reroute
+
+echo progressInformCustomers:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Telling the affected customers the new date...")]})
+  on_exit: ->
+    transition to @subagent.informCustomers
+
+echo progressResource:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Finding an alternative supplier, checking its risk and placing the order...")]})
+  on_exit: ->
+    transition to @orchestrator.resource
+
+echo progressMitigationPlan:
+  kind: "a2a:status_update_event"
+  state: "TASK_STATE_WORKING"
+  message: a2a.message({messageId: uuid(), parts: [a2a.textPart("Stock covers the delay: planning with the logistics agent...")]})
+  on_exit: ->
+    transition to @subagent.mitigationPlan
