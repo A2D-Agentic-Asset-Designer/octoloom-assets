@@ -81,3 +81,6 @@
 /* footer */
 .md-footer, .md-footer-meta { background: var(--ol-soft) !important; color: var(--ol-muted); border-top: 1px solid var(--ol-border); }
 .md-footer__link, .md-footer-meta__inner, .md-copyright { color: var(--ol-muted) !important; }
+/* version page */
+.ol-ver-meta { display: inline-block; font-size: .64rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ol-muted); border: 1px solid var(--ol-border); border-radius: 999px; padding: .1rem .6rem; }
+.md-typeset .ol-by { display: block; font-size: .68rem; color: var(--ol-muted); margin-top: -.4rem; }
