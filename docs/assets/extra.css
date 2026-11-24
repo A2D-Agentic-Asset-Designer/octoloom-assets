@@ -129,3 +129,18 @@
 .ol-usage table.ol-u-table td:last-child, .ol-usage table.ol-u-table th:last-child { text-align: right; }
 .ol-usage table.ol-u-table td + td { font-variant-numeric: tabular-nums; }
 .md-typeset table:not([class]) td:first-child code { white-space: nowrap; }
+
+/* Template filters on the catalog page (octoloom#322) */
+.ol-tf { display: flex; flex-direction: column; gap: .3rem; margin: 0 0 1rem; }
+.ol-tf-row { display: grid; grid-template-columns: 4.5rem 1fr; align-items: baseline; gap: .3rem; }
+.ol-tf-chips { display: flex; flex-wrap: wrap; gap: .3rem; }
+.ol-tf-label { min-width: 4.5rem; font-size: .7rem; color: var(--md-default-fg-color--light); }
+.ol-tf-chip { font: inherit; font-size: .7rem; padding: .1rem .55rem; border-radius: 1rem; cursor: pointer;
+  border: 1px solid var(--md-default-fg-color--lightest); background: transparent; color: var(--md-default-fg-color); }
+.ol-tf-chip:hover { border-color: var(--md-accent-fg-color); }
+.ol-tf-chip.on { background: var(--md-typeset-a-color); border-color: var(--md-typeset-a-color); color: #fff; }
+.ol-tf-n { opacity: .7; margin-left: .15rem; }
+.ol-tf-status { font-size: .7rem; margin: .2rem 0 0 4.8rem; color: var(--md-default-fg-color--light); }
+.ol-tf-clear { font: inherit; background: none; border: 0; padding: 0; color: var(--md-typeset-a-color); cursor: pointer; text-decoration: underline; }
+.md-typeset .grid.cards > ul > li[hidden], .md-typeset table tr[hidden] { display: none !important; }
+[data-md-color-scheme="slate"] .ol-tf-chip.on { color: #0b1220; }

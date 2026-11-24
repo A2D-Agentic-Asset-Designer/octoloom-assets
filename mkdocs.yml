@@ -45,9 +45,10 @@ extra_css:
 extra_javascript:
   - assets/marketplace.js
   - assets/usage.js
+  - assets/catalog.js
 extra:
   version: "0.9.28"
-  installs: "138"
+  installs: "139"
   marketplace: https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom
   social:
     - icon: material/microsoft-visual-studio-code

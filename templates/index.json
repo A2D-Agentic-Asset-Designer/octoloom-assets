@@ -19,7 +19,13 @@
         "README.md"
       ],
       "assetId": "employee-onboarding-v1",
-      "prefix": "octo_eo1"
+      "prefix": "octo_eo1",
+      "level": "advanced",
+      "industry": "hr",
+      "minutes": 15,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v1-employee-onboarding-governed",
@@ -46,7 +52,13 @@
         "README.md"
       ],
       "assetId": "employee-onboarding-governed-v1",
-      "prefix": "octo_eo1g"
+      "prefix": "octo_eo1g",
+      "level": "expert",
+      "industry": "hr",
+      "minutes": 20,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v1-customer-service",
@@ -66,7 +78,13 @@
         "README.md"
       ],
       "assetId": "customer-service-v1",
-      "prefix": "octo_cs1"
+      "prefix": "octo_cs1",
+      "level": "advanced",
+      "industry": "customer-service",
+      "minutes": 15,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v1-customer-service-governed",
@@ -92,7 +110,13 @@
         "README.md"
       ],
       "assetId": "customer-service-governed-v1",
-      "prefix": "octo_cs1g"
+      "prefix": "octo_cs1g",
+      "level": "expert",
+      "industry": "customer-service",
+      "minutes": 20,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v1-it-helpdesk",
@@ -112,7 +136,13 @@
         "README.md"
       ],
       "assetId": "it-helpdesk-v1",
-      "prefix": "octo_ih1"
+      "prefix": "octo_ih1",
+      "level": "advanced",
+      "industry": "it",
+      "minutes": 15,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v1-it-helpdesk-governed",
@@ -139,7 +169,13 @@
         "README.md"
       ],
       "assetId": "it-helpdesk-governed-v1",
-      "prefix": "octo_ih1g"
+      "prefix": "octo_ih1g",
+      "level": "expert",
+      "industry": "it",
+      "minutes": 20,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v1-travel-expense",
@@ -159,7 +195,13 @@
         "README.md"
       ],
       "assetId": "travel-expense-v1",
-      "prefix": "octo_te1"
+      "prefix": "octo_te1",
+      "level": "advanced",
+      "industry": "finance",
+      "minutes": 15,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v1-travel-expense-governed",
@@ -186,7 +228,13 @@
         "README.md"
       ],
       "assetId": "travel-expense-governed-v1",
-      "prefix": "octo_te1g"
+      "prefix": "octo_te1g",
+      "level": "expert",
+      "industry": "finance",
+      "minutes": 20,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v1-procurement",
@@ -206,7 +254,13 @@
         "README.md"
       ],
       "assetId": "procurement-v1",
-      "prefix": "octo_p1"
+      "prefix": "octo_p1",
+      "level": "advanced",
+      "industry": "retail",
+      "minutes": 15,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v1-procurement-governed",
@@ -233,7 +287,13 @@
         "README.md"
       ],
       "assetId": "procurement-governed-v1",
-      "prefix": "octo_p1g"
+      "prefix": "octo_p1g",
+      "level": "expert",
+      "industry": "retail",
+      "minutes": 20,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v2-insurance-claims",
@@ -255,7 +315,13 @@
         "README.md"
       ],
       "assetId": "insurance-claims-v2",
-      "prefix": "octo_ic2"
+      "prefix": "octo_ic2",
+      "level": "advanced",
+      "industry": "finance",
+      "minutes": 15,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v2-insurance-claims-governed",
@@ -283,7 +349,13 @@
         "README.md"
       ],
       "assetId": "insurance-claims-governed-v2",
-      "prefix": "octo_ic2g"
+      "prefix": "octo_ic2g",
+      "level": "expert",
+      "industry": "finance",
+      "minutes": 20,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v2-retail-returns",
@@ -305,7 +377,13 @@
         "README.md"
       ],
       "assetId": "retail-returns-v2",
-      "prefix": "octo_rr2"
+      "prefix": "octo_rr2",
+      "level": "advanced",
+      "industry": "retail",
+      "minutes": 15,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v2-retail-returns-governed",
@@ -333,7 +411,13 @@
         "README.md"
       ],
       "assetId": "retail-returns-governed-v2",
-      "prefix": "octo_rr2g"
+      "prefix": "octo_rr2g",
+      "level": "expert",
+      "industry": "retail",
+      "minutes": 20,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v2-loan-origination",
@@ -355,7 +439,13 @@
         "README.md"
       ],
       "assetId": "loan-origination-v2",
-      "prefix": "octo_lo2"
+      "prefix": "octo_lo2",
+      "level": "advanced",
+      "industry": "finance",
+      "minutes": 15,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v2-loan-origination-governed",
@@ -384,7 +474,13 @@
         "README.md"
       ],
       "assetId": "loan-origination-governed-v2",
-      "prefix": "octo_lo2g"
+      "prefix": "octo_lo2g",
+      "level": "expert",
+      "industry": "finance",
+      "minutes": 20,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v2-field-service",
@@ -406,7 +502,13 @@
         "README.md"
       ],
       "assetId": "field-service-v2",
-      "prefix": "octo_fs2"
+      "prefix": "octo_fs2",
+      "level": "advanced",
+      "industry": "field-service",
+      "minutes": 15,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v2-field-service-governed",
@@ -434,7 +536,13 @@
         "README.md"
       ],
       "assetId": "field-service-governed-v2",
-      "prefix": "octo_fs2g"
+      "prefix": "octo_fs2g",
+      "level": "expert",
+      "industry": "field-service",
+      "minutes": 20,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v2-campaign-studio",
@@ -456,7 +564,13 @@
         "README.md"
       ],
       "assetId": "campaign-studio-v2",
-      "prefix": "octo_cs2"
+      "prefix": "octo_cs2",
+      "level": "advanced",
+      "industry": "marketing",
+      "minutes": 15,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v2-campaign-studio-governed",
@@ -484,7 +598,13 @@
         "README.md"
       ],
       "assetId": "campaign-studio-governed-v2",
-      "prefix": "octo_cs2g"
+      "prefix": "octo_cs2g",
+      "level": "expert",
+      "industry": "marketing",
+      "minutes": 20,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v1-hr-leave",
@@ -504,7 +624,13 @@
         "README.md"
       ],
       "assetId": "hr-leave-v1",
-      "prefix": "octo_hl1"
+      "prefix": "octo_hl1",
+      "level": "advanced",
+      "industry": "hr",
+      "minutes": 15,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v1-hr-leave-governed",
@@ -531,7 +657,13 @@
         "README.md"
       ],
       "assetId": "hr-leave-governed-v1",
-      "prefix": "octo_hl1g"
+      "prefix": "octo_hl1g",
+      "level": "expert",
+      "industry": "hr",
+      "minutes": 20,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v1-hr-leave-secured",
@@ -553,7 +685,13 @@
         "README.md"
       ],
       "assetId": "hr-leave-secured-v1",
-      "prefix": "octo_hl1s"
+      "prefix": "octo_hl1s",
+      "level": "expert",
+      "industry": "hr",
+      "minutes": 30,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v1-patient-intake",
@@ -573,7 +711,13 @@
         "README.md"
       ],
       "assetId": "patient-intake-v1",
-      "prefix": "octo_pi1"
+      "prefix": "octo_pi1",
+      "level": "advanced",
+      "industry": "healthcare",
+      "minutes": 15,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v1-patient-intake-governed",
@@ -599,7 +743,13 @@
         "README.md"
       ],
       "assetId": "patient-intake-governed-v1",
-      "prefix": "octo_pi1g"
+      "prefix": "octo_pi1g",
+      "level": "expert",
+      "industry": "healthcare",
+      "minutes": 20,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v1-patient-intake-secured",
@@ -621,7 +771,13 @@
         "README.md"
       ],
       "assetId": "patient-intake-secured-v1",
-      "prefix": "octo_pi1s"
+      "prefix": "octo_pi1s",
+      "level": "expert",
+      "industry": "healthcare",
+      "minutes": 30,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v2-supply-chain",
@@ -643,7 +799,13 @@
         "README.md"
       ],
       "assetId": "supply-chain-v2",
-      "prefix": "octo_sc2"
+      "prefix": "octo_sc2",
+      "level": "advanced",
+      "industry": "retail",
+      "minutes": 15,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v2-supply-chain-governed",
@@ -671,7 +833,13 @@
         "README.md"
       ],
       "assetId": "supply-chain-governed-v2",
-      "prefix": "octo_sc2g"
+      "prefix": "octo_sc2g",
+      "level": "expert",
+      "industry": "retail",
+      "minutes": 20,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v2-supply-chain-secured",
@@ -696,7 +864,13 @@
         "README.md"
       ],
       "assetId": "supply-chain-secured-v2",
-      "prefix": "octo_sc2s"
+      "prefix": "octo_sc2s",
+      "level": "expert",
+      "industry": "retail",
+      "minutes": 30,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v2-kyc-onboarding",
@@ -718,7 +892,13 @@
         "README.md"
       ],
       "assetId": "kyc-onboarding-v2",
-      "prefix": "octo_ko2"
+      "prefix": "octo_ko2",
+      "level": "advanced",
+      "industry": "finance",
+      "minutes": 15,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v2-kyc-onboarding-governed",
@@ -746,7 +926,13 @@
         "README.md"
       ],
       "assetId": "kyc-onboarding-governed-v2",
-      "prefix": "octo_ko2g"
+      "prefix": "octo_ko2g",
+      "level": "expert",
+      "industry": "finance",
+      "minutes": 20,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v2-kyc-onboarding-secured",
@@ -771,7 +957,13 @@
         "README.md"
       ],
       "assetId": "kyc-onboarding-secured-v2",
-      "prefix": "octo_ko2s"
+      "prefix": "octo_ko2s",
+      "level": "expert",
+      "industry": "finance",
+      "minutes": 30,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v2-incident-response",
@@ -793,7 +985,13 @@
         "README.md"
       ],
       "assetId": "incident-response-v2",
-      "prefix": "octo_ir2"
+      "prefix": "octo_ir2",
+      "level": "advanced",
+      "industry": "it",
+      "minutes": 15,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v2-incident-response-governed",
@@ -821,7 +1019,13 @@
         "README.md"
       ],
       "assetId": "incident-response-governed-v2",
-      "prefix": "octo_ir2g"
+      "prefix": "octo_ir2g",
+      "level": "expert",
+      "industry": "it",
+      "minutes": 20,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v2-incident-response-secured",
@@ -846,7 +1050,13 @@
         "README.md"
       ],
       "assetId": "incident-response-secured-v2",
-      "prefix": "octo_ir2s"
+      "prefix": "octo_ir2s",
+      "level": "expert",
+      "industry": "it",
+      "minutes": 30,
+      "needs": [
+        "llm-key"
+      ]
     },
     {
       "id": "v1-hotel-concierge",
@@ -867,7 +1077,11 @@
       ],
       "assetId": "hotel-concierge-v1",
       "prefix": "octo_hc1",
-      "mocked": true
+      "mocked": true,
+      "level": "beginner",
+      "industry": "travel",
+      "minutes": 10,
+      "needs": []
     },
     {
       "id": "v1-library-services",
@@ -888,7 +1102,11 @@
       ],
       "assetId": "library-services-v1",
       "prefix": "octo_ls1",
-      "mocked": true
+      "mocked": true,
+      "level": "beginner",
+      "industry": "public-sector",
+      "minutes": 10,
+      "needs": []
     },
     {
       "id": "v1-fleet-maintenance",
@@ -909,7 +1127,11 @@
       ],
       "assetId": "fleet-maintenance-v1",
       "prefix": "octo_fm1",
-      "mocked": true
+      "mocked": true,
+      "level": "beginner",
+      "industry": "field-service",
+      "minutes": 10,
+      "needs": []
     },
     {
       "id": "v2-event-ticketing",
@@ -932,7 +1154,11 @@
       ],
       "assetId": "event-ticketing-v2",
       "prefix": "octo_et2",
-      "mocked": true
+      "mocked": true,
+      "level": "beginner",
+      "industry": "travel",
+      "minutes": 10,
+      "needs": []
     },
     {
       "id": "v2-warranty-repair",
@@ -955,7 +1181,11 @@
       ],
       "assetId": "warranty-repair-v2",
       "prefix": "octo_wr2",
-      "mocked": true
+      "mocked": true,
+      "level": "beginner",
+      "industry": "customer-service",
+      "minutes": 10,
+      "needs": []
     },
     {
       "id": "v2-utility-outage",
@@ -978,7 +1208,11 @@
       ],
       "assetId": "utility-outage-v2",
       "prefix": "octo_uo2",
-      "mocked": true
+      "mocked": true,
+      "level": "beginner",
+      "industry": "field-service",
+      "minutes": 10,
+      "needs": []
     }
   ]
 }

@@ -11,7 +11,7 @@ Sources (nothing is written by hand twice):
   - templates/, tutorials/ and skills/ of this repo
 The site is built and published by .github/workflows/docs.yml (MkDocs Material, GitHub Pages).
 """
-import json, os, re, shutil, subprocess, sys, urllib.request
+import html, json, os, re, shutil, subprocess, sys, urllib.request
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from ui_meta import SECTIONS, F, REF_SHOT, CARD_IMG, KEY_SHOT, SHOT_STEP, CARD_SHOT
 import changelog_page
@@ -493,6 +493,33 @@ def tkind(t):
     return 'Use case'
 
 
+# Template filter facets (octoloom#322): from the catalog entry, else the octoloom-assets catalog, else the
+# same rule as the extension (templateFacets.ts): mocked -> beginner, other use cases -> advanced, technical -> expert.
+FACET_LABELS = {
+    'level': ('Level', [('beginner', 'Beginner'), ('advanced', 'Advanced'), ('expert', 'Expert')]),
+    'industry': ('Industry', [('customer-service', 'Customer service'), ('data', 'Data management'), ('field-service', 'Field service & utilities'),
+                              ('finance', 'Finance & insurance'), ('healthcare', 'Healthcare'), ('hr', 'HR'), ('it', 'IT'), ('marketing', 'Marketing'),
+                              ('public-sector', 'Public sector'), ('retail', 'Retail & supply chain'), ('travel', 'Travel & hospitality')]),
+    'needs': ('Needs', [('none', 'Nothing else'), ('llm-key', 'LLM key'), ('idmc', 'Informatica IDMC')]),
+    'time': ('Time', [('10', '≤ 10 min'), ('20', '≤ 20 min'), ('30+', '30 min +')]),
+}
+
+
+def tfacets(t):
+    try:
+        remote = {x['id']: x for x in json.load(open(os.path.join(TPLS, 'index.json')))['templates']}
+    except Exception:
+        remote = {}
+    r = remote.get(t['id'], {})
+    g = lambda k: t.get(k, r.get(k))
+    level = g('level') or ('beginner' if t.get('mocked') else 'advanced' if t['category'] == 'usecase' else 'expert')
+    needs = g('needs')
+    if needs is None: needs = ([] if t.get('mocked') else ['llm-key']) + (['idmc'] if 'idmc' in (t.get('requires') or []) else [])
+    mins = g('minutes') or (10 if t.get('mocked') else 45 if t.get('requires') else 30 if t['id'].endswith('-secured') else 20 if t['category'] == 'technical' else 15)
+    return {'level': [level], 'industry': [g('industry') or ('data' if '-idmc-' in t['id'] else None)] if (g('industry') or '-idmc-' in t['id']) else [], 'needs': needs or ['none'],
+            'time': ['10' if mins <= 10 else '20' if mins <= 20 else '30+']}
+
+
 def templates():
     style = {'v1': 'Probabilistic (Agent Network 1.0)', 'v2': 'Deterministic (Agent Network 2.0, AgentScript)'}
     idx = ['# Templates', '',
@@ -507,6 +534,10 @@ def templates():
            '| Informatica IDMC | Uses Informatica IDMC MCP servers (needs an IDMC org). |', '']
     nav = []
     idx[0:0] = ['<span class="ol-pill">Templates</span>', '']
+    facets = {t['id']: tfacets(t) for t in INDEX}
+    idx += ['## Filter the templates', '',
+            '<div class="ol-tf" id="ol-tf" markdown="0" data-labels="' + html.escape(json.dumps(FACET_LABELS), quote=True) + '" data-facets="' + html.escape(json.dumps(facets), quote=True) + '">'
+            '<noscript>Filters need JavaScript; all templates are listed below.</noscript></div>', '']
     for v in ('v1', 'v2'):
         lst = [t for t in INDEX if t['version'] == v]
         idx += [f'## {style[v]}', '', '<div class="grid cards" markdown>', '']
@@ -786,6 +817,7 @@ def main():
     shutil.copy(os.path.join(HERE, 'extra.css'), os.path.join(DOCS, 'assets', 'extra.css'))
     shutil.copy(os.path.join(HERE, 'marketplace.js'), os.path.join(DOCS, 'assets', 'marketplace.js'))
     shutil.copy(os.path.join(HERE, 'usage.js'), os.path.join(DOCS, 'assets', 'usage.js'))
+    shutil.copy(os.path.join(HERE, 'catalog.js'), os.path.join(DOCS, 'assets', 'catalog.js'))
     if os.path.isdir(UI): shutil.copytree(UI, os.path.join(DOCS, 'assets', 'ui'), ignore=shutil.ignore_patterns('index.json'))
     global MK
     MK = market_stats()
@@ -861,6 +893,7 @@ extra_css:
 extra_javascript:
   - assets/marketplace.js
   - assets/usage.js
+  - assets/catalog.js
 extra:
   version: "{version}"
   installs: "{MK['installs']:,}"
