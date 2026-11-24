@@ -610,8 +610,18 @@ def nav_yaml(items, ind=2):
 def main():
     data = explain()
     E, G = data['E'], data['G']
+    # docs/assets/usage.json and docs/assets/usage/ are written by the usage Action (octoloom#333), not by this
+    # generator: keep them across the regeneration.
+    keep = {}
+    for rel in ('assets/usage.json', 'assets/usage'):
+        p_ = os.path.join(DOCS, rel)
+        if os.path.exists(p_):
+            tmp = os.path.join(ROOT, '.usage-keep-' + os.path.basename(rel)); shutil.rmtree(tmp, ignore_errors=True)
+            (shutil.copytree if os.path.isdir(p_) else shutil.copy)(p_, tmp); keep[rel] = tmp
     if os.path.isdir(DOCS): shutil.rmtree(DOCS)
     os.makedirs(os.path.join(DOCS, 'assets'))
+    for rel, tmp in keep.items():
+        shutil.move(tmp, os.path.join(DOCS, rel))
     shutil.copy(os.path.join(REPO, 'media', 'octoloom.png'), os.path.join(DOCS, 'assets', 'loomi.png'))
     shutil.copy(os.path.join(HERE, 'extra.css'), os.path.join(DOCS, 'assets', 'extra.css'))
     shutil.copy(os.path.join(HERE, 'marketplace.js'), os.path.join(DOCS, 'assets', 'marketplace.js'))
