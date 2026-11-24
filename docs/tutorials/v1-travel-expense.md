@@ -17,10 +17,9 @@ There are three ways to use this template:
 ## Before you start
 
 - VS Code with **Octoloom for Agent Fabric** installed (Marketplace), version 0.9.25 or later.
-- An Anypoint organization with Agent Fabric, a connected app (client ID and secret), an environment and a Flex gateway.
+- An Anypoint organization with Agent Fabric, an environment, a [Small Managed Omni Gateway](../start/gateway.md) and a [connected app](../start/connected-app.md) (client ID and secret). New to Anypoint? **[Before you start](../start/index.md)** shows the trial account, the gateway, the connected app and connecting Octoloom, step by step with videos.
 - An OpenAI API key (or an OpenAI-compatible LLM gateway).
 - Nothing else: all agents and MCP servers are public A²D mocks, so the network runs without any other system.
-- **Not set up yet?** The Quick Start prerequisites, step by step with pictures: [Anypoint account](../start/account.md) · [Small Managed Omni Gateway](../start/gateway.md) · [Connected app Octoloom-CA](../start/connected-app.md) · [Connect Octoloom to Agent Fabric](../start/connect-anypoint.md).
 
 ## Path 1: Just use it
 

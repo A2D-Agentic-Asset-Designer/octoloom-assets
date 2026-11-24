@@ -2,7 +2,7 @@
 
 # Templates
 
-Octoloom ships **43 ready-to-run templates**. Open one with **New Project** (Home → *New Probabilistic / Deterministic Network* → *Use cases* or *Technical*). Every upstream is a public A²D mock, so a template deploys and answers without any backend of yours.
+Octoloom ships **43 ready-to-run templates**. Open one with **New Project** (Home → *New Probabilistic / Deterministic Network* → *Use cases* or *Technical*). Every upstream is a public A²D mock, so a template deploys and answers without any backend of yours. You need an Anypoint organization with Agent Fabric, a gateway and a connected app: see [Before you start](../start/index.md).
 
 | Kind | What it is |
 |---|---|

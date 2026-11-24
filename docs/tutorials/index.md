@@ -8,7 +8,7 @@ One tutorial for every template project in Octoloom for Agent Fabric. Each one g
 2. **Learn step by step**: the same project, explained part by part (canvas, AgentScript flow, policies, deploy, chat, Tracer), with screenshots.
 3. **Build it from scratch**: start from a blank project and build the same network with forms, menus and buttons only (no code), one screenshot per step.
 
-New to Octoloom? Start with **[Getting started](../getting-started.md)**, then pick a template. A good learning order is the smallest ones first: *Retail Returns* (deterministic) and *Customer Service* (probabilistic), then their governed and secured variants. No OpenAI key yet? The **Fully mocked** ones (*Hotel Concierge*, *Event Ticketing* and four more) use an A²D LLM mock, so you can deploy and chat with only an Anypoint org.
+New to Octoloom? Start with **[Getting started](../getting-started.md)**, then pick a template. A good learning order is the smallest ones first: *Retail Returns* (deterministic) and *Customer Service* (probabilistic), then their governed and secured variants. No OpenAI key yet? The **Fully mocked** ones (*Hotel Concierge*, *Event Ticketing* and four more) use an A²D LLM mock, so you can deploy and chat with only an Anypoint org. No Anypoint org or gateway yet? Do **[Before you start](../start/index.md)** first.
 
 ## Probabilistic networks (Agent Network 1.0)
 

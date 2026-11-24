@@ -209,7 +209,7 @@ def tutorial(t, m, nxt, prev):
           '3. **[Build it from scratch](#path-3-build-it-from-scratch)**: start from a blank project and build the same network yourself, no code, one screenshot per step.', '',
           '## Before you start', '',
           '- VS Code with **Octoloom for Agent Fabric** installed (Marketplace), version ' + ('0.9.27' if t.get('mocked') else '0.9.25') + ' or later.',
-          '- An Anypoint organization with Agent Fabric, a connected app (client ID and secret), an environment and a Flex gateway.',
+          '- An Anypoint organization with Agent Fabric, an environment, a [Small Managed Omni Gateway](https://octoloom.a2d-ai.com/start/gateway/) and a [connected app](https://octoloom.a2d-ai.com/start/connected-app/) (client ID and secret). New to Anypoint? **[Before you start](https://octoloom.a2d-ai.com/start/)** shows the trial account, the gateway, the connected app and connecting Octoloom, step by step with videos.',
           ('- No OpenAI key: the LLM is an A²D LLM mock as well (`a2dLlm.url`), with scripted answers for the Try it prompts.' if t.get('mocked') else '- An OpenAI API key (or an OpenAI-compatible LLM gateway).'),
           ]
     if var == 'idmc':
@@ -315,7 +315,7 @@ def index_md():
          '1. **Just use it**: import the template from **New Project**, deploy it and chat with it.',
          '2. **Learn step by step**: the same project, explained part by part (canvas, AgentScript flow, policies, deploy, chat, Tracer), with screenshots.',
          '3. **Build it from scratch**: start from a blank project and build the same network with forms, menus and buttons only (no code), one screenshot per step.', '',
-         'New to Octoloom? Start with **[Getting started](getting-started.md)**, then pick a template. A good learning order is the smallest ones first: *Retail Returns* (deterministic) and *Customer Service* (probabilistic), then their governed and secured variants. No OpenAI key yet? The **Fully mocked** ones (*Hotel Concierge*, *Event Ticketing* and four more) use an A²D LLM mock, so you can deploy and chat with only an Anypoint org.', '']
+         'New to Octoloom? Start with **[Getting started](getting-started.md)**, then pick a template. A good learning order is the smallest ones first: *Retail Returns* (deterministic) and *Customer Service* (probabilistic), then their governed and secured variants. No OpenAI key yet? The **Fully mocked** ones (*Hotel Concierge*, *Event Ticketing* and four more) use an A²D LLM mock, so you can deploy and chat with only an Anypoint org. No Anypoint org or gateway yet? Do **[Before you start](https://octoloom.a2d-ai.com/start/)** first.', '']
     for v in ('v1', 'v2'):
         L += [f"## {STYLE[v]} networks ({'Agent Network 1.0' if v=='v1' else 'Agent Network 2.0, AgentScript'})", '',
               'An LLM broker reads its instructions and picks agents and MCP tools.' if v=='v1' else 'AgentScript flows decide every step: routers, gates, executors.', '',

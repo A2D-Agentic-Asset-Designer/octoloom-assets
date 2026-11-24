@@ -2,7 +2,7 @@
 
 [All tutorials](tutorials/index.md)
 
-Octoloom for Agent Fabric is a VS Code extension for designing, governing, running and deploying MuleSoft Agent Fabric agent networks. This tour takes about 20 minutes. When it's done you have a network deployed and you've chatted with it. Then pick a [template tutorial](tutorials/index.md) to go deeper.
+Octoloom for Agent Fabric is a VS Code extension for designing, governing, running and deploying MuleSoft Agent Fabric agent networks. This tour takes about 20 minutes. When it's done you have a network deployed and you've chatted with it. You need an Anypoint organization with Agent Fabric, a gateway and a connected app; if you don't have them yet, do **[Before you start](start/index.md)** first (trial account, Small Managed Omni Gateway, connected app, with videos). Then pick a [template tutorial](tutorials/index.md) to go deeper.
 
 
 ## 1. Install and open Home
@@ -24,7 +24,7 @@ Open the **Octoloom** side bar, then **Setup & Connect**.
 ![Setup & Connect](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/screenshots/setup-connect.png)
 
 1. **Tooling**: Node.js, Java, anypoint-cli-v4 and the agent-network plugin. Click **Install** or **Repair** on any row that isn't green.
-2. **Agent Fabric**: the connected app client ID and secret, then the organization and environment. You need this for the Exchange palette, publish and deploy.
+2. **Agent Fabric**: the client ID and secret of the [connected app](start/connected-app.md), then the organization and environment ([how to connect](start/connect-anypoint.md)). You need this for the Exchange palette, publish and deploy.
 3. **A²D** (optional): your A²D API key, which adds the A²D palette tab and Share → A²D sessions.
 4. **IDMC** (optional): Headless IDMC, which adds the IDMC palette tab.
 
@@ -69,7 +69,7 @@ The shield icon on the canvas runs the Agent Fabric rulesets (and your organizat
 
 ![Deploy form](https://raw.githubusercontent.com/A2D-Agentic-Asset-Designer/octoloom-assets/main/screenshots/deploy-form.png)
 
-- Pick the gateway from the chips (each shows its status and space) and keep the switches on (Tracing, Wait until ready, Publish before deploy).
+- Pick the gateway from the chips (each shows its status and space; no chip? [create a Small Managed Omni Gateway](start/gateway.md)) and keep the switches on (Tracing, Wait until ready, Publish before deploy).
 - Enter the secrets, such as `openai.apiKey`. They're passed to the CLI and never stored.
 - The square status light turns green when the network is **Deployed and running**.
 

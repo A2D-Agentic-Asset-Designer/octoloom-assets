@@ -201,6 +201,7 @@ def site_links(md, here):
             if mm.group(1) == 'getting-started.md': return f']({up}getting-started.md)'
             return f']({up}tutorials/{mm.group(2)}.md)'
         return m.group(0)
+    md = re.sub(r'\]\(https://octoloom\.a2d-ai\.com/start/(?:([\w-]+)/)?\)', lambda m: f']({up}start/{m.group(1) or "index"}.md)', md)
     return re.sub(r'\]\((https://github\.com/[^)\s]+)\)', rep, md)
 
 
@@ -496,7 +497,8 @@ def templates():
     style = {'v1': 'Probabilistic (Agent Network 1.0)', 'v2': 'Deterministic (Agent Network 2.0, AgentScript)'}
     idx = ['# Templates', '',
            f'Octoloom ships **{len(INDEX)} ready-to-run templates**. Open one with **New Project** (Home → *New Probabilistic / Deterministic Network* → *Use cases* or *Technical*). '
-           'Every upstream is a public A²D mock, so a template deploys and answers without any backend of yours.', '',
+           'Every upstream is a public A²D mock, so a template deploys and answers without any backend of yours. '
+           'You need an Anypoint organization with Agent Fabric, a gateway and a connected app: see [Before you start](../start/index.md).', '',
            '| Kind | What it is |', '|---|---|',
            '| Use case | A business network: agents, MCP servers and an LLM broker or an AgentScript flow. |',
            '| Governed | The same use case with built-in Agent Fabric gateway policies. |',
@@ -686,7 +688,8 @@ def tutorials():
         if not os.path.exists(p): continue
         body = fix(open(p).read())
         if os.path.isdir(os.path.join(REPO, 'media', 'onboarding', 'steps')):
-            body = re.sub(r'(## Before you start\n\n(?:- .*\n)+)', lambda m: m.group(1) + prereq_line() + '\n', body, count=1)
+            if '](../start/' not in body.split('## Path 1')[0]:
+                body = re.sub(r'(## Before you start\n\n(?:- .*\n)+)', lambda m: m.group(1) + prereq_line() + '\n', body, count=1)
         write(f'tutorials/{t["id"]}.md', body)
         nav[t['version']].append((t['title'], f'tutorials/{t["id"]}.md'))
     ti = fix(open(os.path.join(TUTS, 'README.md')).read())
