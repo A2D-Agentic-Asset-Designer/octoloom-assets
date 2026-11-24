@@ -192,7 +192,7 @@ Runs a 2.0 network on this machine in Docker (Flex gateways, a local Exchange an
 
 ### Setup gateways
 
-Asks for a gateway name and runs the CLI step agent-network:setup:gateways for it (single-gateway mode), in a terminal.
+Asks for the target space type (Shared Space or Private Space), the space (the spaces of the connected organization, or type its name if they cannot be read) and the gateway name (agent-network-shared-gw for a shared space, agent-network-gw for a private space), then runs the CLI step agent-network:setup:gateways -g <gateway> -t <space> (single-gateway mode) in a terminal. The message at the end names the space.
 
 **When to use it:** Before the first deploy to a gateway, or when the deploy asks for it.
 
@@ -204,6 +204,8 @@ Asks for a gateway name and runs the CLI step agent-network:setup:gateways for i
 
 **Examples and details:**
 
+- Shared Space → cloudhub-us-east-2 → agent-network-shared-gw
+- Private Space → your private space → agent-network-gw
 - The terminal shows what the CLI does
 
 ### Undeploy

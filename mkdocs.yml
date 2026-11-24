@@ -47,7 +47,7 @@ extra_javascript:
   - assets/usage.js
 extra:
   version: "0.9.28"
-  installs: "133"
+  installs: "135"
   marketplace: https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom
   social:
     - icon: material/microsoft-visual-studio-code
@@ -178,7 +178,7 @@ nav:
           - "IDMC Data Trust (needs Informatica IDMC)": catalog/v2-idmc-data-trust.md
   - "Tutorials":
       - "All tutorials": tutorials/index.md
-      - "Probabilistic (v1)":
+      - "Probabilistic":
           - "Employee Onboarding": tutorials/v1-employee-onboarding.md
           - "Employee Onboarding: governed": tutorials/v1-employee-onboarding-governed.md
           - "Customer Service Broker": tutorials/v1-customer-service.md
@@ -199,7 +199,7 @@ nav:
           - "Library Services (fully mocked)": tutorials/v1-library-services.md
           - "Fleet Maintenance (fully mocked)": tutorials/v1-fleet-maintenance.md
           - "IDMC Customer Data Steward (needs Informatica IDMC)": tutorials/v1-idmc-customer-steward.md
-      - "Deterministic (v2)":
+      - "Deterministic":
           - "Insurance Claims (FNOL to Payout)": tutorials/v2-insurance-claims.md
           - "Insurance Claims (FNOL to Payout): governed": tutorials/v2-insurance-claims-governed.md
           - "Retail Returns": tutorials/v2-retail-returns.md

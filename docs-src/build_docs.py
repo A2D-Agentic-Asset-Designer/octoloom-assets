@@ -619,7 +619,7 @@ def tutorials():
     gs = re.sub(r'\]\(README\.md\)', '](tutorials/index.md)', gs)
     gs = re.sub(r'\]\(([\w-]+)/README\.md\)', r'](tutorials/\1.md)', gs)
     write('getting-started.md', site_links(gs, ''))
-    return [('Probabilistic (v1)', nav['v1']), ('Deterministic (v2)', nav['v2'])]
+    return [('Probabilistic', nav['v1']), ('Deterministic', nav['v2'])]
 
 
 def skills():

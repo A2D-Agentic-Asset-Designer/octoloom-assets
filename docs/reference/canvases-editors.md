@@ -49,7 +49,7 @@ The canvas of one agent network file: brokers, agents, MCP servers, LLMs, connec
 
 ## AgentScript flow
 
-The canvas of one .agent file: its nodes (trigger, generator, router, sub-agent, orchestrator, executor, echo) and the paths between them. It edits the AgentScript text.
+The canvas of one .agent file: its nodes (trigger, generator, router, sub-agent, orchestrator, executor, echo) and the paths between them. It edits the AgentScript text. A card lists the actions it calls: MCP tools under MCP actions (MCP icon) and agents (A2A) under Agent actions (agent icon); a card with no actions shows one empty Actions section.
 
 **When to use it:** Designing the behaviour of one agent.
 

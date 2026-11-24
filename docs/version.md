@@ -2,7 +2,7 @@
 
 # Version history
 
-<p class="lede">Every Octoloom release from the very first, newest first: what changed, in plain words, and who made it happen. <b>60 versions</b>, <b>214 changes</b>.</p>
+<p class="lede">Every Octoloom release from the very first, newest first: what changed, in plain words, and who made it happen. <b>60 versions</b>, <b>216 changes</b>.</p>
 
 ## Contributors
 
@@ -13,6 +13,14 @@ Everyone who suggested or built a change. A change counts for the person who fil
 ## 0.9.29
 
 <span class="ol-ver-meta">in development</span>
+
+- **Setup gateways asks for the space**. Setup gateways ran the CLI without a target space, so it picked one the user never chose and never said which. It now asks for the space type (Shared Space or Private Space), the space (from the spaces of the connected organization, or typed when they cannot be read) and the gateway name (agent-network-shared-gw for a shared space, agent-network-gw for a private space), runs agent-network:setup:gateways with -g and -t, and the message at the end names the space.
+
+    <span class="ol-by">:material-account-heart-outline: [Tommaso Bolis](https://github.com/tommasobolis), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+
+- **Broker canvas: agent actions get their own section**. A card on the AgentScript flow canvas showed every action under one Actions section with the MCP icon, also the actions that send an A2A message to an agent. Now MCP tools are listed under **MCP actions** (MCP icon and colour, as before) and agents under **Agent actions** (agent icon and colour), each only when the card has such actions; a card without actions keeps the single empty Actions section. Folded sections stay folded. Actions that are not defined stay with the MCP actions and keep their error mark. The Tracer graph is unchanged.
+
+    <span class="ol-by">:material-account-heart-outline: [Tommaso Bolis](https://github.com/tommasobolis), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Templates deploy on every control plane**. MuleSoft publishes its policies and the `openai` LLM under a different organization in each control plane (US, EU, Canada, Japan); templates and new projects named the US one, so on an EU org the pre-deploy check said *openai 1.0.0 can't be read by the connected organization*. New projects, the policy picker and the *Use the Exchange LLM* fix now use the organization of the control plane you are connected to; the Coverage map counts MuleSoft policies of every control plane as Agent Fabric. Credits: reported, built and committed by [Amir Khan](https://github.com/amirkhan-ak-sf).
 
