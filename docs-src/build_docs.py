@@ -455,10 +455,9 @@ def reference(E, G):
         th = f'![{title}](../assets/ui/{sh0}-light.webp){{ loading=lazy }}' if sh0 else ''
         idx += [f'-   **[{title}]({gid}.md)**', '', f'    {th}', '', '    ' + ', '.join(E[k]['title'] for k in keys if k in E), '']
         nav.append((title, f'reference/{gid}.md'))
-    rest = [k for k in E if k not in used]
-    if rest:
-        write('reference/more.md', '\n'.join(['# More', ''] + [card(E[k], '##') for k in rest]))
-        nav.append(('More', 'reference/more.md')); idx.append('- **[More](more.md)**')
+    # Everything not in a group (the Quick Start entry) lives on the Quick Starts pages, not on a "More" page.
+    rest = [k for k in E if k not in used and k not in QS_KEYS]
+    if rest: print('  Explain entries on no page:', rest)
     # guided tours
     md = ['# Guided tours', '', 'Each canvas shows a short tour the first time you open it (*Don\'t show again* hides it). '
           'Replay it with **Guide** in the toolbar or **Start the guide** on the Explain button.', '']
@@ -581,6 +580,91 @@ def prereqs():
         nav.append((title, f'start/{slug_}.md'))
     write('start/index.md', '\n'.join(idx))
     return [('Overview', 'start/index.md')] + nav
+
+
+# Quick Starts: the three onboarding journeys of the extension (src/model/onboarding.ts), one page each,
+# every step with its screenshot of the onboarding tab and of the Octoloom view it opens.
+QS_KEYS = {'welcomeQuickStart'}
+QS = [('beginner', 'Beginner', '~30 min', 'walk', 'Anypoint',
+       'Pick a fully mocked template, learn the canvas, run a Deterministic network locally, then deploy it to your Omni Gateway and chat with it. No LLM key needed.',
+       [('beginner-style', 'A fully mocked template', ['new-project']), ('canvas', 'Learn the canvas', ['network-v2']),
+        ('run-local', 'Run it locally (Deterministic)', ['run-local-vars']), ('deploy', 'Deploy to your Omni Gateway', ['deploy-form']),
+        ('chat', 'Chat and trace', ['chat-progress', 'chat-trace'])]),
+      ('advanced', 'Advanced', '~45 min', 'run', 'Anypoint and A²D',
+       'Connect A²D, build a use-case network from A²D mock agents and MCP servers, deploy it, then chat, trace and share it in an A²D session.',
+       [('connect-a2d', 'Connect to A²D', []), ('advanced-template', 'A use-case network', ['new-project']),
+        ('advanced-a2d', 'Build with A²D mocks', ['assets-a2d-llm']), ('deploy', 'Deploy to your Omni Gateway', ['deploy-form']),
+        ('advanced-share', 'Chat, trace and share', ['chat-progress', 'chat-share-a2d'])]),
+      ('expert', 'Expert', '~60 min', 'climb', 'Anypoint, A²D and P4A',
+       'Connect A²D and P4A, start from a governed or secured technical template, add P4A and Agent Fabric policies, validate governance and check the Coverage map.',
+       [('connect-a2d', 'Connect to A²D', []), ('connect-p4a', 'Connect to P4A', []), ('expert-template', 'A technical network', ['new-project']),
+        ('expert-policies', 'Agent Fabric and P4A policies', ['policy-picker']), ('expert-governance', 'Validate the governance', ['governance']),
+        ('expert-coverage', 'Deploy and check the coverage', ['coverage-map'])])]
+QS_TPL = {'beginner': lambda t: bool(t.get('mocked')) or 'fully mocked' in (t.get('summary') or '').lower(),
+          'advanced': lambda t: t['category'] == 'usecase', 'expert': lambda t: t['category'] == 'technical'}
+
+
+def step_md(slug_, up):
+    p = os.path.join(REPO, 'media', 'onboarding', 'steps', f'{slug_}.md')
+    md = open(p).read()
+    md = re.sub(r'!\[([^\]]*)\]\(\.\./videos/([\w-]+)\.mp4\)',
+                lambda m: f'<video controls muted playsinline preload="none" poster="{up}assets/onboarding/videos/{m.group(2)}.png" '
+                          f'src="{up}assets/onboarding/videos/{m.group(2)}.mp4" aria-label="{m.group(1)}" style="width:100%"></video>', md)
+    md = re.sub(r'\]\(\.\./([\w-]+\.png)\)', rf']({up}assets/onboarding/\1)', md)
+    md = re.sub(r' ?This step ticks itself off[^.]*\.', '', md)
+    md = md.replace('**Templates for this journey** below', '**Templates for this journey** in the tab (listed at the end of this page)')
+    md = re.sub(r'^# .*\n', '', md, count=1)
+    return re.sub(r'^(#+) ', lambda m: '#' * (len(m.group(1)) + 2) + ' ', md, flags=re.M)
+
+
+def quick_starts(E):
+    if not os.path.isdir(os.path.join(REPO, 'media', 'onboarding', 'steps')): return []
+    nav = [('Overview', 'quick-starts/index.md')]
+    idx = ['<span class="ol-pill">Get started</span>', '', '# Quick Starts', '',
+           '<p class="lede"><strong>Three guided journeys, from your first network to governed production.</strong> '
+           'The same journeys as the <b>Quick Start</b> cards on the Octoloom Home page: each opens as its own Octoloom tab with the steps on the left, '
+           'the page of the step on the right, short videos and buttons that open the right view. Every journey starts with the four '
+           '<a href="../start/index.md">prerequisites</a>.</p>', '',
+           img('welcome', '../', 'Home → Quick Start: the Beginner, Advanced and Expert cards'), '',
+           '<div class="grid cards" markdown>', '']
+    for jid, level, time, icon, needs, text, steps in QS:
+        n = len(CORE_PREREQ) + len(steps)
+        idx += [f'-   **[{level}]({jid}.md)** · {time}', '', f'    ![{level}](../assets/ui/qs-{jid}-{len(CORE_PREREQ)}-light.webp){{ loading=lazy }}', '',
+                f'    {text}', '', f'    <small>{n} steps · needs {needs}</small>', '']
+    idx += ['</div>', '', '| Journey | Time | Needs | Steps | Templates |', '|---|---|---|---|---|']
+    for jid, level, time, icon, needs, text, steps in QS:
+        tl = [t for t in INDEX if QS_TPL[jid](t)]
+        idx.append(f'| [{level}]({jid}.md) | {time} | {needs} | {len(CORE_PREREQ) + len(steps)} | {len(tl)} |')
+    e = E.get('welcomeQuickStart')
+    if e: idx += ['', '## How the Quick Start tab works', '', card(e, '###')]
+    write('quick-starts/index.md', '\n'.join(idx))
+    for jid, level, time, icon, needs, text, steps in QS:
+        n = len(CORE_PREREQ) + len(steps)
+        md = [f'<span class="ol-pill">Quick Start · {level} · {time}</span>', '', f'# {level} journey', '', f'<p class="lede">{text}</p>', '',
+              f'**Needs:** {needs}. **Steps:** {n}. Open it in VS Code with **Home → Quick Start → {level}**, or *Octoloom: Quick Start* in the Command Palette.', '',
+              '## The journey at a glance', '']
+        allsteps = [(s_, t, None) for s_, t in CORE_PREREQ] + steps
+        for i, (s_, t, _) in enumerate(allsteps, 1):
+            md.append(f'{i}. [{t}](#{i}-{slug(t)})')
+        md += ['', f'## Steps 1–{len(CORE_PREREQ)}: the prerequisites', '',
+               'Every journey starts with the same four steps. Each is explained step by step, with videos, under **Before you start**:', '']
+        for i, (s_, t) in enumerate(CORE_PREREQ, 1):
+            md += [f'### {i}. {t}', '', f'See [{t}](../start/{s_}.md).', '']
+        for k, (s_, t, shots) in enumerate(steps):
+            i = len(CORE_PREREQ) + k + 1
+            md += [f'### {i}. {t}', '', img(f'qs-{jid}-{i - 1}', '../', f'{level} onboarding tab, step {i} of {n}: {t}'), '', step_md(s_, '../'), '']
+            for sh in shots:
+                md += [img(sh, '../', SHOT_CAP.get(sh) or t), '']
+        tl = [t for t in INDEX if QS_TPL[jid](t)]
+        md += ['## Templates for this journey', '', f'The {level} tab lists these templates; click one to create the project right in the tab.', '',
+               '| Template | Style | Agents | MCP | Tutorial |', '|---|---|---|---|---|']
+        for t in sorted(tl, key=lambda t: (t['version'] != 'v2', t['title'])):
+            md.append(f'| [{t["title"]}](../catalog/{t["id"]}.md) | {"Deterministic" if t["version"] == "v2" else "Probabilistic"} | {t.get("agents", 0)} | {t.get("mcps", 0)} | [Tutorial](../tutorials/{t["id"]}.md) |')
+        nxt = {'beginner': ('advanced', 'Advanced'), 'advanced': ('expert', 'Expert')}.get(jid)
+        md += ['', '---', '', f'**Next:** [the {nxt[1]} journey]({nxt[0]}.md)' if nxt else '**Next:** [pick a tutorial](../tutorials/index.md)', '']
+        write(f'quick-starts/{jid}.md', '\n'.join(md))
+        nav.append((level, f'quick-starts/{jid}.md'))
+    return nav
 
 
 def prereq_line(up='../'):
@@ -706,8 +790,10 @@ def main():
     write('index.md', home(version))
     tut = tutorials()
     pre = prereqs()
+    qs = quick_starts(E)
     nav = [('Get started', [('Introduction', 'index.md'), ('Getting started', 'getting-started.md')]
-                           + ([('Before you start', pre)] if pre else []) + [('Install from the Marketplace', MARKET)]),
+                           + ([('Before you start', pre)] if pre else []) + ([('Quick Starts', qs)] if qs else [])
+                           + [('Install from the Marketplace', MARKET)]),
            ('Using Octoloom', [('All features', 'features/index.md')] + features(E)),
            ('UI reference', [('Overview', 'reference/index.md')] + reference(E, G)),
            ('Templates', [('All templates', 'catalog/index.md')] + templates()),

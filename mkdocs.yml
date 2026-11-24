@@ -47,7 +47,7 @@ extra_javascript:
   - assets/usage.js
 extra:
   version: "0.9.28"
-  installs: "135"
+  installs: "139"
   marketplace: https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom
   social:
     - icon: material/microsoft-visual-studio-code
@@ -85,6 +85,11 @@ nav:
           - "Connect Octoloom to Agent Fabric": start/connect-anypoint.md
           - "Connect to A²D (optional)": start/connect-a2d.md
           - "Connect to P4A (optional)": start/connect-p4a.md
+      - "Quick Starts":
+          - "Overview": quick-starts/index.md
+          - "Beginner": quick-starts/beginner.md
+          - "Advanced": quick-starts/advanced.md
+          - "Expert": quick-starts/expert.md
       - "Install from the Marketplace": https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom
   - "Using Octoloom":
       - "All features": features/index.md
@@ -125,7 +130,6 @@ nav:
       - "Chat, Share and Tracer": reference/chat-tracer.md
       - "Governance": reference/governance.md
       - "Help": reference/help.md
-      - "More": reference/more.md
       - "Guided tours": reference/guided-tours.md
       - "Commands": reference/commands.md
       - "Settings": reference/settings.md

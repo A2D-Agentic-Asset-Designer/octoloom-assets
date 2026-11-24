@@ -2,7 +2,7 @@
 
 # Version history
 
-<p class="lede">Every Octoloom release from the very first, newest first: what changed, in plain words, and who made it happen. <b>60 versions</b>, <b>216 changes</b>.</p>
+<p class="lede">Every Octoloom release from the very first, newest first: what changed, in plain words, and who made it happen. <b>60 versions</b>, <b>218 changes</b>.</p>
 
 ## Contributors
 
@@ -14,7 +14,15 @@ Everyone who suggested or built a change. A change counts for the person who fil
 
 <span class="ol-ver-meta">in development</span>
 
+- **Home: the Quick Start intro says "short videos"**. The steps show recorded videos since the Quick Start videos; the intro still said pictures.
+
+    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+
 - **Setup gateways asks for the space**. Setup gateways ran the CLI without a target space, so it picked one the user never chose and never said which. It now asks for the space type (Shared Space or Private Space), the space (from the spaces of the connected organization, or typed when they cannot be read) and the gateway name (agent-network-shared-gw for a shared space, agent-network-gw for a private space), runs agent-network:setup:gateways with -g and -t, and the message at the end names the space.
+
+    <span class="ol-by">:material-account-heart-outline: [Tommaso Bolis](https://github.com/tommasobolis), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+
+- **Broker: see the connection of each action**. On the AgentScript flow canvas the tooltip of an action chip names the connection it goes through (for example *reserve_seats - MCP tool on event_ticketing_booking_mcp_connection*). In the inspector the connection name under an action is a link: it opens the network canvas of agent-network.yaml with that connection selected, so you can follow an action to its MCP server or agent without reading the YAML.
 
     <span class="ol-by">:material-account-heart-outline: [Tommaso Bolis](https://github.com/tommasobolis), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
@@ -22,7 +30,7 @@ Everyone who suggested or built a change. A change counts for the person who fil
 
     <span class="ol-by">:material-account-heart-outline: [Tommaso Bolis](https://github.com/tommasobolis), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
-- **Templates deploy on every control plane**. MuleSoft publishes its policies and the `openai` LLM under a different organization in each control plane (US, EU, Canada, Japan); templates and new projects named the US one, so on an EU org the pre-deploy check said *openai 1.0.0 can't be read by the connected organization*. New projects, the policy picker and the *Use the Exchange LLM* fix now use the organization of the control plane you are connected to; the Coverage map counts MuleSoft policies of every control plane as Agent Fabric. Credits: reported, built and committed by [Amir Khan](https://github.com/amirkhan-ak-sf).
+- **Templates deploy on every control plane**. MuleSoft publishes its policies and the `openai` LLM under a different organization in each control plane (US, EU, Canada, Japan); templates and new projects named the US one, so on an EU org the pre-deploy check said *openai 1.0.0 can't be read by the connected organization*. New projects, the policy picker and the *Use the Exchange LLM* fix now use the organization of the control plane you are connected to; the Coverage map counts MuleSoft policies of every control plane as Agent Fabric.
 
     <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 

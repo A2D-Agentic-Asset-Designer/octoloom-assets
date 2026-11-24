@@ -34,6 +34,8 @@ SHOTS = {
     'governance': 1, 'governance-fix-all': 0,
     'explain-anything': 0, 'explain-guide': 0, 'explain-docs': 0,
 }
+# Quick Starts (docs only): the onboarding tab at each journey step after the four prerequisites
+SHOTS.update({f'qs-{j}-{k}': 0 for j, n in (('beginner', 9), ('advanced', 10), ('expert', 11)) for k in range(4, n)})
 # canvas card crops: (spec, css selector, output name)
 CROPS = [
     ('network-v2', '.nc.k-broker', 'card-broker'), ('network-v2', '.nc.k-agent', 'card-agent'),
@@ -46,6 +48,8 @@ CROPS = [
     ('agent-flow', '.topbar', 'toolbar-flow'), ('network-v2', '.fab-col', 'canvas-fabs'),
     ('network-v2', '.problems', 'problems-bar'), ('network-v2', '.xb-btn', 'explain-button'),
 ]
+
+BOTTOM = {'.xb-btn', '.problems'}
 
 PROBE = r"""()=>{
  const W=innerWidth,Hh=innerHeight, out=[], seen=new Set();
@@ -87,7 +91,8 @@ def dump(name, size, sels, extra=0):
         r2 = dump(name, f'{w},{h}', sels, want - r['H'])
         # the controls line up with the taller probe, but the canvas cards are fitted to the first layout
         # pass (the same one the screenshot draws them in), so the card crops keep the first probe's rects
-        if r2: r2['crops'] = r.get('crops', r2.get('crops'))
+        # the floating, bottom-anchored parts (Explain button, problems bar) follow the taller viewport
+        if r2: r2['crops'] = {k: (v if k in BOTTOM else r.get('crops', {}).get(k, v)) for k, v in r2.get('crops', {}).items()}
         return r2
     return r
 

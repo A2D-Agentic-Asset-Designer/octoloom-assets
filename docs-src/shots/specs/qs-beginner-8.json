@@ -1,0 +1,185 @@
+{
+ "name": "qs-beginner-8",
+ "view": "onboarding",
+ "themes": [
+  "dark",
+  "light"
+ ],
+ "size": "1400,900",
+ "state": {
+  "ob:step": 8
+ },
+ "messages": [
+  {
+   "type": "onboardingInit",
+   "journey": "beginner",
+   "pages": {
+    "connect-p4a": "@file:media/onboarding/steps/connect-p4a.md",
+    "connected-app": "@file:media/onboarding/steps/connected-app.md",
+    "connect-anypoint": "@file:media/onboarding/steps/connect-anypoint.md",
+    "expert-coverage": "@file:media/onboarding/steps/expert-coverage.md",
+    "chat": "@file:media/onboarding/steps/chat.md",
+    "advanced-a2d": "@file:media/onboarding/steps/advanced-a2d.md",
+    "account": "@file:media/onboarding/steps/account.md",
+    "canvas": "@file:media/onboarding/steps/canvas.md",
+    "deploy": "@file:media/onboarding/steps/deploy.md",
+    "run-local": "@file:media/onboarding/steps/run-local.md",
+    "beginner-style": "@file:media/onboarding/steps/beginner-style.md",
+    "advanced-share": "@file:media/onboarding/steps/advanced-share.md",
+    "connect-a2d": "@file:media/onboarding/steps/connect-a2d.md",
+    "advanced-template": "@file:media/onboarding/steps/advanced-template.md",
+    "gateway": "@file:media/onboarding/steps/gateway.md",
+    "expert-policies": "@file:media/onboarding/steps/expert-policies.md",
+    "expert-governance": "@file:media/onboarding/steps/expert-governance.md",
+    "expert-template": "@file:media/onboarding/steps/expert-template.md"
+   },
+   "templates": [
+    {
+     "id": "v1-hotel-concierge",
+     "version": "v1",
+     "category": "usecase",
+     "title": "Hotel Concierge (fully mocked)",
+     "summary": "A concierge broker books the spa and room service for hotel guests after a reservation lookup. Fully mocked: the LLM is an A\u00b2D LLM mock too, so no OpenAI key is needed.",
+     "agents": 2,
+     "mcps": 1,
+     "protocols": [
+      "0.3.0"
+     ],
+     "policies": [],
+     "files": [
+      "agent-network.yaml",
+      "exchange.json",
+      "README.md"
+     ],
+     "assetId": "hotel-concierge-v1",
+     "prefix": "octo_hc1",
+     "mocked": true
+    },
+    {
+     "id": "v1-library-services",
+     "version": "v1",
+     "category": "usecase",
+     "title": "Library Services (fully mocked)",
+     "summary": "A library broker answers member, loan, catalog and event questions with two agents and three tool servers. Fully mocked: the LLM is an A\u00b2D LLM mock too, so no OpenAI key is needed.",
+     "agents": 2,
+     "mcps": 3,
+     "protocols": [
+      "0.3.0"
+     ],
+     "policies": [],
+     "files": [
+      "agent-network.yaml",
+      "exchange.json",
+      "README.md"
+     ],
+     "assetId": "library-services-v1",
+     "prefix": "octo_ls1",
+     "mocked": true
+    },
+    {
+     "id": "v1-fleet-maintenance",
+     "version": "v1",
+     "category": "usecase",
+     "title": "Fleet Maintenance (fully mocked)",
+     "summary": "A fleet broker checks telematics, orders parts, books the workshop and finds a replacement truck: two agents, four tool servers. Fully mocked: the LLM is an A\u00b2D LLM mock too, so no OpenAI key is needed.",
+     "agents": 2,
+     "mcps": 4,
+     "protocols": [
+      "0.3.0"
+     ],
+     "policies": [],
+     "files": [
+      "agent-network.yaml",
+      "exchange.json",
+      "README.md"
+     ],
+     "assetId": "fleet-maintenance-v1",
+     "prefix": "octo_fm1",
+     "mocked": true
+    },
+    {
+     "id": "v2-event-ticketing",
+     "version": "v2",
+     "category": "usecase",
+     "title": "Event Ticketing (fully mocked)",
+     "summary": "Extract the event, check availability, reserve the seats and issue the tickets, or join the waitlist. Fully mocked: the LLM is an A\u00b2D LLM mock too, so no OpenAI key is needed.",
+     "agents": 2,
+     "mcps": 2,
+     "protocols": [
+      "0.3.0",
+      "1.0"
+     ],
+     "policies": [],
+     "files": [
+      "agent-network.yaml",
+      "exchange.json",
+      "brokers/ticketing-broker.agent",
+      "README.md"
+     ],
+     "assetId": "event-ticketing-v2",
+     "prefix": "octo_et2",
+     "mocked": true
+    },
+    {
+     "id": "v2-warranty-repair",
+     "version": "v2",
+     "category": "usecase",
+     "title": "Warranty Repair (fully mocked)",
+     "summary": "Check the device warranty: covered repairs are booked and confirmed, the others get a quote. Three agents, one tool server. Fully mocked: the LLM is an A\u00b2D LLM mock too, so no OpenAI key is needed.",
+     "agents": 3,
+     "mcps": 1,
+     "protocols": [
+      "0.3.0",
+      "1.0"
+     ],
+     "policies": [],
+     "files": [
+      "agent-network.yaml",
+      "exchange.json",
+      "brokers/repair-broker.agent",
+      "README.md"
+     ],
+     "assetId": "warranty-repair-v2",
+     "prefix": "octo_wr2",
+     "mocked": true
+    },
+    {
+     "id": "v2-utility-outage",
+     "version": "v2",
+     "category": "usecase",
+     "title": "Utility Outage (fully mocked)",
+     "summary": "A known outage gets status updates and a bill credit; an unknown one gets a ticket and a field crew. Three agents, two tool servers. Fully mocked: the LLM is an A\u00b2D LLM mock too, so no OpenAI key is needed.",
+     "agents": 3,
+     "mcps": 2,
+     "protocols": [
+      "1.0",
+      "0.3.0"
+     ],
+     "policies": [],
+     "files": [
+      "agent-network.yaml",
+      "exchange.json",
+      "brokers/outage-broker.agent",
+      "README.md"
+     ],
+     "assetId": "utility-outage-v2",
+     "prefix": "octo_uo2",
+     "mocked": true
+    }
+   ]
+  },
+  {
+   "type": "onboardingFacts",
+   "facts": {
+    "anypoint": true,
+    "a2d": false,
+    "p4a": false,
+    "projects": 0,
+    "builds": 0,
+    "deploys": 0,
+    "gateway": true
+   },
+   "manual": {}
+  }
+ ]
+}
