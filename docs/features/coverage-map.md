@@ -47,8 +47,11 @@
 ## How to use it
 
 1. Pick **This workspace** or **All on this machine**.
+
 2. Click a summary card (for example *Policy coverage*) to switch the table to that view.
+
 3. In **Where your assets come from**, click a source to keep only the networks that use it.
+
 4. Turn on *Only networks with gaps*, then click a network for its details, *Open canvas* or *Governance*.
 
 ## In detail
@@ -70,7 +73,7 @@ The same text as the in-app **Explain** button (click the floating **i**, then t
 
 Every agent network on this machine in one tab: how well each one is governed and where its assets come from. Six summary cards (policy coverage, protected brokers, upstream authentication, governance, real services vs A²D mocks, deployed), a chart of the sources (A²D, Agent Fabric, Informatica IDMC, P4A, your organization, LLM providers, local ruleset files) and what they supply, and a table with seven views: Overview, Policies, Governance, Authentication, Origins, Lifecycle and LLMs. Click a network for its gaps and every component with its source, authentication and policies. Read-only and local: it reads the project files, the last Governance results and the deployment records; it never runs the CLI and sends nothing anywhere.
 
-**When to use it:** Before a demo or a go-live, to see which networks still have unprotected brokers, connections without authentication, A²D mocks or governance violations. Open it from Home → Your statistics → Coverage map, or with the Octoloom: Coverage Map command.
+**When to use it:** Before a demo or a go-live, to see which networks still have unprotected brokers, connections without authentication, A²D mocks or governance violations. Open it from Home → Quick Actions or Your statistics → Coverage map, or with the Octoloom: Coverage Map command.
 
 **Examples and details:**
 

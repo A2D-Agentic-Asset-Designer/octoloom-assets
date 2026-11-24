@@ -16,6 +16,7 @@
 ## How to use it
 
 1. Select the LLM card and choose **API key** or **OAuth 2.0**.
+
 2. Enter the variable names; the values are asked at deploy time.
 
 ## In detail

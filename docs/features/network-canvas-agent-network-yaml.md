@@ -36,45 +36,47 @@
 | <span class="ol-n">19</span> | **Hide the minimap** | Show or hide the minimap |
 | <span class="ol-n">20</span> | **Explain anything** | Explain anything: click, then click any object (the guided tour starts from here too). Drag to move; double-click to reset its place |
 
-## How to use it
-
-1. Click **+** (Add to the network) to add a broker, agent, MCP server or LLM, or drag one from the **Asset Palette**.
-2. Drag from a card's port to another card to connect them.
-3. Click a card to edit it in the **inspector** (name, description, URL, policies, authentication).
-4. Watch the **Problems** bar; click a problem to jump to the card, or **Fix** where offered.
-5. Click **Save**, then **Build & Deploy**.
-
-## More screenshots
-
 <figure markdown>
 ![A probabilistic (1.0) network](../assets/ui/network-v1-light.webp#only-light){ loading=lazy }
 ![A probabilistic (1.0) network](../assets/ui/network-v1-dark.webp#only-dark){ loading=lazy }
 <figcaption>A probabilistic (1.0) network</figcaption>
 </figure>
 
-<figure markdown>
-![Context edges between a broker and its agents](../assets/ui/network-v2-context-light.webp#only-light){ loading=lazy }
-![Context edges between a broker and its agents](../assets/ui/network-v2-context-dark.webp#only-dark){ loading=lazy }
-<figcaption>Context edges between a broker and its agents</figcaption>
-</figure>
+## How to use it
 
-<figure markdown>
-![The Problems bar with Fix buttons](../assets/ui/network-problems-fix-light.webp#only-light){ loading=lazy }
-![The Problems bar with Fix buttons](../assets/ui/network-problems-fix-dark.webp#only-dark){ loading=lazy }
-<figcaption>The Problems bar with Fix buttons</figcaption>
-</figure>
+1. Click **+** (Add to the network) to add a broker, agent, MCP server or LLM, or drag one from the **Asset Palette**.
 
-<figure markdown>
-![A warning in Problems: an MCP URL that ends in /mcp](../assets/ui/network-mcp-url-light.webp#only-light){ loading=lazy }
-![A warning in Problems: an MCP URL that ends in /mcp](../assets/ui/network-mcp-url-dark.webp#only-dark){ loading=lazy }
-<figcaption>A warning in Problems: an MCP URL that ends in /mcp</figcaption>
-</figure>
+    <figure markdown>
+    ![The canvas buttons explain themselves on hover](../assets/ui/network-fab-tip-light.webp#only-light){ loading=lazy }
+    ![The canvas buttons explain themselves on hover](../assets/ui/network-fab-tip-dark.webp#only-dark){ loading=lazy }
+    <figcaption>The canvas buttons explain themselves on hover</figcaption>
+    </figure>
 
-<figure markdown>
-![The canvas buttons explain themselves on hover](../assets/ui/network-fab-tip-light.webp#only-light){ loading=lazy }
-![The canvas buttons explain themselves on hover](../assets/ui/network-fab-tip-dark.webp#only-dark){ loading=lazy }
-<figcaption>The canvas buttons explain themselves on hover</figcaption>
-</figure>
+2. Drag from a card's port to another card to connect them.
+
+    <figure markdown>
+    ![Context edges between a broker and its agents](../assets/ui/network-v2-context-light.webp#only-light){ loading=lazy }
+    ![Context edges between a broker and its agents](../assets/ui/network-v2-context-dark.webp#only-dark){ loading=lazy }
+    <figcaption>Context edges between a broker and its agents</figcaption>
+    </figure>
+
+3. Click a card to edit it in the **inspector** (name, description, URL, policies, authentication).
+
+4. Watch the **Problems** bar; click a problem to jump to the card, or **Fix** where offered.
+
+    <figure markdown>
+    ![The Problems bar with Fix buttons](../assets/ui/network-problems-fix-light.webp#only-light){ loading=lazy }
+    ![The Problems bar with Fix buttons](../assets/ui/network-problems-fix-dark.webp#only-dark){ loading=lazy }
+    <figcaption>The Problems bar with Fix buttons</figcaption>
+    </figure>
+
+    <figure markdown>
+    ![A warning in Problems: an MCP URL that ends in /mcp](../assets/ui/network-mcp-url-light.webp#only-light){ loading=lazy }
+    ![A warning in Problems: an MCP URL that ends in /mcp](../assets/ui/network-mcp-url-dark.webp#only-dark){ loading=lazy }
+    <figcaption>A warning in Problems: an MCP URL that ends in /mcp</figcaption>
+    </figure>
+
+5. Click **Save**, then **Build & Deploy**.
 
 ## In detail
 

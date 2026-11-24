@@ -10,6 +10,7 @@
 ## How to use it
 
 1. Click the tile in a card's header to minimize it; click the icon to open it again.
+
 2. Click **Minimize all** (or **Open all**) for every card.
 
 ## In detail

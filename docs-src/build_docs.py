@@ -13,7 +13,7 @@ The site is built and published by .github/workflows/docs.yml (MkDocs Material, 
 """
 import json, os, re, shutil, subprocess, sys, urllib.request
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from ui_meta import SECTIONS, F, REF_SHOT, CARD_IMG, KEY_SHOT
+from ui_meta import SECTIONS, F, REF_SHOT, CARD_IMG, KEY_SHOT, SHOT_STEP
 import changelog_page
 import usage_page
 
@@ -130,6 +130,11 @@ def controls_table(shot, E_titles=None):
         what = what.replace('|', '/').replace('\n', ' ')
         rows.append(f'| <span class="ol-n">{c["n"]}</span> | **{name.replace("|", "/")}** | {what} |')
     return '\n'.join(rows)
+
+
+def indent(block, n=4):
+    """A block inside a list item (so the screenshot belongs to that step)."""
+    return '\n'.join((' ' * n + l) if l else l for l in block.split('\n'))
 
 
 def annotated(shot, up, caption):
@@ -393,11 +398,18 @@ def features(E):
             if m.get('what'): md += [f'<p class="lede"><strong>{m["what"]}</strong> {m.get("why", "")}</p>', '']
             if m.get('where'): md += [f'!!! info "Where to find it"', f'    {m["where"]}', '']
             if first: md += [annotated(first, '../', shots[0][1]) if SHOTS.get(first, {}).get('controls') else img(first, '../', shots[0][1]), '']
-            if m.get('how'):
-                md += ['## How to use it', ''] + [f'{i}. {x}' for i, x in enumerate(m['how'], 1)] + ['']
-            if len(shots) > 1:
-                md += ['## More screenshots', '']
-                for sh, cap in shots[1:]: md += [img(sh, '../', cap), '']
+            # Every other screenshot sits next to the step it shows, never in a section of its own (#347).
+            how = m.get('how') or []
+            at = {}
+            for sh, cap in shots[1:]:
+                st = SHOT_STEP.get(sh, 0)
+                at.setdefault(st if 0 <= st <= len(how) else 0, []).append((sh, cap))
+            for sh, cap in at.get(0, []): md += [img(sh, '../', cap), '']
+            if how:
+                md += ['## How to use it', '']
+                for i, x in enumerate(how, 1):
+                    md += [f'{i}. {x}', '']
+                    for sh, cap in at.get(i, []): md += [indent(img(sh, '../', cap)), '']
             md += ['## In detail', '', site_links(re.sub(r'!\[[^\]]*\]\([^)]*\)\s*', '', body), 'features/'), '']
             keys = FEATURE_EXPLAIN.get(s_, [])
             if keys:

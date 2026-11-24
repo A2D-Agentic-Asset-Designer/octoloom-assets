@@ -16,23 +16,24 @@
 ## How to use it
 
 1. Click the floating **Explain** button.
+
 2. Click any button, card or panel.
+
 3. Use **Start the guide** for the tour of this view.
+
+    <figure markdown>
+    ![The Explain panel with the guided tour](../assets/ui/explain-guide-light.webp#only-light){ loading=lazy }
+    ![The Explain panel with the guided tour](../assets/ui/explain-guide-dark.webp#only-dark){ loading=lazy }
+    <figcaption>The Explain panel with the guided tour</figcaption>
+    </figure>
+
 4. Click **Docs** on a card to open this site with a search for that object.
 
-## More screenshots
-
-<figure markdown>
-![The Explain panel with the guided tour](../assets/ui/explain-guide-light.webp#only-light){ loading=lazy }
-![The Explain panel with the guided tour](../assets/ui/explain-guide-dark.webp#only-dark){ loading=lazy }
-<figcaption>The Explain panel with the guided tour</figcaption>
-</figure>
-
-<figure markdown>
-![The Docs link at the end of every Explain card opens this site](../assets/ui/explain-docs-light.webp#only-light){ loading=lazy }
-![The Docs link at the end of every Explain card opens this site](../assets/ui/explain-docs-dark.webp#only-dark){ loading=lazy }
-<figcaption>The Docs link at the end of every Explain card opens this site</figcaption>
-</figure>
+    <figure markdown>
+    ![The Docs link at the end of every Explain card opens this site](../assets/ui/explain-docs-light.webp#only-light){ loading=lazy }
+    ![The Docs link at the end of every Explain card opens this site](../assets/ui/explain-docs-dark.webp#only-dark){ loading=lazy }
+    <figcaption>The Docs link at the end of every Explain card opens this site</figcaption>
+    </figure>
 
 ## In detail
 

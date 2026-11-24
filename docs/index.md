@@ -17,7 +17,7 @@ Octoloom turns <code>agent-network.yaml</code> and AgentScript <code>.agent</cod
 deploys them with the Anypoint CLI and lets you chat with the deployed broker and trace every call. Meet Loomi, the octopus who weaves your agents together.</p>
 
 <div class="ol-stats">
-<a class="ol-stat" href="https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom"><b class="ol-installs" data-fallback="129">129</b><span>Marketplace installs</span></a>
+<a class="ol-stat" href="https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom"><b class="ol-installs" data-fallback="134">134</b><span>Marketplace installs</span></a>
 <a class="ol-stat" href="https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom&ssr=false#review-details"><b><span class="ol-rating">5.0</span> ★</b><span><span class="ol-ratings">3</span> ratings</span></a>
 <div class="ol-stat"><b class="ol-version">0.9.28</b><span>Latest version</span></div>
 <a class="ol-stat" href="catalog/"><b>43</b><span>Templates (20 v1 · 23 v2)</span></a>
@@ -102,7 +102,7 @@ deploys them with the Anypoint CLI and lets you chat with the deployed broker an
 
     ---
 
-    Search **Octoloom** in the Extensions view, or open the Marketplace page. Version 0.9.28, 129 installs.
+    Search **Octoloom** in the Extensions view, or open the Marketplace page. Version 0.9.28, 134 installs.
 
 -   :material-rocket-launch: **[Getting started](getting-started.md)**
 
@@ -149,12 +149,12 @@ deploys them with the Anypoint CLI and lets you chat with the deployed broker an
 
     ---
 
-    When VS Code starts, Octoloom opens a Welcome page. It has cards to start a Probabilistic or Deterministic network and the 5 agent network projects built last on this machine. It also shows local statistics: workspaces, projects and the v1 / v2 ratio, brokers, agents, MCP servers, Exchange and A²D assets, policies, deployments, publishes and the top 3 LLM providers.
+    When VS Code starts, Octoloom opens a Welcome page with five sections you can fold: Quick Actions to start a Probabilistic or Deterministic network, **Quick Start** with guided Beginner, Advanced and Expert onboarding tabs, Tutorials, and the 5 agent network projects built last on this machine. It also shows local statistics: workspaces, projects and the v1 / v2 ratio, brokers, agents, MCP servers, Exchange and A²D assets, policies, deployments, publishes and the top 3 LLM providers.
 -   **Coverage map**
 
     ---
 
-    One tab with every agent network on this machine: policy coverage by category, protected brokers, upstream authentication, governance results, real services vs A²D mocks and deploy status, plus a chart of where every agent, MCP server, LLM, policy and ruleset comes from (A²D, Agent Fabric, Informatica IDMC, P4A, your organization). Opens from Home → *Your statistics* → **Coverage map**. Read-only and local.
+    One tab with every agent network on this machine: policy coverage by category, protected brokers, upstream authentication, governance results, real services vs A²D mocks and deploy status, plus a chart of where every agent, MCP server, LLM, policy and ruleset comes from (A²D, Agent Fabric, Informatica IDMC, P4A, your organization). Opens from Home → *Quick Actions* or *Your statistics* → **Coverage map**. Read-only and local.
 -   **Project templates**
 
     ---

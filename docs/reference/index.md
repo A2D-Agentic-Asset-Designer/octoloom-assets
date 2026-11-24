@@ -63,6 +63,7 @@
 
 </div>
 
+- **[More](more.md)**
 - **[Guided tours](guided-tours.md)**: the first-time tour of each canvas
 - **[Commands](commands.md)**: every command in the command palette
 - **[Settings](settings.md)**: every `agentNetwork.*` setting

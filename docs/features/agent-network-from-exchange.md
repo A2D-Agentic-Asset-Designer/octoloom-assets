@@ -24,17 +24,18 @@
 ## How to use it
 
 1. Click the **Exchange** icon next to **+** in Projects & Deploy.
+
+    <figure markdown>
+    ![The From Exchange card in the new-project menu](../assets/ui/projects-new-exchange-light.webp#only-light){ loading=lazy }
+    ![The From Exchange card in the new-project menu](../assets/ui/projects-new-exchange-dark.webp#only-dark){ loading=lazy }
+    <figcaption>The From Exchange card in the new-project menu</figcaption>
+    </figure>
+
 2. Search and pick an agent network, then a **version**.
+
 3. Choose **Save to** (workspace folder and new folder name).
+
 4. Click **Download and open**: Octoloom adds the folder to the workspace and opens the canvas.
-
-## More screenshots
-
-<figure markdown>
-![The From Exchange card in the new-project menu](../assets/ui/projects-new-exchange-light.webp#only-light){ loading=lazy }
-![The From Exchange card in the new-project menu](../assets/ui/projects-new-exchange-dark.webp#only-dark){ loading=lazy }
-<figcaption>The From Exchange card in the new-project menu</figcaption>
-</figure>
 
 ## In detail
 

@@ -31,17 +31,18 @@
 ## How to use it
 
 1. Click **exchange.json** in the toolbar.
+
 2. Fill in name, description and tags; add **variables** for every URL.
+
 3. Open a **lock** to change a protected default.
+
+    <figure markdown>
+    ![Both locks open: protected fields and dependencies](../assets/ui/exchange-unlocked-light.webp#only-light){ loading=lazy }
+    ![Both locks open: protected fields and dependencies](../assets/ui/exchange-unlocked-dark.webp#only-dark){ loading=lazy }
+    <figcaption>Both locks open: protected fields and dependencies</figcaption>
+    </figure>
+
 4. Click **Save**, then publish from Projects & Deploy.
-
-## More screenshots
-
-<figure markdown>
-![Both locks open: protected fields and dependencies](../assets/ui/exchange-unlocked-light.webp#only-light){ loading=lazy }
-![Both locks open: protected fields and dependencies](../assets/ui/exchange-unlocked-dark.webp#only-dark){ loading=lazy }
-<figcaption>Both locks open: protected fields and dependencies</figcaption>
-</figure>
 
 ## In detail
 

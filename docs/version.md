@@ -2,13 +2,26 @@
 
 # Version history
 
-<p class="lede">Every Octoloom release from the very first, newest first: what changed, in plain words, and who made it happen. <b>59 versions</b>, <b>209 changes</b>.</p>
+<p class="lede">Every Octoloom release from the very first, newest first: what changed, in plain words, and who made it happen. <b>60 versions</b>, <b>211 changes</b>.</p>
 
 ## Contributors
 
 Everyone who suggested or built a change. A change counts for the person who filed the request and for the person who implemented it; a change without a request is credited to its implementer.
 
-[Amir Khan](https://github.com/amirkhan-ak-sf) · [Gabriel Bustos Sölch](https://github.com/gabrielmule) · [George Jeffcock](https://github.com/jeffcock) · [Burak Tas](https://github.com/burak-tas) · [Tommaso Bolis](https://github.com/tommasobolis)
+[Amir Khan](https://github.com/amirkhan-ak-sf) · [Gabriel Bustos Sölch](https://github.com/gabrielmule) · [George Jeffcock](https://github.com/jeffcock) · [Tommaso Bolis](https://github.com/tommasobolis) · [Burak Tas](https://github.com/burak-tas)
+
+## 0.9.29
+
+<span class="ol-ver-meta">in development</span>
+
+- **Anonymous usage counts (telemetry)**. Octoloom now counts how it is used, so we can see which features help: start-ups, a daily ping with which connections are set up (yes or no), Build / Validate / Publish / Deploy / Governance runs with their result, New Project with the style and template id, the commands used (once per command per day) and the class of an error (never its message). No names, paths, URLs, hosts, org data, prompts, chat text or keys are ever sent; the only id is VS Code's random machine id, and no person profiles are created. Events go to PostHog Cloud EU (country only, the IP is discarded). VS Code's `telemetry.telemetryLevel` always wins; the new setting **`agentNetwork.telemetry.enabled`** turns it off for Octoloom only, and a one-time notice offers **Turn off**. Every event and property is listed in `telemetry.json`; the README *Privacy and security* section explains what is sent, how long it is kept and how to ask for deletion.
+
+    <span class="ol-by">:material-account-heart-outline: [Tommaso Bolis](https://github.com/tommasobolis), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+
+- **Home: Quick Start journeys and foldable sections**. Home now has five sections that are open by default and fold with their heading, remembered per user: **Quick Actions** (was *Start*, now with a Coverage map link), **Quick Start**, Tutorials, Recently built and Your statistics. Quick Start has **Beginner**, **Advanced** and **Expert** cards with walking, running and climbing icons. Each opens its own **onboarding tab**: the steps on the left, the page of the step on the right with pictures of the Anypoint screens (organization names blurred), buttons that open the right Octoloom view or site, Previous / Next and Mark as done. Each journey lists only its own templates (Beginner: fully mocked; Advanced: the other use cases; Expert: technical). Reopen a journey with *Octoloom: Quick Start*. Every journey starts with the same prerequisites: an Anypoint account, a Small Managed Omni Gateway (Edge 1.15.0 or later, 60 s upstream and idle timeouts, Distributed Tracing), a connected app with least-privilege scopes, and the connection to Agent Fabric. Advanced adds the A²D connection and Expert adds A²D and P4A. The Connect steps tick themselves off, and **Check my gateway** (*Octoloom: Check Omni Gateway*) lists the gateways of the connected environment.
+
+    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf), [Tommaso Bolis](https://github.com/tommasobolis), [George Jeffcock](https://github.com/jeffcock)</span>
+
 
 ## 0.9.28
 

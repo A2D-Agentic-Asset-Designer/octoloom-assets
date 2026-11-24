@@ -43,18 +43,20 @@
 ## How to use it
 
 1. Use the **explorer** on the left for settings, variables, connections and the list of nodes; drag a node type from *Drag to canvas*.
+
 2. Click **+ Step** on a node to add the next step, or **Patterns** for ready-made fragments.
+
+    <figure markdown>
+    ![+ Step → Patterns: ready-made flow fragments](../assets/ui/agent-patterns-light.webp#only-light){ loading=lazy }
+    ![+ Step → Patterns: ready-made flow fragments](../assets/ui/agent-patterns-dark.webp#only-dark){ loading=lazy }
+    <figcaption>+ Step → Patterns: ready-made flow fragments</figcaption>
+    </figure>
+
 3. Click a node to edit it in the inspector: instructions, tools, transitions, router conditions.
+
 4. Add a **Reply** with task state *working* before a long step: with **Live** on, the chat shows it while the broker works.
+
 5. Click **Save**; **Preview** shows the flow, **Commit Version** bumps the version.
-
-## More screenshots
-
-<figure markdown>
-![+ Step → Patterns: ready-made flow fragments](../assets/ui/agent-patterns-light.webp#only-light){ loading=lazy }
-![+ Step → Patterns: ready-made flow fragments](../assets/ui/agent-patterns-dark.webp#only-dark){ loading=lazy }
-<figcaption>+ Step → Patterns: ready-made flow fragments</figcaption>
-</figure>
 
 ## In detail
 

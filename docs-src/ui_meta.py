@@ -15,6 +15,7 @@ SECTIONS = [
 ]
 
 # slug -> dict(nav, shots=[(spec, caption)], what, why, how=[steps], where)
+# The first shot sits above the steps; every other shot sits under the step of SHOT_STEP (0 = right under the first shot, #347).
 F = {
  'welcome-page': dict(nav='Home page', where='Opens when VS Code starts · **Projects & Deploy → Home** · *Octoloom: Welcome*',
    what='Your start page: create a network, reopen a recent project, open a tutorial and see your own usage numbers.',
@@ -214,4 +215,46 @@ KEY_SHOT = {
     'chatNetwork': 'chat-network', 'chatTrace': 'chat-trace', 'chatAuth': 'chat-auth', 'chatPortal': 'chat-share-web',
     'errorDetail': 'assets-error-detail', 'tracer': 'tracer', 'governance': 'governance', 'ruleset': 'governance',
     'governanceReport': 'governance-fix-all', 'connection': 'network-v2-context', 'minimize': None,
+}
+
+
+# Which 'How to use it' step each extra screenshot shows (#347). 0 = right under the first screenshot.
+SHOT_STEP = {
+    'welcome-update': 0,
+    'new-project-readme': 2,
+    'new-project-idmc': 2,
+    'new-project-blank': 2,
+    'projects-new-exchange': 1,
+    'network-v1': 0,
+    'network-v2-context': 2,
+    'network-problems-fix': 4,
+    'network-mcp-url': 4,
+    'network-fab-tip': 1,
+    'agent-patterns': 2,
+    'assets-a2d-llm': 2,
+    'assets-idmc': 1,
+    'assets-error-detail': 1,
+    'assets-idmc-hdm': 1,
+    'code-find': 2,
+    'exchange-unlocked': 3,
+    'policies-fold': 3,
+    'broker-protected': 1,
+    'governance-fix-all': 4,
+    'deploy-form': 2,
+    'deploy-auth': 3,
+    'run-local-vars': 4,
+    'projects-explain': 1,
+    'setup-connect-update': 2,
+    'setup-connect-idmc': 1,
+    'explain-guide': 3,
+    'explain-docs': 4,
+    'chat-trace': 3,
+    'chat-network-sequence': 3,
+    'chat-network': 1,
+    'chat-auth': 4,
+    'chat-share-a2d': 4,
+    'chat-share-web': 4,
+    'chat-trace-colors': 3,
+    'chat-narrow': 0,
+    'tracer-mini': 3,
 }

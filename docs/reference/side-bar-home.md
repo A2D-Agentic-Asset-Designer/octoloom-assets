@@ -87,13 +87,14 @@ A network can declare its own LLM (registry.llms in v2, llmProviders in v1): eve
 
 ## Octoloom Welcome
 
-The start page of Octoloom: create a Probabilistic or Deterministic network, open the tutorials (Getting started and one per template, on GitHub), reopen one of the five agent network projects built last on this machine, and see your totals. The totals count workspaces, network projects (and the Probabilistic / Deterministic ratio), brokers, agents, MCP servers, Exchange, A²D and IDMC assets, governed assets (brokers, agents and MCP servers with at least one policy), policies in networks, deployments, publishes and the top 3 LLM providers. Everything is counted locally on this user profile from the projects Octoloom has seen; nothing is sent anywhere. Under the title you see the installed Octoloom version, and a link when the Marketplace has a newer one. The Tutorials section also links the Octoloom documentation site.
+The start page of Octoloom, in five sections that are open by default; click a heading to fold it, and Octoloom remembers it. Quick Actions: create a Probabilistic or Deterministic network, open a folder, Projects & Deploy, Setup & Connect and the Coverage map. Quick Start: the Beginner, Advanced and Expert onboarding tabs. Tutorials: Getting started and one per template, on GitHub, and the documentation site. Recently built: the five agent network projects built last on this machine. Your statistics: your totals. The totals count workspaces, network projects (and the Probabilistic / Deterministic ratio), brokers, agents, MCP servers, Exchange, A²D and IDMC assets, governed assets (brokers, agents and MCP servers with at least one policy), policies in networks, deployments, publishes and the top 3 LLM providers. Everything is counted locally on this user profile from the projects Octoloom has seen; nothing is sent anywhere. Under the title you see the installed Octoloom version, and a link when the Marketplace has a newer one. The Tutorials section also links the Octoloom documentation site.
 
 **When to use it:** It opens when VS Code starts (turn it off with the checkbox or the agentNetwork.showWelcome setting), not when you click the Octoloom icon. Open it any time with the home button in Projects & Deploy or the Octoloom: Welcome command.
 
 **Examples and details:**
 
-- Start a new Deterministic network from its card: the New Project dialog opens with that style
+- Start a new Deterministic network from its card in Quick Actions: the New Project dialog opens with that style
+- Fold Tutorials with its heading: it stays folded the next time Home opens
 - Click a recently built project to open its canvas; Open folder opens it in this window
 - Statistics count projects from every workspace you opened with Octoloom; builds, deploys and publishes are counted when they succeed
 - Exchange vs A²D assets use the origin recorded when an asset was added, else the endpoint URL
@@ -135,7 +136,7 @@ The Octoloom version installed in this VS Code. Once per session Octoloom reads 
 
 Every agent network on this machine in one tab: how well each one is governed and where its assets come from. Six summary cards (policy coverage, protected brokers, upstream authentication, governance, real services vs A²D mocks, deployed), a chart of the sources (A²D, Agent Fabric, Informatica IDMC, P4A, your organization, LLM providers, local ruleset files) and what they supply, and a table with seven views: Overview, Policies, Governance, Authentication, Origins, Lifecycle and LLMs. Click a network for its gaps and every component with its source, authentication and policies. Read-only and local: it reads the project files, the last Governance results and the deployment records; it never runs the CLI and sends nothing anywhere.
 
-**When to use it:** Before a demo or a go-live, to see which networks still have unprotected brokers, connections without authentication, A²D mocks or governance violations. Open it from Home → Your statistics → Coverage map, or with the Octoloom: Coverage Map command.
+**When to use it:** Before a demo or a go-live, to see which networks still have unprotected brokers, connections without authentication, A²D mocks or governance violations. Open it from Home → Quick Actions or Your statistics → Coverage map, or with the Octoloom: Coverage Map command.
 
 **Examples and details:**
 

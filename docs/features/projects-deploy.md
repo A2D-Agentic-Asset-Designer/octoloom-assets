@@ -37,35 +37,36 @@
 ## How to use it
 
 1. Click **Validate** for a dry run of build, publish and deploy.
+
+    <figure markdown>
+    ![Explain on a project button](../assets/ui/projects-explain-light.webp#only-light){ loading=lazy }
+    ![Explain on a project button](../assets/ui/projects-explain-dark.webp#only-dark){ loading=lazy }
+    <figcaption>Explain on a project button</figcaption>
+    </figure>
+
 2. Click **Deploy**: choose the gateway(s), target space and switches, then **Deploy**.
+
+    <figure markdown>
+    ![The Deploy form: gateways, target space and switches](../assets/ui/deploy-form-light.webp#only-light){ loading=lazy }
+    ![The Deploy form: gateways, target space and switches](../assets/ui/deploy-form-dark.webp#only-dark){ loading=lazy }
+    <figcaption>The Deploy form: gateways, target space and switches</figcaption>
+    </figure>
+
 3. Watch the deployment box: green *running*, blue *needs credentials*.
+
+    <figure markdown>
+    ![Deployment boxes: needs credentials, running](../assets/ui/deploy-auth-light.webp#only-light){ loading=lazy }
+    ![Deployment boxes: needs credentials, running](../assets/ui/deploy-auth-dark.webp#only-dark){ loading=lazy }
+    <figcaption>Deployment boxes: needs credentials, running</figcaption>
+    </figure>
+
 4. Use **Run locally** to try the network in Docker without Anypoint.
 
-## More screenshots
-
-<figure markdown>
-![The Deploy form: gateways, target space and switches](../assets/ui/deploy-form-light.webp#only-light){ loading=lazy }
-![The Deploy form: gateways, target space and switches](../assets/ui/deploy-form-dark.webp#only-dark){ loading=lazy }
-<figcaption>The Deploy form: gateways, target space and switches</figcaption>
-</figure>
-
-<figure markdown>
-![Deployment boxes: needs credentials, running](../assets/ui/deploy-auth-light.webp#only-light){ loading=lazy }
-![Deployment boxes: needs credentials, running](../assets/ui/deploy-auth-dark.webp#only-dark){ loading=lazy }
-<figcaption>Deployment boxes: needs credentials, running</figcaption>
-</figure>
-
-<figure markdown>
-![Run locally: variables](../assets/ui/run-local-vars-light.webp#only-light){ loading=lazy }
-![Run locally: variables](../assets/ui/run-local-vars-dark.webp#only-dark){ loading=lazy }
-<figcaption>Run locally: variables</figcaption>
-</figure>
-
-<figure markdown>
-![Explain on a project button](../assets/ui/projects-explain-light.webp#only-light){ loading=lazy }
-![Explain on a project button](../assets/ui/projects-explain-dark.webp#only-dark){ loading=lazy }
-<figcaption>Explain on a project button</figcaption>
-</figure>
+    <figure markdown>
+    ![Run locally: variables](../assets/ui/run-local-vars-light.webp#only-light){ loading=lazy }
+    ![Run locally: variables](../assets/ui/run-local-vars-dark.webp#only-dark){ loading=lazy }
+    <figcaption>Run locally: variables</figcaption>
+    </figure>
 
 ## In detail
 

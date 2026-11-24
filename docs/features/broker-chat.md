@@ -44,62 +44,63 @@
 | <span class="ol-n">27</span> | **Copy** | Copy answer |
 | <span class="ol-n">28</span> | **Trace of this reply on the left** | Trace of this reply on the left: every call, in order, with its duration (spans arrive about 20 s after the reply) |
 
-## How to use it
-
-1. Pick **Deployed** or **Local** and the broker.
-2. Type a message, or click a skill chip. With **Live** on, progress updates appear while the broker works: every v2 template sends one before each step of its flow.
-3. Under a reply, click the **trace** icon to see every call, or the **Tracer** icon to open the task.
-4. Use **Authentication** if the broker needs credentials, **Share** to invite testers.
-
-## More screenshots
-
-<figure markdown>
-![The trace of a reply: every call in order, one failed](../assets/ui/chat-trace-light.webp#only-light){ loading=lazy }
-![The trace of a reply: every call in order, one failed](../assets/ui/chat-trace-dark.webp#only-dark){ loading=lazy }
-<figcaption>The trace of a reply: every call in order, one failed</figcaption>
-</figure>
-
-<figure markdown>
-![A reply as a sequence diagram](../assets/ui/chat-network-sequence-light.webp#only-light){ loading=lazy }
-![A reply as a sequence diagram](../assets/ui/chat-network-sequence-dark.webp#only-dark){ loading=lazy }
-<figcaption>A reply as a sequence diagram</figcaption>
-</figure>
-
-<figure markdown>
-![The network, read-only, in the chat](../assets/ui/chat-network-light.webp#only-light){ loading=lazy }
-![The network, read-only, in the chat](../assets/ui/chat-network-dark.webp#only-dark){ loading=lazy }
-<figcaption>The network, read-only, in the chat</figcaption>
-</figure>
-
-<figure markdown>
-![Authentication: user sign-in suggested by JWT Validation](../assets/ui/chat-auth-light.webp#only-light){ loading=lazy }
-![Authentication: user sign-in suggested by JWT Validation](../assets/ui/chat-auth-dark.webp#only-dark){ loading=lazy }
-<figcaption>Authentication: user sign-in suggested by JWT Validation</figcaption>
-</figure>
-
-<figure markdown>
-![Share: A²D sessions with results](../assets/ui/chat-share-a2d-light.webp#only-light){ loading=lazy }
-![Share: A²D sessions with results](../assets/ui/chat-share-a2d-dark.webp#only-dark){ loading=lazy }
-<figcaption>Share: A²D sessions with results</figcaption>
-</figure>
-
-<figure markdown>
-![Share: local portal](../assets/ui/chat-share-web-light.webp#only-light){ loading=lazy }
-![Share: local portal](../assets/ui/chat-share-web-dark.webp#only-dark){ loading=lazy }
-<figcaption>Share: local portal</figcaption>
-</figure>
-
-<figure markdown>
-![Span colours and legend](../assets/ui/chat-trace-colors-light.webp#only-light){ loading=lazy }
-![Span colours and legend](../assets/ui/chat-trace-colors-dark.webp#only-dark){ loading=lazy }
-<figcaption>Span colours and legend</figcaption>
-</figure>
-
 <figure markdown>
 ![The chat in a narrow tab](../assets/ui/chat-narrow-light.webp#only-light){ loading=lazy }
 ![The chat in a narrow tab](../assets/ui/chat-narrow-dark.webp#only-dark){ loading=lazy }
 <figcaption>The chat in a narrow tab</figcaption>
 </figure>
+
+## How to use it
+
+1. Pick **Deployed** or **Local** and the broker.
+
+    <figure markdown>
+    ![The network, read-only, in the chat](../assets/ui/chat-network-light.webp#only-light){ loading=lazy }
+    ![The network, read-only, in the chat](../assets/ui/chat-network-dark.webp#only-dark){ loading=lazy }
+    <figcaption>The network, read-only, in the chat</figcaption>
+    </figure>
+
+2. Type a message, or click a skill chip. With **Live** on, progress updates appear while the broker works: every v2 template sends one before each step of its flow.
+
+3. Under a reply, click the **trace** icon to see every call, or the **Tracer** icon to open the task.
+
+    <figure markdown>
+    ![The trace of a reply: every call in order, one failed](../assets/ui/chat-trace-light.webp#only-light){ loading=lazy }
+    ![The trace of a reply: every call in order, one failed](../assets/ui/chat-trace-dark.webp#only-dark){ loading=lazy }
+    <figcaption>The trace of a reply: every call in order, one failed</figcaption>
+    </figure>
+
+    <figure markdown>
+    ![A reply as a sequence diagram](../assets/ui/chat-network-sequence-light.webp#only-light){ loading=lazy }
+    ![A reply as a sequence diagram](../assets/ui/chat-network-sequence-dark.webp#only-dark){ loading=lazy }
+    <figcaption>A reply as a sequence diagram</figcaption>
+    </figure>
+
+    <figure markdown>
+    ![Span colours and legend](../assets/ui/chat-trace-colors-light.webp#only-light){ loading=lazy }
+    ![Span colours and legend](../assets/ui/chat-trace-colors-dark.webp#only-dark){ loading=lazy }
+    <figcaption>Span colours and legend</figcaption>
+    </figure>
+
+4. Use **Authentication** if the broker needs credentials, **Share** to invite testers.
+
+    <figure markdown>
+    ![Authentication: user sign-in suggested by JWT Validation](../assets/ui/chat-auth-light.webp#only-light){ loading=lazy }
+    ![Authentication: user sign-in suggested by JWT Validation](../assets/ui/chat-auth-dark.webp#only-dark){ loading=lazy }
+    <figcaption>Authentication: user sign-in suggested by JWT Validation</figcaption>
+    </figure>
+
+    <figure markdown>
+    ![Share: A²D sessions with results](../assets/ui/chat-share-a2d-light.webp#only-light){ loading=lazy }
+    ![Share: A²D sessions with results](../assets/ui/chat-share-a2d-dark.webp#only-dark){ loading=lazy }
+    <figcaption>Share: A²D sessions with results</figcaption>
+    </figure>
+
+    <figure markdown>
+    ![Share: local portal](../assets/ui/chat-share-web-light.webp#only-light){ loading=lazy }
+    ![Share: local portal](../assets/ui/chat-share-web-dark.webp#only-dark){ loading=lazy }
+    <figcaption>Share: local portal</figcaption>
+    </figure>
 
 ## In detail
 

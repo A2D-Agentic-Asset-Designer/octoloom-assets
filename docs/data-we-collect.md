@@ -4,9 +4,6 @@
 
 Octoloom can send **anonymous usage counts** to help improve the extension: which actions run, whether they work, and on which versions. This page lists every event and every property. Nothing else is sent. The public [Usage](usage.md) page shows the totals.
 
-!!! note "Source"
-    This list is generated from the extension's event catalog. The machine-readable `telemetry.json` that ships in the extension is added by [octoloom#330](https://github.com/A2D-Agentic-Asset-Designer/octoloom/issues/330) and ships with the release that starts sending.
-
 ## How it works
 
 - **Off when VS Code telemetry is off.** Octoloom sends through VS Code's own telemetry logger, so VS Code's `telemetry.telemetryLevel` always wins.
@@ -21,14 +18,14 @@ Octoloom can send **anonymous usage counts** to help improve the extension: whic
 |---|---|---|
 | `activate` | Octoloom started (once per VS Code session). | common properties only |
 | `heartbeat` | The machine used Octoloom today (at most once per UTC day), with which connections are set up. | `anypoint`: connected to Agent Fabric (boolean)<br>`a2d`: connected to A²D (boolean)<br>`p4a`: connected to P4A (boolean)<br>`idmc`: connected to Headless IDMC (boolean) |
-| `build` | Build ran: success or failure, network style, how many policies (as a range) and whether it is governed. | `outcome`: result (ok · fail)<br>`style`: v1 (Probabilistic) or v2 (Deterministic) (v1 · v2)<br>`policies`: number of policies as a range (0 · 1-3 · 4+)<br>`governed`: project has governance (boolean) |
-| `validate` | Validate ran: success, failure or cancelled. | `outcome`: result (ok · fail · cancelled) |
-| `publish` | Publish to Exchange ran: success or failure. | `outcome`: result (ok · fail) |
-| `deploy` | Deploy ran: success, failure or cancelled, and whether it also published. | `outcome`: result (ok · fail · cancelled)<br>`autopublish`: deploy also published (boolean) |
-| `governance` | A governance check ran: conforms, violations or error, and how many rulesets (as a range). | `outcome`: result (conforms · violations · error)<br>`rulesets`: number of rulesets as a range (1 · 2-3 · 4+) |
-| `create` | A project was created: network style and the template id from the public catalog (or blank). | `style`: v1 (Probabilistic) or v2 (Deterministic) (v1 · v2)<br>`template`: catalog template id, blank, or other |
-| `feature` | An Octoloom command was used (at most once per command per UTC day). Only the command id. | `id`: contributed Octoloom command id |
-| `error` | A guarded action failed: the action and the error class name (for example deploy:SourceError), never the message. | `action`: the action that failed<br>`code`: action:ErrorClass |
+| `build` | Build ran: success or failure, network style, how many policies (as a range) and whether it is governed. | `outcome`: result (enum)<br>`style`: v1 (Probabilistic) or v2 (Deterministic) (enum)<br>`policies`: number of policies as a range (enum)<br>`governed`: project has governance (boolean) |
+| `validate` | Validate ran: success, failure or cancelled. | `outcome`: result (enum) |
+| `publish` | Publish to Exchange ran: success or failure. | `outcome`: result (enum) |
+| `deploy` | Deploy ran: success, failure or cancelled, and whether it also published. | `outcome`: result (enum)<br>`autopublish`: deploy also published (boolean) |
+| `governance` | A governance check ran: conforms, violations or error, and how many rulesets (as a range). | `outcome`: result (enum)<br>`rulesets`: number of rulesets as a range (enum) |
+| `create` | A project was created: network style and the template id from the public catalog (or blank). | `style`: v1 (Probabilistic) or v2 (Deterministic) (enum)<br>`template`: catalog template id, blank, or other (enum) |
+| `feature` | An Octoloom command was used (at most once per command per UTC day). Only the command id. | `id`: contributed Octoloom command id (enum) |
+| `error` | A guarded action failed: the action and the error class name (for example deploy:SourceError), never the message. | `action`: the action that failed (enum)<br>`code`: action:ErrorClass (enum) |
 
 Every event also carries these common properties:
 

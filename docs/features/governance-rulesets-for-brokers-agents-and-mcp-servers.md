@@ -32,17 +32,18 @@
 ## How to use it
 
 1. Pick one or more **rulesets** on the left.
+
 2. Click **Validate**.
+
 3. Read the findings on the right; findings also show as marks on the canvas.
+
 4. Click **Fix** or **Fix all** where offered; **Report** saves an HTML report.
 
-## More screenshots
-
-<figure markdown>
-![Real findings with Fix all](../assets/ui/governance-fix-all-light.webp#only-light){ loading=lazy }
-![Real findings with Fix all](../assets/ui/governance-fix-all-dark.webp#only-dark){ loading=lazy }
-<figcaption>Real findings with Fix all</figcaption>
-</figure>
+    <figure markdown>
+    ![Real findings with Fix all](../assets/ui/governance-fix-all-light.webp#only-light){ loading=lazy }
+    ![Real findings with Fix all](../assets/ui/governance-fix-all-dark.webp#only-dark){ loading=lazy }
+    <figcaption>Real findings with Fix all</figcaption>
+    </figure>
 
 ## In detail
 

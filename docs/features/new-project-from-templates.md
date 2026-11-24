@@ -24,29 +24,30 @@
 ## How to use it
 
 1. Choose the **network style**: Deterministic (2.0, AgentScript) or Probabilistic (1.0, LLM-routed).
+
 2. Choose **Blank**, **Use cases** or **Technical** and pick a template; the README on the right shows what it does and how to try it.
+
+    <figure markdown>
+    ![The README preview of a template: Deploy in 3 steps and Try it](../assets/ui/new-project-readme-light.webp#only-light){ loading=lazy }
+    ![The README preview of a template: Deploy in 3 steps and Try it](../assets/ui/new-project-readme-dark.webp#only-dark){ loading=lazy }
+    <figcaption>The README preview of a template: Deploy in 3 steps and Try it</figcaption>
+    </figure>
+
+    <figure markdown>
+    ![Informatica IDMC templates in the Technical tab](../assets/ui/new-project-idmc-light.webp#only-light){ loading=lazy }
+    ![Informatica IDMC templates in the Technical tab](../assets/ui/new-project-idmc-dark.webp#only-dark){ loading=lazy }
+    <figcaption>Informatica IDMC templates in the Technical tab</figcaption>
+    </figure>
+
+    <figure markdown>
+    ![A blank network, with or without a starter broker](../assets/ui/new-project-blank-light.webp#only-light){ loading=lazy }
+    ![A blank network, with or without a starter broker](../assets/ui/new-project-blank-dark.webp#only-dark){ loading=lazy }
+    <figcaption>A blank network, with or without a starter broker</figcaption>
+    </figure>
+
 3. Set the project **Name** and **Parent folder**, then **Create from template**.
+
 4. Open the canvas, then follow *Deploy in 3 steps* from the README.
-
-## More screenshots
-
-<figure markdown>
-![The README preview of a template: Deploy in 3 steps and Try it](../assets/ui/new-project-readme-light.webp#only-light){ loading=lazy }
-![The README preview of a template: Deploy in 3 steps and Try it](../assets/ui/new-project-readme-dark.webp#only-dark){ loading=lazy }
-<figcaption>The README preview of a template: Deploy in 3 steps and Try it</figcaption>
-</figure>
-
-<figure markdown>
-![Informatica IDMC templates in the Technical tab](../assets/ui/new-project-idmc-light.webp#only-light){ loading=lazy }
-![Informatica IDMC templates in the Technical tab](../assets/ui/new-project-idmc-dark.webp#only-dark){ loading=lazy }
-<figcaption>Informatica IDMC templates in the Technical tab</figcaption>
-</figure>
-
-<figure markdown>
-![A blank network, with or without a starter broker](../assets/ui/new-project-blank-light.webp#only-light){ loading=lazy }
-![A blank network, with or without a starter broker](../assets/ui/new-project-blank-dark.webp#only-dark){ loading=lazy }
-<figcaption>A blank network, with or without a starter broker</figcaption>
-</figure>
 
 ## In detail
 

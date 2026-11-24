@@ -1,6 +1,15 @@
 # Privacy and security
 
 - The connected-app secret, the A²D API key and the P4A token are stored in VS Code **SecretStorage** (your OS keychain). They are never written to settings or project files.
-- Octoloom only talks to the hosts you configure (the Anypoint control plane, A²D and P4A), plus nodejs.org / Adoptium / npm when it installs prerequisites, and once per session the public Visual Studio Marketplace to read the latest Octoloom version (no project or usage data is sent).
-- There is no telemetry. The Welcome page statistics are kept in VS Code's global state on your machine.
+- Octoloom only talks to the hosts you configure (the Anypoint control plane, A²D and P4A), plus nodejs.org / Adoptium / npm when it installs prerequisites, once per session the public Visual Studio Marketplace to read the latest Octoloom version (no project or usage data is sent), and PostHog Cloud EU (`eu.i.posthog.com`) for anonymous usage counts when telemetry is on.
+- **Telemetry (anonymous usage counts).** Octoloom counts how it is used, to improve it:
+  - **What:** Octoloom started (once per session) and a daily ping; Build, Validate, Publish, Deploy and Governance runs with their result (ok, failed, cancelled); New Project with the style and the template id; which Octoloom commands are used (once per command per day); the error class of a failed action (for example `deploy:SourceError`). With them: the Octoloom and VS Code version, the OS family, desktop or web, the remote kind, whether Agent Fabric, A²D, P4A and Headless IDMC are connected (yes or no), the network style, the number of policies as a range (0, 1-3, 4+) and whether it is governed. Every event and property is listed in [`telemetry.json`](telemetry.json).
+  - **Never:** names, paths, URLs, hosts, org, environment, user or pod names, file contents, prompts, chat text, error messages, keys or tokens. A random VS Code machine id is the only identifier; no person profiles are created.
+  - **Where:** PostHog Cloud EU (Frankfurt) is the processor. The country is derived from the IP address, then the IP is discarded; nothing finer than the country is kept.
+  - **How long:** raw events 1 year; monthly totals are kept longer, without machine ids.
+  - **Public:** [octoloom.a2d-ai.com](https://octoloom.a2d-ai.com/usage/) shows totals only, and only countries with at least 5 machines.
+  - **Turn it off:** set VS Code's `telemetry.telemetryLevel` to `off` (this always wins), or `agentNetwork.telemetry.enabled` to `false`. Octoloom shows a one-time notice with **Turn off**. Nothing is sent from Development or Test hosts.
+  - **See what is sent:** run **Developer: Set Log Level…** → *Trace*, then open the *Output* panel → *Extension Telemetry* (VS Code's own log of every event an extension sends).
+  - **Deletion:** open an issue at [octoloom](https://github.com/A2D-Agentic-Asset-Designer/octoloom/issues) asking for deletion; we tell you how to send the machine id privately (`Developer: Show Telemetry` / the `vscode.env.machineId`), never in the issue. Legal basis and the processor terms: pending the review in [#324](https://github.com/A2D-Agentic-Asset-Designer/octoloom/issues/324).
+- The Welcome page statistics are kept in VS Code's global state on your machine and are never sent.
 - Secret variables in `exchange.json` are masked in the UI and are never used to resolve URLs for display. The connectivity test uses them inside the extension host only, to call the endpoint you test (and its OAuth token URL). They are never sent to the webview.

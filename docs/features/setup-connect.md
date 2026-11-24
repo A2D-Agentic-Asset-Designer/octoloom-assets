@@ -28,22 +28,22 @@
 ## How to use it
 
 1. Click **Connect** on each connection you need (Agent Fabric first).
+
+    <figure markdown>
+    ![Informatica IDMC connected](../assets/ui/setup-connect-idmc-light.webp#only-light){ loading=lazy }
+    ![Informatica IDMC connected](../assets/ui/setup-connect-idmc-dark.webp#only-dark){ loading=lazy }
+    <figcaption>Informatica IDMC connected</figcaption>
+    </figure>
+
 2. Check **Tooling**: Node.js, Java, anypoint-cli-v4 and the agent-network plugin; install or update from there.
+
+    <figure markdown>
+    ![A newer Octoloom on the Marketplace](../assets/ui/setup-connect-update-light.webp#only-light){ loading=lazy }
+    ![A newer Octoloom on the Marketplace](../assets/ui/setup-connect-update-dark.webp#only-dark){ loading=lazy }
+    <figcaption>A newer Octoloom on the Marketplace</figcaption>
+    </figure>
+
 3. Pick the theme under **Appearance**.
-
-## More screenshots
-
-<figure markdown>
-![A newer Octoloom on the Marketplace](../assets/ui/setup-connect-update-light.webp#only-light){ loading=lazy }
-![A newer Octoloom on the Marketplace](../assets/ui/setup-connect-update-dark.webp#only-dark){ loading=lazy }
-<figcaption>A newer Octoloom on the Marketplace</figcaption>
-</figure>
-
-<figure markdown>
-![Informatica IDMC connected](../assets/ui/setup-connect-idmc-light.webp#only-light){ loading=lazy }
-![Informatica IDMC connected](../assets/ui/setup-connect-idmc-dark.webp#only-dark){ loading=lazy }
-<figcaption>Informatica IDMC connected</figcaption>
-</figure>
 
 ## In detail
 

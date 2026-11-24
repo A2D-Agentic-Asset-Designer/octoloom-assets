@@ -16,16 +16,16 @@
 ## How to use it
 
 1. Select the broker and pick its **LLM** in the inspector, or drag an LLM from the Asset Palette.
+
 2. Set the model and its URL variable.
+
+    <figure markdown>
+    ![A²D LLM mocks in the palette](../assets/ui/assets-a2d-llm-light.webp#only-light){ loading=lazy }
+    ![A²D LLM mocks in the palette](../assets/ui/assets-a2d-llm-dark.webp#only-dark){ loading=lazy }
+    <figcaption>A²D LLM mocks in the palette</figcaption>
+    </figure>
+
 3. Save, build and deploy.
-
-## More screenshots
-
-<figure markdown>
-![A²D LLM mocks in the palette](../assets/ui/assets-a2d-llm-light.webp#only-light){ loading=lazy }
-![A²D LLM mocks in the palette](../assets/ui/assets-a2d-llm-dark.webp#only-dark){ loading=lazy }
-<figcaption>A²D LLM mocks in the palette</figcaption>
-</figure>
 
 ## In detail
 

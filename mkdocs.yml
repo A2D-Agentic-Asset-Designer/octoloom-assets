@@ -47,7 +47,7 @@ extra_javascript:
   - assets/usage.js
 extra:
   version: "0.9.28"
-  installs: "129"
+  installs: "134"
   marketplace: https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom
   social:
     - icon: material/microsoft-visual-studio-code
@@ -117,6 +117,7 @@ nav:
       - "Chat, Share and Tracer": reference/chat-tracer.md
       - "Governance": reference/governance.md
       - "Help": reference/help.md
+      - "More": reference/more.md
       - "Guided tours": reference/guided-tours.md
       - "Commands": reference/commands.md
       - "Settings": reference/settings.md

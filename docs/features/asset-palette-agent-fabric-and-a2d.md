@@ -30,34 +30,34 @@
 ## How to use it
 
 1. Pick the tab: **A²D**, **Agent Fabric** or **IDMC**.
+
+    <figure markdown>
+    ![IDMC tab: shared and composite MCP servers](../assets/ui/assets-idmc-light.webp#only-light){ loading=lazy }
+    ![IDMC tab: shared and composite MCP servers](../assets/ui/assets-idmc-dark.webp#only-dark){ loading=lazy }
+    <figcaption>IDMC tab: shared and composite MCP servers</figcaption>
+    </figure>
+
+    <figure markdown>
+    ![A connection error with its details](../assets/ui/assets-error-detail-light.webp#only-light){ loading=lazy }
+    ![A connection error with its details](../assets/ui/assets-error-detail-dark.webp#only-dark){ loading=lazy }
+    <figcaption>A connection error with its details</figcaption>
+    </figure>
+
+    <figure markdown>
+    ![A pod without Headless IDMC: the message names the AI Engineering license](../assets/ui/assets-idmc-hdm-light.webp#only-light){ loading=lazy }
+    ![A pod without Headless IDMC: the message names the AI Engineering license](../assets/ui/assets-idmc-hdm-dark.webp#only-dark){ loading=lazy }
+    <figcaption>A pod without Headless IDMC: the message names the AI Engineering license</figcaption>
+    </figure>
+
 2. Filter by type (All, MCP, Agents, LLMs) or search.
+
+    <figure markdown>
+    ![A²D tab: LLM mocks](../assets/ui/assets-a2d-llm-light.webp#only-light){ loading=lazy }
+    ![A²D tab: LLM mocks](../assets/ui/assets-a2d-llm-dark.webp#only-dark){ loading=lazy }
+    <figcaption>A²D tab: LLM mocks</figcaption>
+    </figure>
+
 3. Drag an asset onto the open canvas: it is added to the network with its connection.
-
-## More screenshots
-
-<figure markdown>
-![A²D tab: LLM mocks](../assets/ui/assets-a2d-llm-light.webp#only-light){ loading=lazy }
-![A²D tab: LLM mocks](../assets/ui/assets-a2d-llm-dark.webp#only-dark){ loading=lazy }
-<figcaption>A²D tab: LLM mocks</figcaption>
-</figure>
-
-<figure markdown>
-![IDMC tab: shared and composite MCP servers](../assets/ui/assets-idmc-light.webp#only-light){ loading=lazy }
-![IDMC tab: shared and composite MCP servers](../assets/ui/assets-idmc-dark.webp#only-dark){ loading=lazy }
-<figcaption>IDMC tab: shared and composite MCP servers</figcaption>
-</figure>
-
-<figure markdown>
-![A connection error with its details](../assets/ui/assets-error-detail-light.webp#only-light){ loading=lazy }
-![A connection error with its details](../assets/ui/assets-error-detail-dark.webp#only-dark){ loading=lazy }
-<figcaption>A connection error with its details</figcaption>
-</figure>
-
-<figure markdown>
-![A pod without Headless IDMC: the message names the AI Engineering license](../assets/ui/assets-idmc-hdm-light.webp#only-light){ loading=lazy }
-![A pod without Headless IDMC: the message names the AI Engineering license](../assets/ui/assets-idmc-hdm-dark.webp#only-dark){ loading=lazy }
-<figcaption>A pod without Headless IDMC: the message names the AI Engineering license</figcaption>
-</figure>
 
 ## In detail
 

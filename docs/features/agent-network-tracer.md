@@ -47,16 +47,16 @@
 ## How to use it
 
 1. Open the tracer at the bottom of the chat.
+
 2. Pick a task on the left.
+
 3. Read the path on the **Graph** (or **Tree**, **List**); the detail column shows **Story**, **Message**, **Log** and **Raw**.
 
-## More screenshots
-
-<figure markdown>
-![The tracer with every node minimized](../assets/ui/tracer-mini-light.webp#only-light){ loading=lazy }
-![The tracer with every node minimized](../assets/ui/tracer-mini-dark.webp#only-dark){ loading=lazy }
-<figcaption>The tracer with every node minimized</figcaption>
-</figure>
+    <figure markdown>
+    ![The tracer with every node minimized](../assets/ui/tracer-mini-light.webp#only-light){ loading=lazy }
+    ![The tracer with every node minimized](../assets/ui/tracer-mini-dark.webp#only-dark){ loading=lazy }
+    <figcaption>The tracer with every node minimized</figcaption>
+    </figure>
 
 ## In detail
 

@@ -32,16 +32,16 @@
 ## How to use it
 
 1. Click **Code** in the toolbar; **Visual** brings the canvas back.
+
 2. Press **Ctrl/Cmd+F** to find, **Ctrl/Cmd+H** to replace.
+
+    <figure markdown>
+    ![Find and replace](../assets/ui/code-find-light.webp#only-light){ loading=lazy }
+    ![Find and replace](../assets/ui/code-find-dark.webp#only-dark){ loading=lazy }
+    <figcaption>Find and replace</figcaption>
+    </figure>
+
 3. Click **Save**: the canvas shows the change.
-
-## More screenshots
-
-<figure markdown>
-![Find and replace](../assets/ui/code-find-light.webp#only-light){ loading=lazy }
-![Find and replace](../assets/ui/code-find-dark.webp#only-dark){ loading=lazy }
-<figcaption>Find and replace</figcaption>
-</figure>
 
 ## In detail
 

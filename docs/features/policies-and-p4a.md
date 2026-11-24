@@ -16,22 +16,22 @@
 ## How to use it
 
 1. Select a broker or a connection, open **Policies** and click **Add policy**.
+
+    <figure markdown>
+    ![Protected broker settings](../assets/ui/broker-protected-light.webp#only-light){ loading=lazy }
+    ![Protected broker settings](../assets/ui/broker-protected-dark.webp#only-dark){ loading=lazy }
+    <figcaption>Protected broker settings</figcaption>
+    </figure>
+
 2. Pick a policy in the picker (Agent Fabric, P4A, your organization) and fill in its settings.
+
 3. Fold a policy to its title to keep the inspector short.
 
-## More screenshots
-
-<figure markdown>
-![A broker with three policies, two folded](../assets/ui/policies-fold-light.webp#only-light){ loading=lazy }
-![A broker with three policies, two folded](../assets/ui/policies-fold-dark.webp#only-dark){ loading=lazy }
-<figcaption>A broker with three policies, two folded</figcaption>
-</figure>
-
-<figure markdown>
-![Protected broker settings](../assets/ui/broker-protected-light.webp#only-light){ loading=lazy }
-![Protected broker settings](../assets/ui/broker-protected-dark.webp#only-dark){ loading=lazy }
-<figcaption>Protected broker settings</figcaption>
-</figure>
+    <figure markdown>
+    ![A broker with three policies, two folded](../assets/ui/policies-fold-light.webp#only-light){ loading=lazy }
+    ![A broker with three policies, two folded](../assets/ui/policies-fold-dark.webp#only-dark){ loading=lazy }
+    <figcaption>A broker with three policies, two folded</figcaption>
+    </figure>
 
 ## In detail
 

@@ -14,3 +14,4 @@
 | `agentNetwork.javaHome` | *(auto)* | Java 17+ home for builds; empty means detect or install |
 | `agentNetwork.tracer.debugLog` | `false` | Agent Network Tracer: log every Anypoint call (method, path, status, timing, answer shape; never tokens or contents) to the *Agent Network Tracer* output |
 | `agentNetwork.tracer.debugLogFile` | *(empty)* | Also append the Tracer debug log to this file |
+| `agentNetwork.telemetry.enabled` | `true` | Anonymous usage counts (PostHog EU, no names, paths or org data; see [Privacy](#privacy-and-security)). VS Code `telemetry.telemetryLevel` = `off` always wins |
