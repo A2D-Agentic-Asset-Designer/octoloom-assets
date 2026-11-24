@@ -606,7 +606,12 @@ def team():
 
 def ref_pages():
     for title, rel in (('Requirements', 'requirements.md'), ('Privacy and security', 'privacy.md'), ('Known limitations', 'limitations.md')):
-        write(f'about/{rel}', f'# {title}\n\n' + readme_section(title))
+        body = readme_section(title)
+        # The README links the event catalog next to itself; on the site it is published under assets (#347).
+        if os.path.exists(os.path.join(REPO, 'telemetry.json')):
+            shutil.copyfile(os.path.join(REPO, 'telemetry.json'), os.path.join(DOCS, 'assets', 'telemetry.json'))
+            body = body.replace('](telemetry.json)', '](../assets/telemetry.json)')
+        write(f'about/{rel}', f'# {title}\n\n' + body)
 
 
 def nav_yaml(items, ind=2):

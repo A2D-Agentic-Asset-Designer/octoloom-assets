@@ -1,0 +1,258 @@
+{
+  "$comment": "Every telemetry event and property Octoloom can send (#330). Kept in step with TELEMETRY_EVENTS in src/model/telemetry.ts by test/telemetry.test.ts. Values are enums, booleans or ranges only.",
+  "endpoint": "https://eu.i.posthog.com (PostHog Cloud EU)",
+  "common": {
+    "extVersion": {
+      "type": "semver",
+      "purpose": "Octoloom version"
+    },
+    "vscodeVersion": {
+      "type": "semver",
+      "purpose": "VS Code version"
+    },
+    "os": {
+      "type": "enum",
+      "values": [
+        "win",
+        "mac",
+        "linux",
+        "other"
+      ],
+      "purpose": "OS family"
+    },
+    "uiKind": {
+      "type": "enum",
+      "values": [
+        "desktop",
+        "web"
+      ],
+      "purpose": "Desktop or web VS Code"
+    },
+    "remoteName": {
+      "type": "enum",
+      "values": [
+        "none",
+        "ssh",
+        "wsl",
+        "container",
+        "codespaces",
+        "other"
+      ],
+      "purpose": "Remote kind"
+    },
+    "distinct_id": {
+      "type": "string",
+      "purpose": "VS Code machine id (random, anonymous)"
+    },
+    "$process_person_profile": {
+      "type": "boolean",
+      "purpose": "Always false: no person profiles"
+    }
+  },
+  "events": {
+    "activate": {
+      "purpose": "Octoloom started in a VS Code window (once per session).",
+      "properties": {}
+    },
+    "heartbeat": {
+      "purpose": "Daily active machine (at most once per UTC day), with which connections are set up.",
+      "properties": {
+        "anypoint": {
+          "type": "boolean",
+          "purpose": "Agent Fabric (Anypoint) is connected"
+        },
+        "a2d": {
+          "type": "boolean",
+          "purpose": "A²D is connected"
+        },
+        "p4a": {
+          "type": "boolean",
+          "purpose": "P4A is connected"
+        },
+        "idmc": {
+          "type": "boolean",
+          "purpose": "Headless IDMC is connected"
+        }
+      }
+    },
+    "build": {
+      "purpose": "Build command run and its result.",
+      "properties": {
+        "outcome": {
+          "type": "enum",
+          "values": [
+            "ok",
+            "fail"
+          ],
+          "purpose": "Result of the action"
+        },
+        "style": {
+          "type": "enum",
+          "values": [
+            "v1",
+            "v2"
+          ],
+          "purpose": "Network style: v1 Probabilistic, v2 Deterministic"
+        },
+        "policies": {
+          "type": "enum",
+          "values": [
+            "0",
+            "1-3",
+            "4+"
+          ],
+          "purpose": "Number of policies applied, as a range"
+        },
+        "governed": {
+          "type": "boolean",
+          "purpose": "At least one broker or connection has a policy"
+        }
+      }
+    },
+    "validate": {
+      "purpose": "Validate Project (dry run) and its result.",
+      "properties": {
+        "outcome": {
+          "type": "enum",
+          "values": [
+            "ok",
+            "fail",
+            "cancelled"
+          ],
+          "purpose": "Result of the action"
+        }
+      }
+    },
+    "publish": {
+      "purpose": "Publish run and its result.",
+      "properties": {
+        "outcome": {
+          "type": "enum",
+          "values": [
+            "ok",
+            "fail"
+          ],
+          "purpose": "Result of the action"
+        }
+      }
+    },
+    "deploy": {
+      "purpose": "Deploy run (from the Deploy form) and its result.",
+      "properties": {
+        "outcome": {
+          "type": "enum",
+          "values": [
+            "ok",
+            "fail",
+            "cancelled"
+          ],
+          "purpose": "Result of the action"
+        },
+        "autopublish": {
+          "type": "boolean",
+          "purpose": "Deploy also published the network"
+        }
+      }
+    },
+    "governance": {
+      "purpose": "Governance validation of one project and its result.",
+      "properties": {
+        "outcome": {
+          "type": "enum",
+          "values": [
+            "conforms",
+            "violations",
+            "error"
+          ],
+          "purpose": "Result of the action"
+        },
+        "rulesets": {
+          "type": "enum",
+          "values": [
+            "1",
+            "2-3",
+            "4+"
+          ],
+          "purpose": "Number of rulesets, as a range"
+        }
+      }
+    },
+    "create": {
+      "purpose": "New project created: style and template.",
+      "properties": {
+        "style": {
+          "type": "enum",
+          "values": [
+            "v1",
+            "v2"
+          ],
+          "purpose": "Network style: v1 Probabilistic, v2 Deterministic"
+        },
+        "template": {
+          "type": "enum",
+          "values": [
+            "blank",
+            "other",
+            "<catalog id>"
+          ],
+          "purpose": "Template catalog id, blank, or other"
+        }
+      }
+    },
+    "feature": {
+      "purpose": "An Octoloom command was used (once per command per UTC day).",
+      "properties": {
+        "id": {
+          "type": "enum",
+          "values": [
+            "<contributed command id>"
+          ],
+          "purpose": "Contributed command id"
+        }
+      }
+    },
+    "error": {
+      "purpose": "An action failed: action and error class only, never the message.",
+      "properties": {
+        "action": {
+          "type": "enum",
+          "values": [
+            "activate",
+            "build",
+            "validate",
+            "publish",
+            "deploy",
+            "governance",
+            "create",
+            "runLocal",
+            "chat",
+            "connect",
+            "undeploy",
+            "unpublish",
+            "setupGateways"
+          ],
+          "purpose": "The action that failed"
+        },
+        "code": {
+          "type": "enum",
+          "values": [
+            "<action>:<ErrorClass>"
+          ],
+          "purpose": "action:ErrorClass"
+        }
+      }
+    }
+  },
+  "neverCollected": [
+    "names",
+    "paths",
+    "URLs",
+    "hosts",
+    "org, environment, user or pod names",
+    "file contents",
+    "prompts and chat text",
+    "error messages",
+    "keys and tokens",
+    "IP address (discarded after the country lookup)"
+  ]
+}
