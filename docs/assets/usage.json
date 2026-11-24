@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "refreshed": "2026-11-24T05:52:15.769Z",
+  "window": {
+    "days": 30,
+    "k": 5,
+    "trendWeeks": 12
+  },
+  "totals": {
+    "active": {
+      "day": 0,
+      "week": 0,
+      "month": 0,
+      "quarter": 0
+    },
+    "events": {
+      "build": 0,
+      "validate": 0,
+      "publish": 0,
+      "deploy": 0,
+      "governance": 0,
+      "create": 0
+    }
+  },
+  "countries": [],
+  "versions": [],
+  "platforms": {
+    "os": []
+  },
+  "features": [],
+  "templates": [],
+  "styles": {
+    "build": {},
+    "create": {}
+  },
+  "outcomes": {
+    "build": null,
+    "validate": null,
+    "publish": null,
+    "deploy": null,
+    "governance": null
+  },
+  "connections": {
+    "machines": 0,
+    "anypoint": null,
+    "a2d": null,
+    "p4a": null,
+    "idmc": null
+  },
+  "trends": [],
+  "empty": true
+}

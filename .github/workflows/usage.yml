@@ -1,0 +1,37 @@
+# Daily usage aggregation (octoloom#333): PostHog EU -> docs/assets/usage.json (aggregates only, k >= 5).
+# The read-only, project-scoped query key is the secret POSTHOG_QUERY_KEY. It is only exposed to this
+# scheduled / manual job (no pull_request trigger) and never echoed. A failed query fails the run and
+# keeps the previous file.
+name: usage
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: usage
+  cancel-in-progress: false
+jobs:
+  aggregate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test
+        run: node --test scripts/usage/*.test.mjs
+      - name: Aggregate
+        env:
+          POSTHOG_QUERY_KEY: ${{ secrets.POSTHOG_QUERY_KEY }}
+          POSTHOG_PROJECT_ID: '365324'
+          POSTHOG_HOST: https://eu.posthog.com
+        run: node scripts/usage/aggregate.mjs
+      - name: Commit
+        run: |
+          git add docs/assets/usage.json docs/assets/usage/
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git -c user.name="octoloom-usage[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -m "docs(usage): refresh $(date -u +%F)"
+          git push
