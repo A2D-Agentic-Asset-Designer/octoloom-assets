@@ -2,7 +2,7 @@
 
 # Version history
 
-<p class="lede">Every Octoloom release from the very first, newest first: what changed, in plain words, and who made it happen. <b>60 versions</b>, <b>212 changes</b>.</p>
+<p class="lede">Every Octoloom release from the very first, newest first: what changed, in plain words, and who made it happen. <b>60 versions</b>, <b>214 changes</b>.</p>
 
 ## Contributors
 
@@ -13,6 +13,14 @@ Everyone who suggested or built a change. A change counts for the person who fil
 ## 0.9.29
 
 <span class="ol-ver-meta">in development</span>
+
+- **Templates deploy on every control plane**. MuleSoft publishes its policies and the `openai` LLM under a different organization in each control plane (US, EU, Canada, Japan); templates and new projects named the US one, so on an EU org the pre-deploy check said *openai 1.0.0 can't be read by the connected organization*. New projects, the policy picker and the *Use the Exchange LLM* fix now use the organization of the control plane you are connected to; the Coverage map counts MuleSoft policies of every control plane as Agent Fabric. Credits: reported, built and committed by [Amir Khan](https://github.com/amirkhan-ak-sf).
+
+    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+
+- **Quick Start: recorded videos and create from the tab**. The onboarding pages show 11 short videos instead of the Anypoint pictures: Anypoint sign-up and log-in, the Small Managed Omni Gateway, the connected app Octoloom-CA, connecting Agent Fabric, and now also signing up, signing in and connecting **A²D** and **P4A**. Names, e-mail addresses, organization names and ids, keys and tokens are blurred. Each video is a small thumbnail next to the instruction it shows; a click opens it in a dialog (Escape closes it). H.264 MP4, about 5 MB in all. A template card under *Templates for this journey* no longer opens New agent network: it opens the **Project** step of New Project right in the tab (name, parent folder, after creating, Git), creates the project with the same code, adds it to Projects & Deploy and runs the After-creating action; errors such as a taken name show in the form.
+
+    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf), [Tommaso Bolis](https://github.com/tommasobolis), [George Jeffcock](https://github.com/jeffcock)</span>
 
 - **Setup & Connect: connection cards follow the side bar width**. The Agent Fabric, A²D, P4A and Headless IDMC cards now shrink with the side bar: the description shortens with an ellipsis and the button always stays in view. **Connect** is a plug button (tooltip *Connect to <name>*).
 

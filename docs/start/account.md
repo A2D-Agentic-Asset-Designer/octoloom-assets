@@ -6,14 +6,10 @@ Octoloom deploys agent networks to **MuleSoft Agent Fabric** in your Anypoint or
 
 | You have | Do |
 |---|---|
-| No account | [Sign up](https://anypoint.mulesoft.com/login/signup) for a free trial |
-| An account | [Log in](https://anypoint.mulesoft.com/login/) and check that **Runtime Manager → Omni Gateways** is in the menu |
+| No account | [Sign up](https://anypoint.mulesoft.com/login/signup) for a free trial <video controls muted playsinline preload="none" poster="../../assets/onboarding/videos/anypoint-signup.png" src="../../assets/onboarding/videos/anypoint-signup.mp4" aria-label="Video: sign up for an Anypoint Platform trial" style="width:100%"></video> |
+| An account | [Log in](https://anypoint.mulesoft.com/login/) and check that **Runtime Manager → Omni Gateways** is in the menu <video controls muted playsinline preload="none" poster="../../assets/onboarding/videos/anypoint-login.png" src="../../assets/onboarding/videos/anypoint-login.mp4" aria-label="Video: log in to Anypoint Platform" style="width:100%"></video> |
 
 > Use a trial or sandbox organization for the tutorials. Octoloom only **adds** assets, gateways and deployments; it never deletes what is already in your org.
-
-![The Anypoint sign-in page: Sign up for a trial, or sign in](../assets/onboarding/account-signin.png)
-
-![After the sign-in: Go to Anypoint Platform](../assets/onboarding/account-open.png)
 
 Anypoint opens in your browser: its pages can't be shown inside VS Code.
 

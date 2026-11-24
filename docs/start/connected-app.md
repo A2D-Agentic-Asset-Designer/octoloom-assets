@@ -4,22 +4,8 @@
 
 Octoloom acts as a **connected app** (client credentials), with only the scopes it needs.
 
-1. In Anypoint, click the **settings** gear → **Access Management**, then **Connected Apps** → **Create app**.
-
-   ![The settings menu with Access Management](../assets/onboarding/ca-access-mgmt.png)
-
-
-   ![Access Management side bar with Connected Apps](../assets/onboarding/ca-nav.png)
-
-
-   ![Connected Apps, Owned Apps, Create app](../assets/onboarding/ca-create.png)
-
+1. In Anypoint, click the **settings** gear → **Access Management**, then **Connected Apps** → **Create app**. <video controls muted playsinline preload="none" poster="../../assets/onboarding/videos/anypoint-connected-app.png" src="../../assets/onboarding/videos/anypoint-connected-app.mp4" aria-label="Video: create the connected app Octoloom-CA and add its scopes" style="width:100%"></video>
 2. **Name**: `Octoloom-CA`. **Type**: *App acts on its own behalf (client credentials)*.
-
-   ![Create App: the name and App acts on its own behalf (client credentials)](../assets/onboarding/ca-name.png)
-
-
-   ![Scopes: Add Scopes](../assets/onboarding/ca-scopes.png)
 
 3. **Add Scopes**, for your business group and the environment(s) you deploy to:
 
@@ -35,22 +21,9 @@ Octoloom acts as a **connected app** (client credentials), with only the scopes 
 
    Use **Filter scopes** to find each one; don't tick whole groups.
 
-   ![The Add Scopes list with a filter box](../assets/onboarding/ca-scope-list.png)
-
    Then pick your **business group** and the **environments** (for example Sandbox), and review.
 
-   ![Select Business Groups](../assets/onboarding/ca-groups.png)
-
-
-   ![Select Environments: Sandbox and Design](../assets/onboarding/ca-envs.png)
-
-
-   ![Review: every scope with its business group and environments](../assets/onboarding/ca-review.png)
-
 4. **Add Scopes**, then **Save**, and copy the **Client ID** and **Client Secret**.
-
-   ![Save the connected app](../assets/onboarding/ca-save.png)
-
 
 Least privilege: add only these. If a call is refused (HTTP 403), Octoloom names the permission that is missing; add just that one. Don't *Select all*.
 
