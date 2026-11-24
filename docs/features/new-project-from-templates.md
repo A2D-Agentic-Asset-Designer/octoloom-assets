@@ -74,6 +74,12 @@ Creates an agent network project: pick the style (Probabilistic or Deterministic
 
 **When to use it:** Starting a network from scratch or from a template.
 
+<figure markdown>
+![New project: style, start from, the template list and the README preview](../assets/ui/new-project-light.webp#only-light){ loading=lazy }
+![New project: style, start from, the template list and the README preview](../assets/ui/new-project-dark.webp#only-dark){ loading=lazy }
+<figcaption>New project: style, start from, the template list and the README preview</figcaption>
+</figure>
+
 **Examples and details:**
 
 - An empty network, then add brokers from the palette

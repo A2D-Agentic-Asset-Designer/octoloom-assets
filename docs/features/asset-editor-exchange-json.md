@@ -58,6 +58,12 @@ A form over the exchange.json of a project: its name, version, variables and the
 
 **When to use it:** Before publishing, or when a dependency or variable changes.
 
+<figure markdown>
+![The exchange.json form with protected defaults locked](../assets/ui/exchange-locked-light.webp#only-light){ loading=lazy }
+![The exchange.json form with protected defaults locked](../assets/ui/exchange-locked-dark.webp#only-dark){ loading=lazy }
+<figcaption>The exchange.json form with protected defaults locked</figcaption>
+</figure>
+
 **Examples and details:**
 
 - Bump the version before a new publish
@@ -70,6 +76,12 @@ A form over the exchange.json of a project: its name, version, variables and the
 Opens the Exchange descriptor of this project in its form: name, version, variables, dependencies and runtime limits.
 
 **When to use it:** To change the version, a variable default or what Exchange shows.
+
+<figure markdown>
+![The network toolbar: exchange.json opens the asset editor](../assets/ui/toolbar-network-light.webp#only-light){ loading=lazy }
+![The network toolbar: exchange.json opens the asset editor](../assets/ui/toolbar-network-dark.webp#only-dark){ loading=lazy }
+<figcaption>The network toolbar: exchange.json opens the asset editor</figcaption>
+</figure>
 
 **Examples and details:**
 

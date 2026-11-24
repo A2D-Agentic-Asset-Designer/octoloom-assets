@@ -65,6 +65,12 @@ The text of the file behind the canvas, with syntax colours (keys, values, strin
 
 **When to use it:** To check or change the exact YAML or AgentScript.
 
+<figure markdown>
+![Code view of agent-network.yaml](../assets/ui/code-yaml-light.webp#only-light){ loading=lazy }
+![Code view of agent-network.yaml](../assets/ui/code-yaml-dark.webp#only-dark){ loading=lazy }
+<figcaption>Code view of agent-network.yaml</figcaption>
+</figure>
+
 **Examples and details:**
 
 - Switch between Visual and the source in the toolbar
@@ -76,6 +82,12 @@ The text of the file behind the canvas, with syntax colours (keys, values, strin
 Switches between the visual editor (canvas or form) and the source text of the same file. Both edit the file itself; nothing is converted or stored elsewhere.
 
 **When to use it:** Code for a quick text edit, search (Cmd/Ctrl+F) or to see exactly what is saved; Visual for everything else.
+
+<figure markdown>
+![The toolbar: Visual / Code switches the view](../assets/ui/toolbar-flow-light.webp#only-light){ loading=lazy }
+![The toolbar: Visual / Code switches the view](../assets/ui/toolbar-flow-dark.webp#only-dark){ loading=lazy }
+<figcaption>The toolbar: Visual / Code switches the view</figcaption>
+</figure>
 
 **Examples and details:**
 

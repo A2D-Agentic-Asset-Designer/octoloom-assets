@@ -47,7 +47,7 @@ extra_javascript:
   - assets/usage.js
 extra:
   version: "0.9.28"
-  installs: "130"
+  installs: "129"
   marketplace: https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom
   social:
     - icon: material/microsoft-visual-studio-code
@@ -77,6 +77,14 @@ nav:
   - "Get started":
       - "Introduction": index.md
       - "Getting started": getting-started.md
+      - "Before you start":
+          - "Overview": start/index.md
+          - "Anypoint account": start/account.md
+          - "Small Managed Omni Gateway": start/gateway.md
+          - "Connected app Octoloom-CA": start/connected-app.md
+          - "Connect Octoloom to Agent Fabric": start/connect-anypoint.md
+          - "Connect to A²D (optional)": start/connect-a2d.md
+          - "Connect to P4A (optional)": start/connect-p4a.md
       - "Install from the Marketplace": https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom
   - "Using Octoloom":
       - "All features": features/index.md

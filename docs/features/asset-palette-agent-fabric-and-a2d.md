@@ -93,6 +93,12 @@ The assets you can add to a network: agents and MCP servers from Exchange, A²D,
 
 **When to use it:** While building a network, to find what to drag onto the canvas.
 
+<figure markdown>
+![Agent Fabric tab, LLMs filter](../assets/ui/assets-llm-light.webp#only-light){ loading=lazy }
+![Agent Fabric tab, LLMs filter](../assets/ui/assets-llm-dark.webp#only-dark){ loading=lazy }
+<figcaption>Agent Fabric tab, LLMs filter</figcaption>
+</figure>
+
 **Examples and details:**
 
 - Drag an asset card onto the network canvas to add it
@@ -107,6 +113,12 @@ The assets you can add to a network: agents and MCP servers from Exchange, A²D,
 A network can declare its own LLM (registry.llms in v2, llmProviders in v1): every publish then creates a new LLM asset in Exchange for that project. Referencing a published LLM instead (an exchange.json dependency with classifier llm-metadata and a connection ref with its name and namespace) reuses one asset. New Deterministic (v2) projects and v2 templates reference MuleSoft openai. A Problem (info) points at a v2 project-declared LLM; for an OpenAI LLM its Fix switches the connections to MuleSoft openai and adds the dependency in one undoable edit.
 
 **When to use it:** When your Exchange fills up with one LLM asset per project, or to share one LLM proxy across networks.
+
+<figure markdown>
+![A 1.0 broker with an LLM from Exchange](../assets/ui/network-v1-exchange-llm-light.webp#only-light){ loading=lazy }
+![A 1.0 broker with an LLM from Exchange](../assets/ui/network-v1-exchange-llm-dark.webp#only-dark){ loading=lazy }
+<figcaption>A 1.0 broker with an LLM from Exchange</figcaption>
+</figure>
 
 **Examples and details:**
 

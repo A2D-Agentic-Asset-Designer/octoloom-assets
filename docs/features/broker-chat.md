@@ -164,6 +164,12 @@ Talk to a deployed broker (or one running locally) the way a client would: send 
 
 **When to use it:** After a deploy or a local run, to try the network end to end before anyone else uses it.
 
+<figure markdown>
+![Chat with live progress updates](../assets/ui/chat-progress-light.webp#only-light){ loading=lazy }
+![Chat with live progress updates](../assets/ui/chat-progress-dark.webp#only-dark){ loading=lazy }
+<figcaption>Chat with live progress updates</figcaption>
+</figure>
+
 **Examples and details:**
 
 - Pick the broker at the top of the chat, type a question and press Enter
@@ -178,6 +184,12 @@ Talk to a deployed broker (or one running locally) the way a client would: send 
 The Network tab of the chat, read-only. With no reply picked it is the whole network drawn like the network canvas: brokers, agents, MCP servers, LLMs, their connections and policies, with no editing. Once you pick a reply (trace icon under a deployed reply, or a task in the Agent Network Tracer) it shows that reply as a sequence diagram: You, the broker, then each agent, MCP server and LLM it called, with one request and one response arrow per call, numbered (1), (2), … in time order. It uses the same trace lookup as the Trace waterfall, so nothing new is called in your organization.
 
 **When to use it:** To see how the network is built while you chat, and to follow one reply hop by hop: who called whom, what was sent, what came back and how long it took.
+
+<figure markdown>
+![The network, read-only, in the chat](../assets/ui/chat-network-light.webp#only-light){ loading=lazy }
+![The network, read-only, in the chat](../assets/ui/chat-network-dark.webp#only-dark){ loading=lazy }
+<figcaption>The network, read-only, in the chat</figcaption>
+</figure>
 
 **Examples and details:**
 
@@ -196,6 +208,12 @@ The distributed trace of one deployed chat reply, shown on the left of the chat 
 
 **When to use it:** After a reply, to see which calls the broker made for that message, in what order, how long each took and which one failed. It needs a deployed, running broker: local runs have no spans.
 
+<figure markdown>
+![The trace of a reply: every call in order, one failed](../assets/ui/chat-trace-light.webp#only-light){ loading=lazy }
+![The trace of a reply: every call in order, one failed](../assets/ui/chat-trace-dark.webp#only-dark){ loading=lazy }
+<figcaption>The trace of a reply: every call in order, one failed</figcaption>
+</figure>
+
 **Examples and details:**
 
 - Trace icon (pulse line, no text) under a deployed reply: shows that reply's trace on the left. The Tracer icon next to it opens the task in the Agent Network Tracer
@@ -213,6 +231,12 @@ How the broker chat authenticates to a broker behind a gateway policy (JWT Valid
 
 **When to use it:** The chat answers HTTP 401 or 403, or the broker policies ask for credentials. The method the policies suggest is preselected.
 
+<figure markdown>
+![Authentication: user sign-in suggested by JWT Validation](../assets/ui/chat-auth-light.webp#only-light){ loading=lazy }
+![Authentication: user sign-in suggested by JWT Validation](../assets/ui/chat-auth-dark.webp#only-dark){ loading=lazy }
+<figcaption>Authentication: user sign-in suggested by JWT Validation</figcaption>
+</figure>
+
 **Examples and details:**
 
 - Bearer token: paste an access token (JWT) you already have
@@ -229,6 +253,12 @@ How the broker chat authenticates to a broker behind a gateway policy (JWT Valid
 The Share icon in the broker chat header, after New conversation, opens the Share dialog for the chat's broker on its A²D sessions tab; the Local portal tab is one click away. Sharing is not in Projects & Deploy. Broker credentials: none, bearer token and Basic always work; with an A²D that has Octoloom chat sessions also Client ID (as its own headers), a custom API key header and OAuth2 client credentials, while an older A²D sends Client ID as Basic. A²D doesn't encrypt them at rest yet, so use a test client app scoped to the broker. Creating, ending and removing an A²D session are confirmed in the dialog itself: send opens a review of the session, broker, invited people, expiry and credentials, where send creates it and close goes back; end and remove show a confirmation strip on the session row. Local portal generates a standalone web chat project for one broker: a small Node server (no dependencies) and a chat page, plus a Dockerfile and a README with deploy steps. The page looks like Octoloom's chat: the mascot, skill cards, bubbles and the reply state. Visitors sign in with a shared passcode; Octoloom shows it once and writes only its scrypt hash into the portal's .env. The server calls the broker over A2A with the credentials method saved in the chat (shield button), so the secret stays on the server and never reaches the browser. Follow-up questions keep the broker conversation. The Broker URL list offers the Anypoint deployment, the local run (only reachable while the portal runs on this machine) or any other URL. A project can have several portals, each with its own folder, passcode and local port. The portal checks itself: node server.mjs --check (and the same checks at startup) tests the settings, the broker, its agent card, the token and the credentials and prints a fix for each problem; the page has a Status panel with the checks, versions and recent events (never messages), and a failed reply says what went wrong with a reference that is also in the server log. Each portal records the Octoloom version that generated it; when Octoloom is newer, its box offers Update (same broker, title, passcode and .env). A²D sessions share a deployed broker as an A²D exploratory session of the Octoloom chat type: the people you invite by email verify themselves with a code on an Octoloom-styled page, then chat in the Octoloom chat window hosted by A²D, keep their conversation going across follow-up questions, and mark replies and the session passed, failed or in progress with a comment. The session always expires (1 to 90 days, no 'never'). Its row opens or copies the link, invites more people, extends, ends it or removes it from A²D, all with small icons. Opened, it shows the results stored in A²D, refreshed every minute: who was invited, verified and submitted, every passed, failed or in-progress mark with its comment (new ones are marked new), each visitor's Submit, and every conversation; Continue in the chat loads a visitor's conversation into this chat window so you can carry it on with the same context. An older A²D without the Octoloom chat type falls back to its exploratory tester (the row says A²D tester); the marks and comments testers set there show the same way once A²D returns them. Use a dedicated test client app for the broker credentials; supported: no credentials, a bearer token, Basic, or Client ID sent as Basic.
 
 **When to use it:** When colleagues should chat with a broker without VS Code or Octoloom, and you can't install a Slack or Teams app: run it here to try it, then deploy the folder to any Node host or container service. Everyone who chats uses the same broker credentials, so share the passcode only with people who may see what the broker returns.
+
+<figure markdown>
+![Share: local portal](../assets/ui/chat-share-web-light.webp#only-light){ loading=lazy }
+![Share: local portal](../assets/ui/chat-share-web-dark.webp#only-dark){ loading=lazy }
+<figcaption>Share: local portal</figcaption>
+</figure>
 
 **Examples and details:**
 
@@ -251,6 +281,12 @@ The Share icon in the broker chat header, after New conversation, opens the Shar
 When Octoloom cannot load from Agent Fabric, A²D, P4A, Headless IDMC or an MCP server, the red line says what failed in one sentence and the info (i) button after it shows why: the HTTP status, the request (method and URL), selected response headers such as x-request-id, the response body, the network cause (for example ENOTFOUND, ECONNREFUSED, a certificate error or a timeout) and what to check. Copy details puts the whole text on the clipboard for the administrator of that system. Passwords, tokens, session IDs and secrets are masked in the URL and the body.
 
 **When to use it:** When the Assets palette shows an error or a partial failure (for example IDMC composite MCP servers), before asking anyone for help.
+
+<figure markdown>
+![A connection error with its details](../assets/ui/assets-error-detail-light.webp#only-light){ loading=lazy }
+![A connection error with its details](../assets/ui/assets-error-detail-dark.webp#only-dark){ loading=lazy }
+<figcaption>A connection error with its details</figcaption>
+</figure>
 
 **Examples and details:**
 

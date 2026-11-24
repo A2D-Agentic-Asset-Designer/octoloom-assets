@@ -31,6 +31,12 @@ Shrinks a card to just its icon tile and name, so large networks and flows show 
 
 **When to use it:** Reviewing or presenting a network with many brokers, agents and MCP servers, or a long AgentScript flow.
 
+<figure markdown>
+![The canvas buttons: Minimize all / Open all](../assets/ui/canvas-fabs-light.webp#only-light){ loading=lazy }
+![The canvas buttons: Minimize all / Open all](../assets/ui/canvas-fabs-dark.webp#only-dark){ loading=lazy }
+<figcaption>The canvas buttons: Minimize all / Open all</figcaption>
+</figure>
+
 **Examples and details:**
 
 - Minimize all (canvas button): every card becomes an icon; press it again (Open all) to restore every card

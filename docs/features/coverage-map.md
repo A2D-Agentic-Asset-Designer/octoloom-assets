@@ -75,6 +75,12 @@ Every agent network on this machine in one tab: how well each one is governed an
 
 **When to use it:** Before a demo or a go-live, to see which networks still have unprotected brokers, connections without authentication, A²D mocks or governance violations. Open it from Home → Quick Actions or Your statistics → Coverage map, or with the Octoloom: Coverage Map command.
 
+<figure markdown>
+![Coverage map: summary cards, asset origins, the Overview table and the details of a network](../assets/ui/coverage-map-light.webp#only-light){ loading=lazy }
+![Coverage map: summary cards, asset origins, the Overview table and the details of a network](../assets/ui/coverage-map-dark.webp#only-dark){ loading=lazy }
+<figcaption>Coverage map: summary cards, asset origins, the Overview table and the details of a network</figcaption>
+</figure>
+
 **Examples and details:**
 
 - Policies view: each cell is the share of a network's brokers and connections that have a policy of that category; routing, transcoding and header policies are listed but not counted
@@ -89,6 +95,12 @@ Totals over the networks in the table (the filters apply). Policy coverage: brok
 
 **When to use it:** Click a card to switch the table to its view.
 
+<figure markdown>
+![The coverage summary at the top of the Coverage map](../assets/ui/coverage-map-annot-light.webp#only-light){ loading=lazy }
+![The coverage summary at the top of the Coverage map](../assets/ui/coverage-map-annot-dark.webp#only-dark){ loading=lazy }
+<figcaption>The coverage summary at the top of the Coverage map</figcaption>
+</figure>
+
 **Examples and details:**
 
 - Protected brokers 2 / 14: twelve brokers accept calls without an access policy
@@ -99,6 +111,12 @@ Totals over the networks in the table (the filters apply). Policy coverage: brok
 A flow from each source (left) to what it supplies (right): agents, MCP servers, LLMs, policies and governance rulesets. A²D is mocks and prototypes; Agent Fabric is MuleSoft policies and rulesets and assets published in Exchange; Informatica IDMC is Headless IDMC MCP servers; P4A is the community policy and ruleset catalog (policies are recorded as P4A when Octoloom applies them); your organization is your own policies and rulesets in Exchange.
 
 **When to use it:** Click a source, its band or its row in the list to show only the networks that use it; click it again to clear the filter.
+
+<figure markdown>
+![Where your assets come from, on the Coverage map](../assets/ui/coverage-map-annot-light.webp#only-light){ loading=lazy }
+![Where your assets come from, on the Coverage map](../assets/ui/coverage-map-annot-dark.webp#only-dark){ loading=lazy }
+<figcaption>Where your assets come from, on the Coverage map</figcaption>
+</figure>
 
 **Examples and details:**
 
@@ -111,6 +129,12 @@ One row per agent network. Cells show a share as a number and a colour: red 0%, 
 
 **When to use it:** Pick a view above the table, sort by the lowest policy coverage or the most violations, and click a row for its details.
 
+<figure markdown>
+![The coverage table, one row per network](../assets/ui/coverage-map-annot-light.webp#only-light){ loading=lazy }
+![The coverage table, one row per network](../assets/ui/coverage-map-annot-dark.webp#only-dark){ loading=lazy }
+<figcaption>The coverage table, one row per network</figcaption>
+</figure>
+
 **Examples and details:**
 
 - Authentication view: broker access (protected or open) and the authentication kinds of the agent and MCP connections
@@ -121,6 +145,12 @@ One row per agent network. Cells show a share as a number and a colour: red 0%, 
 The picked network: its policy coverage, the gaps worst first, the rulesets of the last governance run with their source, and every broker and connection with its source, authentication and policies. A policy chip shows its category by colour and where it comes from (AF = Agent Fabric, P4A, Org).
 
 **When to use it:** Open canvas to add the missing policies or authentication, Governance to validate the project (projects of the open workspace), Folder to show it in Finder or Explorer.
+
+<figure markdown>
+![Network details, under the coverage table](../assets/ui/coverage-map-annot-light.webp#only-light){ loading=lazy }
+![Network details, under the coverage table](../assets/ui/coverage-map-annot-dark.webp#only-dark){ loading=lazy }
+<figcaption>Network details, under the coverage table</figcaption>
+</figure>
 
 **Examples and details:**
 

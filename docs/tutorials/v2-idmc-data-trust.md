@@ -21,6 +21,7 @@ There are three ways to use this template:
 - An OpenAI API key (or an OpenAI-compatible LLM gateway).
 - An Informatica IDMC org with the four shared MCP services and an IDMC MCP client (see the template README, *IDMC setup*).
 - Nothing else: the IDMC MCP servers are called with OAuth 2.0 client credentials.
+- **Not set up yet?** The Quick Start prerequisites, step by step with pictures: [Anypoint account](../start/account.md) · [Small Managed Omni Gateway](../start/gateway.md) · [Connected app Octoloom-CA](../start/connected-app.md) · [Connect Octoloom to Agent Fabric](../start/connect-anypoint.md).
 
 ## Path 1: Just use it
 

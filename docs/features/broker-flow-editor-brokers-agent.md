@@ -90,6 +90,12 @@ The canvas of one .agent file: its nodes (trigger, generator, router, sub-agent,
 
 **When to use it:** Designing the behaviour of one agent.
 
+<figure markdown>
+![A 2.0 broker flow: explorer, nodes and transitions](../assets/ui/agent-flow-light.webp#only-light){ loading=lazy }
+![A 2.0 broker flow: explorer, nodes and transitions](../assets/ui/agent-flow-dark.webp#only-dark){ loading=lazy }
+<figcaption>A 2.0 broker flow: explorer, nodes and transitions</figcaption>
+</figure>
+
 **Examples and details:**
 
 - Add a node from the palette on the left
@@ -213,6 +219,12 @@ Like a subagent, but meant to coordinate several agents and tools in one step, u
 
 **When to use it:** Two or more agents or tools must be combined and the order can vary.
 
+<figure markdown>
+![An orchestrator step on the broker flow canvas](../assets/ui/agent-flow-annot-light.webp#only-light){ loading=lazy }
+![An orchestrator step on the broker flow canvas](../assets/ui/agent-flow-annot-dark.webp#only-dark){ loading=lazy }
+<figcaption>An orchestrator step on the broker flow canvas</figcaption>
+</figure>
+
 **Examples and details:**
 
 - Record FNOL, check coverage, screen fraud, then decide
@@ -289,6 +301,12 @@ The outline of the .agent file on the left: every node by kind, and the palette 
 Patterns insert several wired nodes at once from + Step or the right-click menu: logical case selection, check then act, extract then run a tool, error handling (status output + failed reply), retry once then fail, human in the loop (ask one question when details are missing) and guardrail check (blocked requests end as rejected). Names are made unique and the last node links to the existing reply.
 
 **When to use it:** You need a common flow shape: replace the placeholder instructions and conditions afterwards. Matching instruction templates (Error handling, Retry, Ask the user, Guardrail screen) are in the Insert template picker.
+
+<figure markdown>
+![+ Step → Patterns: ready-made flow fragments](../assets/ui/agent-patterns-light.webp#only-light){ loading=lazy }
+![+ Step → Patterns: ready-made flow fragments](../assets/ui/agent-patterns-dark.webp#only-dark){ loading=lazy }
+<figcaption>+ Step → Patterns: ready-made flow fragments</figcaption>
+</figure>
 
 **Examples and details:**
 

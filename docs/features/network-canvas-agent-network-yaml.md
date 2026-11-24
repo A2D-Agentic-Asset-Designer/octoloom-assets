@@ -104,6 +104,12 @@ The canvas of one agent network file: brokers, agents, MCP servers, LLMs, connec
 
 **When to use it:** Designing or reviewing a network.
 
+<figure markdown>
+![A deterministic (2.0) network: broker, agents, MCP server and LLM](../assets/ui/network-v2-light.webp#only-light){ loading=lazy }
+![A deterministic (2.0) network: broker, agents, MCP server and LLM](../assets/ui/network-v2-dark.webp#only-dark){ loading=lazy }
+<figcaption>A deterministic (2.0) network: broker, agents, MCP server and LLM</figcaption>
+</figure>
+
 **Examples and details:**
 
 - Drag from a port to another card to connect them
@@ -196,6 +202,12 @@ Where and how the gateway reaches an agent, MCP server or LLM: URL, authenticati
 
 **When to use it:** One per upstream. Change URLs per environment with variables.
 
+<figure markdown>
+![Context edges between a broker and its agents](../assets/ui/network-v2-context-light.webp#only-light){ loading=lazy }
+![Context edges between a broker and its agents](../assets/ui/network-v2-context-dark.webp#only-dark){ loading=lazy }
+<figcaption>Context edges between a broker and its agents</figcaption>
+</figure>
+
 **Examples and details:**
 
 - ${refundAgent.url} with PII detection inbound
@@ -207,6 +219,12 @@ Where and how the gateway reaches an agent, MCP server or LLM: URL, authenticati
 The properties of the selected card or node. Edits go straight into the file.
 
 **When to use it:** After selecting something on the canvas.
+
+<figure markdown>
+![A broker with three policies, two folded](../assets/ui/policies-fold-light.webp#only-light){ loading=lazy }
+![A broker with three policies, two folded](../assets/ui/policies-fold-dark.webp#only-dark){ loading=lazy }
+<figcaption>A broker with three policies, two folded</figcaption>
+</figure>
 
 **Examples and details:**
 

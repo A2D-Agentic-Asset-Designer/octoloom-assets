@@ -55,6 +55,12 @@ Downloads an agent network that is published in Exchange (by you or a colleague)
 
 **When to use it:** To reuse, review, govern or redeploy a network that lives in Exchange, or to continue work on another machine.
 
+<figure markdown>
+![Agent network from Exchange: networks of the org, version picker and Save to](../assets/ui/exchange-import-light.webp#only-light){ loading=lazy }
+![Agent network from Exchange: networks of the org, version picker and Save to](../assets/ui/exchange-import-dark.webp#only-dark){ loading=lazy }
+<figcaption>Agent network from Exchange: networks of the org, version picker and Save to</figcaption>
+</figure>
+
 **Examples and details:**
 
 - Click the Exchange icon next to + in Projects & Deploy, or choose From Exchange in the + menu

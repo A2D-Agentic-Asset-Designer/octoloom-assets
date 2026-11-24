@@ -83,6 +83,12 @@ The start page of Octoloom, in five sections that are open by default; click a h
 
 **When to use it:** It opens when VS Code starts (turn it off with the checkbox or the agentNetwork.showWelcome setting), not when you click the Octoloom icon. Open it any time with the home button in Projects & Deploy or the Octoloom: Welcome command.
 
+<figure markdown>
+![The Home page: start cards, tutorials, recently built projects and your statistics](../assets/ui/welcome-light.webp#only-light){ loading=lazy }
+![The Home page: start cards, tutorials, recently built projects and your statistics](../assets/ui/welcome-dark.webp#only-dark){ loading=lazy }
+<figcaption>The Home page: start cards, tutorials, recently built projects and your statistics</figcaption>
+</figure>
+
 **Examples and details:**
 
 - Start a new Deterministic network from its card in Quick Actions: the New Project dialog opens with that style
@@ -99,6 +105,12 @@ Links to the Octoloom tutorials on GitHub (octoloom-assets/tutorials): Getting s
 
 **When to use it:** You are new to Octoloom, or want to see what a template does before you create it. The links open in your browser.
 
+<figure markdown>
+![The Home page: start cards, tutorials, recently built projects and your statistics](../assets/ui/welcome-light.webp#only-light){ loading=lazy }
+![The Home page: start cards, tutorials, recently built projects and your statistics](../assets/ui/welcome-dark.webp#only-dark){ loading=lazy }
+<figcaption>The Home page: start cards, tutorials, recently built projects and your statistics</figcaption>
+</figure>
+
 **Examples and details:**
 
 - Getting started: the 10-step tour
@@ -111,6 +123,12 @@ Links to the Octoloom tutorials on GitHub (octoloom-assets/tutorials): Getting s
 The Octoloom version installed in this VS Code. Once per session Octoloom reads the latest version from the public Visual Studio Marketplace (a read-only request that sends no project or usage data). When a newer version exists, Octoloom Welcome and Setup & Connect → Tooling say "<version> available"; click it to open Octoloom in the Extensions view and update.
 
 **When to use it:** Check which version you run before you report a problem, or update when a new version is available. Offline or behind a proxy, only the installed version is shown.
+
+<figure markdown>
+![The installed version, with a link when the Marketplace has a newer one](../assets/ui/welcome-update-light.webp#only-light){ loading=lazy }
+![The installed version, with a link when the Marketplace has a newer one](../assets/ui/welcome-update-dark.webp#only-dark){ loading=lazy }
+<figcaption>The installed version, with a link when the Marketplace has a newer one</figcaption>
+</figure>
 
 **Examples and details:**
 

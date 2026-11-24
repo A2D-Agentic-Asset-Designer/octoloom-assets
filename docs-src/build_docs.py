@@ -13,7 +13,7 @@ The site is built and published by .github/workflows/docs.yml (MkDocs Material, 
 """
 import json, os, re, shutil, subprocess, sys, urllib.request
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from ui_meta import SECTIONS, F, REF_SHOT, CARD_IMG, KEY_SHOT, SHOT_STEP
+from ui_meta import SECTIONS, F, REF_SHOT, CARD_IMG, KEY_SHOT, SHOT_STEP, CARD_SHOT
 import changelog_page
 import usage_page
 
@@ -248,13 +248,20 @@ GROUPS = [
 ]
 
 
-def card(e, level='###', up='../', key=None):
+def card(e, level='###', up='../', key=None, shot=False):
     out = [f'{level} {e["title"]}', '']
     pic = CARD_IMG.get(key) if key else None
+    full = cap = None
+    if shot and key and not pic:
+        full = KEY_SHOT.get(key)
+        if not full and key in CARD_SHOT: full, cap = CARD_SHOT[key]
     if pic and os.path.exists(os.path.join(UI, f'{pic}-light.webp')):
         out += ['<div class="grid" markdown>', '', img(pic, up, None), '', f'{e["what"]}\n\n**When to use it:** {e["when"]}', '', '</div>', '']
     else:
         out += [e['what'], '', f'**When to use it:** {e["when"]}', '']
+        # A whole view is too wide to sit beside the text: it goes right under it (#349).
+        if full and os.path.exists(os.path.join(UI, f'{full}-light.webp')):
+            out += [img(full, up, cap or SHOT_CAP.get(full, e['title'])), '']
     if e.get('examples'):
         out += ['**Examples and details:**', ''] + [f'- {x}' for x in e['examples']] + ['']
     if e.get('snippet'):
@@ -414,7 +421,7 @@ def features(E):
             keys = FEATURE_EXPLAIN.get(s_, [])
             if keys:
                 md += ['## Buttons and components', '', 'The same text as the in-app **Explain** button (click the floating **i**, then the item).', '']
-                md += [card(E[k], '###', '../', k) for k in keys if k in E]
+                md += [card(E[k], '###', '../', k, shot=True) for k in keys if k in E]
             write(f'features/{s_}.md', '\n'.join(md))
             thumb = f'![{m.get("nav", title)}](../assets/ui/{first}-light.webp){{ loading=lazy }}' if first else ''
             idx += [f'-   **[{m.get("nav") or title}]({s_}.md)**', '', f'    {thumb}', '', f'    {m.get("what", "")}', '']
@@ -536,6 +543,51 @@ def templates():
     return nav
 
 
+# The Quick Start prerequisites of the extension (media/onboarding/steps), one page each (#349).
+PREREQ = [('account', 'Anypoint account'), ('gateway', 'Small Managed Omni Gateway'), ('connected-app', 'Connected app Octoloom-CA'),
+          ('connect-anypoint', 'Connect Octoloom to Agent Fabric'), ('connect-a2d', 'Connect to A²D (optional)'), ('connect-p4a', 'Connect to P4A (optional)')]
+CORE_PREREQ = PREREQ[:4]
+
+
+def prereqs():
+    ob = os.path.join(REPO, 'media', 'onboarding')
+    if not os.path.isdir(os.path.join(ob, 'steps')): return []
+    out = os.path.join(DOCS, 'assets', 'onboarding'); os.makedirs(out, exist_ok=True)
+    for f in os.listdir(ob):
+        if f.endswith('.png'): shutil.copyfile(os.path.join(ob, f), os.path.join(out, f))
+    vids = os.path.join(ob, 'videos')
+    if os.path.isdir(vids):
+        os.makedirs(os.path.join(out, 'videos'), exist_ok=True)
+        for f in os.listdir(vids):
+            if f.endswith(('.mp4', '.png')): shutil.copyfile(os.path.join(vids, f), os.path.join(out, 'videos', f))
+    nav, idx = [], ['<span class="ol-pill">Get started</span>', '', '# Before you start', '',
+                    '<p class="lede"><strong>What every tutorial needs, step by step.</strong> The same steps as the <b>Quick Start</b> tabs on the Octoloom Home page. '
+                    'Do the first four once; A²D and P4A only for the tutorials that use them.</p>', '']
+    for i, (slug_, title) in enumerate(PREREQ, 1):
+        p = os.path.join(ob, 'steps', f'{slug_}.md')
+        if not os.path.exists(p): continue
+        md = open(p).read()
+        md = re.sub(r'!\[([^\]]*)\]\(\.\./videos/([\w-]+)\.mp4\)',
+                    lambda m: f'<video controls muted playsinline preload="none" poster="../../assets/onboarding/videos/{m.group(2)}.png" '
+                              f'src="../../assets/onboarding/videos/{m.group(2)}.mp4" aria-label="{m.group(1)}" style="width:100%"></video>', md)
+        md = re.sub(r'\]\(\.\./([\w-]+\.png)\)', r'](../assets/onboarding/\1)', md)
+        # In-app wording: the step list and its buttons are not on this page.
+        md = re.sub(r' ?This step ticks itself off[^.]*\.', '', md)
+        md = re.sub(r'^# .*\n', f'<span class="ol-pill">Before you start · {i} of {len(PREREQ)}</span>\n\n# {title}\n', md, count=1)
+        nxt = PREREQ[i] if i < len(PREREQ) else None
+        md += '\n\n---\n\n' + (f'**Next:** [{nxt[1]}]({nxt[0]}.md)' if nxt else '**Next:** [pick a tutorial](../tutorials/index.md)') + '\n'
+        write(f'start/{slug_}.md', md)
+        idx.append(f'{i}. [{title}]({slug_}.md)')
+        nav.append((title, f'start/{slug_}.md'))
+    write('start/index.md', '\n'.join(idx))
+    return [('Overview', 'start/index.md')] + nav
+
+
+def prereq_line(up='../'):
+    links = ' · '.join(f'[{t}]({up}start/{s_}.md)' for s_, t in CORE_PREREQ)
+    return f'- **Not set up yet?** The Quick Start prerequisites, step by step with pictures: {links}.'
+
+
 def tutorials():
     def fix(md, page_dir_is_tutorials=True):
         md = re.sub(r'\]\(\.\./README\.md\)', '](index.md)', md)
@@ -548,7 +600,10 @@ def tutorials():
     for t in INDEX:
         p = os.path.join(TUTS, t['id'], 'README.md')
         if not os.path.exists(p): continue
-        write(f'tutorials/{t["id"]}.md', fix(open(p).read()))
+        body = fix(open(p).read())
+        if os.path.isdir(os.path.join(REPO, 'media', 'onboarding', 'steps')):
+            body = re.sub(r'(## Before you start\n\n(?:- .*\n)+)', lambda m: m.group(1) + prereq_line() + '\n', body, count=1)
+        write(f'tutorials/{t["id"]}.md', body)
         nav[t['version']].append((t['title'], f'tutorials/{t["id"]}.md'))
     ti = fix(open(os.path.join(TUTS, 'README.md')).read())
     grid = ['', '## Pick a tutorial', '', '<div class="grid cards" markdown>', '']
@@ -650,8 +705,9 @@ def main():
     version = PKG['version']
     write('index.md', home(version))
     tut = tutorials()
-    nav = [('Get started', [('Introduction', 'index.md'), ('Getting started', 'getting-started.md'),
-                            ('Install from the Marketplace', MARKET)]),
+    pre = prereqs()
+    nav = [('Get started', [('Introduction', 'index.md'), ('Getting started', 'getting-started.md')]
+                           + ([('Before you start', pre)] if pre else []) + [('Install from the Marketplace', MARKET)]),
            ('Using Octoloom', [('All features', 'features/index.md')] + features(E)),
            ('UI reference', [('Overview', 'reference/index.md')] + reference(E, G)),
            ('Templates', [('All templates', 'catalog/index.md')] + templates()),

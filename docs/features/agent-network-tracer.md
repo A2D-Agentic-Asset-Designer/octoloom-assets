@@ -82,6 +82,12 @@ Shows what a deployed broker did for each task: the nodes it ran, the tools and 
 
 **When to use it:** After a chat turn or a failed task on a deployed broker, to see the path it took and where it went wrong. It needs a deployed, running broker: local runs have no Anypoint logs.
 
+<figure markdown>
+![The Agent Network Tracer: tasks, the path on the broker graph, the story](../assets/ui/tracer-light.webp#only-light){ loading=lazy }
+![The Agent Network Tracer: tasks, the path on the broker graph, the story](../assets/ui/tracer-dark.webp#only-dark){ loading=lazy }
+<figcaption>The Agent Network Tracer: tasks, the path on the broker graph, the story</figcaption>
+</figure>
+
 **Examples and details:**
 
 - Tracer button on a "Deployed and running" box in Projects & Deploy: opens the chat with the Tracer below it

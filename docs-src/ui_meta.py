@@ -258,3 +258,23 @@ SHOT_STEP = {
     'chat-narrow': 0,
     'tracer-mini': 3,
 }
+
+# Buttons and components cards with no view of their own: the screenshot that shows where they are (#349).
+CARD_SHOT = {
+    'tbExchangeJson': ('toolbar-network', 'The network toolbar: exchange.json opens the asset editor'),
+    'tbVisualCode': ('toolbar-flow', 'The toolbar: Visual / Code switches the view'),
+    'orchestrator': ('agent-flow-annot', 'An orchestrator step on the broker flow canvas'),
+    'coverageKpis': ('coverage-map-annot', 'The coverage summary at the top of the Coverage map'),
+    'coverageOrigins': ('coverage-map-annot', 'Where your assets come from, on the Coverage map'),
+    'coverageTable': ('coverage-map-annot', 'The coverage table, one row per network'),
+    'coverageDetail': ('coverage-map-annot', 'Network details, under the coverage table'),
+    'minimize': ('canvas-fabs', 'The canvas buttons: Minimize all / Open all'),
+    'pjBuild': ('projects-deploy-annot', 'Build, in the project box of Projects & Deploy'),
+    'pjPublish': ('projects-deploy-annot', 'Publish to Exchange, in the project box of Projects & Deploy'),
+    'pjRunLocal': ('run-local-vars', 'Run locally: variables'),
+    'pjSetupGateways': ('projects-deploy-annot', 'Setup gateways, in Projects & Deploy'),
+    'pjUndeploy': ('projects-deploy-annot', 'Undeploy, on a deployment box in Projects & Deploy'),
+    'pjUnpublish': ('projects-deploy-annot', 'Unpublish from Exchange, in the project box of Projects & Deploy'),
+    'pjRemove': ('projects-deploy-annot', 'Remove from workspace, in the project box of Projects & Deploy'),
+    'validate': ('projects-deploy-annot', 'Validate Project, in the project box of Projects & Deploy'),
+}

@@ -120,6 +120,12 @@ The side bar of the agent network projects in this workspace: open a project, bu
 
 **When to use it:** To find a project, start a new one or ship one to Agent Fabric.
 
+<figure markdown>
+![Projects & Deploy with a 1.0 and a 2.0 project](../assets/ui/projects-deploy-light.webp#only-light){ loading=lazy }
+![Projects & Deploy with a 1.0 and a 2.0 project](../assets/ui/projects-deploy-dark.webp#only-dark){ loading=lazy }
+<figcaption>Projects & Deploy with a 1.0 and a 2.0 project</figcaption>
+</figure>
+
 **Examples and details:**
 
 - New project opens the New Project dialog
@@ -139,6 +145,12 @@ Repairs what the CLI would reject (missing defaults, long connection names after
 
 **When to use it:** After a change, to see that the CLI accepts the project.
 
+<figure markdown>
+![Build, in the project box of Projects & Deploy](../assets/ui/projects-deploy-annot-light.webp#only-light){ loading=lazy }
+![Build, in the project box of Projects & Deploy](../assets/ui/projects-deploy-annot-dark.webp#only-dark){ loading=lazy }
+<figcaption>Build, in the project box of Projects & Deploy</figcaption>
+</figure>
+
 **Examples and details:**
 
 - Output in "Agent Network CLI"
@@ -149,6 +161,12 @@ Repairs what the CLI would reject (missing defaults, long connection names after
 Publishes the project to Exchange with the version in exchange.json, as it is: Publish never bumps it.
 
 **When to use it:** Once per new version. A version already in Exchange can't be published again: bump it first (New Version or Commit Version in the flow editor, Bump patch in exchange.json).
+
+<figure markdown>
+![Publish to Exchange, in the project box of Projects & Deploy](../assets/ui/projects-deploy-annot-light.webp#only-light){ loading=lazy }
+![Publish to Exchange, in the project box of Projects & Deploy](../assets/ui/projects-deploy-annot-dark.webp#only-dark){ loading=lazy }
+<figcaption>Publish to Exchange, in the project box of Projects & Deploy</figcaption>
+</figure>
 
 **Examples and details:**
 
@@ -161,6 +179,12 @@ Runs a 2.0 network on this machine in Docker (Flex gateways, a local Exchange an
 
 **When to use it:** To try a change without a deploy.
 
+<figure markdown>
+![Run locally: variables](../assets/ui/run-local-vars-light.webp#only-light){ loading=lazy }
+![Run locally: variables](../assets/ui/run-local-vars-dark.webp#only-dark){ loading=lazy }
+<figcaption>Run locally: variables</figcaption>
+</figure>
+
 **Examples and details:**
 
 - Stop it with the same button (it turns into a stop button) or Ctrl+C in the terminal
@@ -172,6 +196,12 @@ Asks for a gateway name and runs the CLI step agent-network:setup:gateways for i
 
 **When to use it:** Before the first deploy to a gateway, or when the deploy asks for it.
 
+<figure markdown>
+![Setup gateways, in Projects & Deploy](../assets/ui/projects-deploy-annot-light.webp#only-light){ loading=lazy }
+![Setup gateways, in Projects & Deploy](../assets/ui/projects-deploy-annot-dark.webp#only-dark){ loading=lazy }
+<figcaption>Setup gateways, in Projects & Deploy</figcaption>
+</figure>
+
 **Examples and details:**
 
 - The terminal shows what the CLI does
@@ -181,6 +211,12 @@ Asks for a gateway name and runs the CLI step agent-network:setup:gateways for i
 Stops and removes the deployment of this project from its gateway, after asking. The Exchange asset stays.
 
 **When to use it:** When the network should no longer run. It is the only way Octoloom stops a deployment.
+
+<figure markdown>
+![Undeploy, on a deployment box in Projects & Deploy](../assets/ui/projects-deploy-annot-light.webp#only-light){ loading=lazy }
+![Undeploy, on a deployment box in Projects & Deploy](../assets/ui/projects-deploy-annot-dark.webp#only-dark){ loading=lazy }
+<figcaption>Undeploy, on a deployment box in Projects & Deploy</figcaption>
+</figure>
 
 **Examples and details:**
 
@@ -192,6 +228,12 @@ Removes the published version of this project from Exchange, after asking. Your 
 
 **When to use it:** To withdraw a version. Undeploy first.
 
+<figure markdown>
+![Unpublish from Exchange, in the project box of Projects & Deploy](../assets/ui/projects-deploy-annot-light.webp#only-light){ loading=lazy }
+![Unpublish from Exchange, in the project box of Projects & Deploy](../assets/ui/projects-deploy-annot-dark.webp#only-dark){ loading=lazy }
+<figcaption>Unpublish from Exchange, in the project box of Projects & Deploy</figcaption>
+</figure>
+
 **Examples and details:**
 
 - Hard delete is only allowed about 7 days after the version was published
@@ -202,6 +244,12 @@ Takes the project off this list and deletes nothing: a workspace folder leaves t
 
 **When to use it:** When you no longer work on a project in this workspace.
 
+<figure markdown>
+![Remove from workspace, in the project box of Projects & Deploy](../assets/ui/projects-deploy-annot-light.webp#only-light){ loading=lazy }
+![Remove from workspace, in the project box of Projects & Deploy](../assets/ui/projects-deploy-annot-dark.webp#only-dark){ loading=lazy }
+<figcaption>Remove from workspace, in the project box of Projects & Deploy</figcaption>
+</figure>
+
 **Examples and details:**
 
 - A deployment keeps running: Undeploy first if it should stop
@@ -211,6 +259,12 @@ Takes the project off this list and deletes nothing: a workspace folder leaves t
 A dry run of build, publish and deploy that changes nothing. Octoloom copies the project (unsaved edits included) to a scratch folder, applies the repairs a Build would make to the copy only, then checks agent-network.yaml and the .agent flows, runs the pre-deploy checks (with the org lookups when Agent Fabric is connected), runs the CLI build on the copy and lists deploy variables without a value. The report goes to the "Agent Network CLI" output in five steps; the copy is deleted afterwards. Your files, Exchange and the gateways are never touched, and Build, Publish and Deploy work as before.
 
 **When to use it:** Before you publish or deploy, or after changing the project, to see whether publish and deploy are expected to work. The check icon on a project in Projects & Deploy, Validate in the canvas Build & Deploy menu, Validate Project in the command palette or on agent-network.yaml in the Explorer.
+
+<figure markdown>
+![Validate Project, in the project box of Projects & Deploy](../assets/ui/projects-deploy-annot-light.webp#only-light){ loading=lazy }
+![Validate Project, in the project box of Projects & Deploy](../assets/ui/projects-deploy-annot-dark.webp#only-dark){ loading=lazy }
+<figcaption>Validate Project, in the project box of Projects & Deploy</figcaption>
+</figure>
 
 **Examples and details:**
 
@@ -226,6 +280,12 @@ Before build and deploy, Octoloom checks what the agent-network CLI only reports
 
 **When to use it:** Every Build and Deploy. A missing implementation file stops the build; a connection key over 51 characters stops only Run locally, where Rename and run shortens the key with its references (Build, Publish and Deploy write a warning to the output and go on); New Project keeps the project prefix short enough for every template key; org findings ask before deploying (Fix and deploy, Deploy anyway or Cancel). Fix and deploy renames a connection key that is already an API instance in the environment (v1: prefixed with the project name), or a registry key owned by another project, with every reference and .agent target; An exchange.json groupId or organizationId still at ${organizationId} (the CLI does not resolve it) is set to the connected organization or business group automatically before every build, publish, deploy and run locally; a real group ID is never changed. It saves, then builds and checks again. A failed org lookup never blocks the deploy.
 
+<figure markdown>
+![Deployment boxes: needs credentials, running](../assets/ui/deploy-auth-light.webp#only-light){ loading=lazy }
+![Deployment boxes: needs credentials, running](../assets/ui/deploy-auth-dark.webp#only-dark){ loading=lazy }
+<figcaption>Deployment boxes: needs credentials, running</figcaption>
+</figure>
+
 **Examples and details:**
 
 - implementation: ./brokers/sales.agent but sales.agent is in the project root: move it or change the path
@@ -240,6 +300,12 @@ Before build and deploy, Octoloom checks what the agent-network CLI only reports
 Deploys the project with the Anypoint CLI. Pick a gateway from the chips (the gateways of the connected environment, green = running) or type its name; secrets are passed as --property and never stored. The switches are on by default: Tracing, Wait until the network is ready, Publish before deploy. Turn one off to pass --disable-tracing, --dont-wait-for-agent-network or --disable-autopublish. The gateway chips say which space a gateway runs in; with one gateway the brokers deploy to that space. Target space (-t) lists the private spaces of the organization (marked private) and the CloudHub shared spaces; in Ingress / egress mode it is needed unless your space is called agent-network-space. Deploy… on the canvas, in the command palette, in the editor title or on agent-network.yaml in the Explorer opens this same form for the project.
 
 **When to use it:** Each deploy: the rocket icon on a project in Projects & Deploy, or Deploy… on the canvas.
+
+<figure markdown>
+![The Deploy form: gateways, target space and switches](../assets/ui/deploy-form-light.webp#only-light){ loading=lazy }
+![The Deploy form: gateways, target space and switches](../assets/ui/deploy-form-dark.webp#only-dark){ loading=lazy }
+<figcaption>The Deploy form: gateways, target space and switches</figcaption>
+</figure>
 
 **Examples and details:**
 

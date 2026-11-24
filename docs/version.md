@@ -2,7 +2,7 @@
 
 # Version history
 
-<p class="lede">Every Octoloom release from the very first, newest first: what changed, in plain words, and who made it happen. <b>60 versions</b>, <b>211 changes</b>.</p>
+<p class="lede">Every Octoloom release from the very first, newest first: what changed, in plain words, and who made it happen. <b>60 versions</b>, <b>212 changes</b>.</p>
 
 ## Contributors
 
@@ -13,6 +13,10 @@ Everyone who suggested or built a change. A change counts for the person who fil
 ## 0.9.29
 
 <span class="ol-ver-meta">in development</span>
+
+- **Setup & Connect: connection cards follow the side bar width**. The Agent Fabric, A²D, P4A and Headless IDMC cards now shrink with the side bar: the description shortens with an ellipsis and the button always stays in view. **Connect** is a plug button (tooltip *Connect to <name>*).
+
+    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Anonymous usage counts (telemetry)**. Octoloom now counts how it is used, so we can see which features help: start-ups, a daily ping with which connections are set up (yes or no), Build / Validate / Publish / Deploy / Governance runs with their result, New Project with the style and template id, the commands used (once per command per day) and the class of an error (never its message). No names, paths, URLs, hosts, org data, prompts, chat text or keys are ever sent; the only id is VS Code's random machine id, and no person profiles are created. Events go to PostHog Cloud EU (country only, the IP is discarded). VS Code's `telemetry.telemetryLevel` always wins; the new setting **`agentNetwork.telemetry.enabled`** turns it off for Octoloom only, and a one-time notice offers **Turn off**. Every event and property is listed in `telemetry.json`; the README *Privacy and security* section explains what is sent, how long it is kept and how to ask for deletion.
 

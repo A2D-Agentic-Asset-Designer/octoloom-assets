@@ -57,6 +57,12 @@ Where and how the gateway reaches an agent, MCP server or LLM: URL, authenticati
 
 **When to use it:** One per upstream. Change URLs per environment with variables.
 
+<figure markdown>
+![Context edges between a broker and its agents](../assets/ui/network-v2-context-light.webp#only-light){ loading=lazy }
+![Context edges between a broker and its agents](../assets/ui/network-v2-context-dark.webp#only-dark){ loading=lazy }
+<figcaption>Context edges between a broker and its agents</figcaption>
+</figure>
+
 **Examples and details:**
 
 - ${refundAgent.url} with PII detection inbound

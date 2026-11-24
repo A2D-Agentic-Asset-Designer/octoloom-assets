@@ -72,6 +72,12 @@ Checks a project against governance rulesets with the Anypoint CLI (anypoint-cli
 
 **When to use it:** Before you publish or deploy, or to check a project against your company standards.
 
+<figure markdown>
+![Governance: rulesets, the project canvas and findings](../assets/ui/governance-light.webp#only-light){ loading=lazy }
+![Governance: rulesets, the project canvas and findings](../assets/ui/governance-dark.webp#only-dark){ loading=lazy }
+<figcaption>Governance: rulesets, the project canvas and findings</figcaption>
+</figure>
+
 **Examples and details:**
 
 - Select "Agent Network Best Practices" (Agent Fabric) and press Validate
@@ -89,6 +95,12 @@ A ruleset is a governance profile (YAML) of rules with a severity. Octoloom list
 
 **When to use it:** Choose the rulesets that match the standards of the project. Combine several: findings name the rule and the ruleset.
 
+<figure markdown>
+![Governance: rulesets, the project canvas and findings](../assets/ui/governance-light.webp#only-light){ loading=lazy }
+![Governance: rulesets, the project canvas and findings](../assets/ui/governance-dark.webp#only-dark){ loading=lazy }
+<figcaption>Governance: rulesets, the project canvas and findings</figcaption>
+</figure>
+
 **Examples and details:**
 
 - Agent Network Best Practices: agent card fields, broker authorization, MCP transport, inline secrets
@@ -101,6 +113,12 @@ A ruleset is a governance profile (YAML) of rules with a severity. Octoloom list
 The workspace report lists every agent network project in the workspace: conformance and identified issues across all governed services, one row per project, then each canvas with its marked components. Validate all checks every project that has rulesets selected. Report / Workspace report saves a stand-alone HTML file: an overview (conformance, issues, governed services table), a section per service with its rules (expand a rule to see each finding and its fix) and a Configuration tab with the scope and every rule of the selected rulesets (light and dark, no scripts). Reports are saved outside your projects by default (Octoloom storage), so they are never published or deployed.
 
 **When to use it:** Reviews, audits, or sharing the state of all projects with your team.
+
+<figure markdown>
+![Real findings with Fix all](../assets/ui/governance-fix-all-light.webp#only-light){ loading=lazy }
+![Real findings with Fix all](../assets/ui/governance-fix-all-dark.webp#only-dark){ loading=lazy }
+<figcaption>Real findings with Fix all</figcaption>
+</figure>
 
 **Examples and details:**
 
