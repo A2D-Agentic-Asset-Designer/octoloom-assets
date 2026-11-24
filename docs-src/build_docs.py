@@ -15,6 +15,7 @@ import json, os, re, shutil, subprocess, sys, urllib.request
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from ui_meta import SECTIONS, F, REF_SHOT, CARD_IMG, KEY_SHOT
 import changelog_page
+import usage_page
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -625,6 +626,7 @@ def main():
     shutil.copy(os.path.join(REPO, 'media', 'octoloom.png'), os.path.join(DOCS, 'assets', 'loomi.png'))
     shutil.copy(os.path.join(HERE, 'extra.css'), os.path.join(DOCS, 'assets', 'extra.css'))
     shutil.copy(os.path.join(HERE, 'marketplace.js'), os.path.join(DOCS, 'assets', 'marketplace.js'))
+    shutil.copy(os.path.join(HERE, 'usage.js'), os.path.join(DOCS, 'assets', 'usage.js'))
     if os.path.isdir(UI): shutil.copytree(UI, os.path.join(DOCS, 'assets', 'ui'), ignore=shutil.ignore_patterns('index.json'))
     global MK
     MK = market_stats()
@@ -642,7 +644,11 @@ def main():
     ref_pages(); team()
     req = open(os.path.join(DOCS, 'about', 'requirements.md')).read()
     write('about/requirements.md', req + '\n\n' + img('setup-connect', '../', 'Setup & Connect → Tooling checks every requirement and installs what is missing'))
+    # Public usage (octoloom#334): aggregates written by the usage Action (#333), and what telemetry collects.
+    write('usage.md', usage_page.usage_page())
+    write('data-we-collect.md', usage_page.data_page(REPO))
     nav.append(('About', [('Requirements', 'about/requirements.md'), ('Privacy and security', 'about/privacy.md'),
+                          ('Usage', 'usage.md'), ('Data we collect', 'data-we-collect.md'),
                           ('Known limitations', 'about/limitations.md'), ('Meet the Octoloomies', 'team.md')]))
     write('version.md', changelog_page.page(REPO, MK.get('version') or version))
     nav.append(('Version', [('Version history', 'version.md')]))
@@ -692,6 +698,7 @@ extra_css:
   - assets/extra.css
 extra_javascript:
   - assets/marketplace.js
+  - assets/usage.js
 extra:
   version: "{version}"
   installs: "{MK['installs']:,}"

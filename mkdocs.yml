@@ -44,6 +44,7 @@ extra_css:
   - assets/extra.css
 extra_javascript:
   - assets/marketplace.js
+  - assets/usage.js
 extra:
   version: "0.9.28"
   installs: "129"
@@ -224,6 +225,8 @@ nav:
   - "About":
       - "Requirements": about/requirements.md
       - "Privacy and security": about/privacy.md
+      - "Usage": usage.md
+      - "Data we collect": data-we-collect.md
       - "Known limitations": about/limitations.md
       - "Meet the Octoloomies": team.md
   - "Version":
