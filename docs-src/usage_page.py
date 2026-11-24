@@ -139,7 +139,7 @@ Every event also carries these common properties:
 
 ## Deletion
 
-To have the events of your machine deleted, open an issue on [octoloom-assets](https://github.com/A2D-Agentic-Asset-Designer/octoloom-assets/issues/new?title=Telemetry%20deletion%20request) titled *Telemetry deletion request*. **Don't post your machine id in public**: the maintainers reply with a private way to send it. Details of the process follow the project decision (octoloom #324, pending).
+Raw events are **deleted automatically after 1 year**. On our current PostHog plan the events of a single machine can't be deleted earlier, so we don't offer deletion on request. Turning telemetry off (above) stops every further event at once. No IP address and no person profile is stored, so the events are not linked to you. The decision is recorded in [octoloom #324](https://github.com/A2D-Agentic-Asset-Designer/octoloom/issues/324).
 '''
 
 

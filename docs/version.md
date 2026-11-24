@@ -2,7 +2,7 @@
 
 # Version history
 
-<p class="lede">Every Octoloom release from the very first, newest first: what changed, in plain words, and who made it happen. <b>60 versions</b>, <b>218 changes</b>.</p>
+<p class="lede">Every Octoloom release from the very first, newest first: what changed, in plain words, and who made it happen. <b>60 versions</b>, <b>222 changes</b>.</p>
 
 ## Contributors
 
@@ -13,6 +13,22 @@ Everyone who suggested or built a change. A change counts for the person who fil
 ## 0.9.29
 
 <span class="ol-ver-meta">in development</span>
+
+- **Documentation site on the Marketplace**. The README starts its top links with **Documentation** and names [octoloom.a2d-ai.com](https://octoloom.a2d-ai.com/) under the intro, and the Marketplace **Homepage** link (Learn) now opens the documentation site.
+
+    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+
+- **Coverage map: Governance button needs Agent Fabric**. The Governance button of a picked network is disabled with the tooltip *Connect to Agent Fabric to use governance* while nobody is connected to Agent Fabric, and turns on again when you connect.
+
+    <span class="ol-by">:material-account-heart-outline: [Tommaso Bolis](https://github.com/tommasobolis), [Amir Khan](https://github.com/amirkhan-ak-sf), [George Jeffcock](https://github.com/jeffcock)</span>
+
+- **Projects & Deploy: governance buttons need Agent Fabric**. The shield buttons (Governance report in the Projects title bar and Governance on each project card) are disabled while nobody is connected to Agent Fabric.
+
+    <span class="ol-by">:material-account-heart-outline: [Tommaso Bolis](https://github.com/tommasobolis), [Amir Khan](https://github.com/amirkhan-ak-sf), [George Jeffcock](https://github.com/jeffcock)</span>
+
+- **Governance needs the connection to Agent Fabric**. Governance is only available while you are connected to Agent Fabric (Setup & Connect). Without the connection the governance commands are disabled; opening Governance anyway says *Governance needs a connection to Agent Fabric.* and offers **Connect**, and an open Governance panel shows that notice with a **Connect** button while Validate, Validate all and Fix are disabled (tooltip *Connect to Agent Fabric to use governance*). Connecting enables everything again without reloading.
+
+    <span class="ol-by">:material-account-heart-outline: [Tommaso Bolis](https://github.com/tommasobolis), [Amir Khan](https://github.com/amirkhan-ak-sf), [George Jeffcock](https://github.com/jeffcock)</span>
 
 - **Home: the Quick Start intro says "short videos"**. The steps show recorded videos since the Quick Start videos; the intro still said pictures.
 

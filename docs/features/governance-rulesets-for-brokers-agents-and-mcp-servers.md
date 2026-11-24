@@ -70,7 +70,7 @@ The same text as the in-app **Explain** button (click the floating **i**, then t
 
 Checks a project against governance rulesets with the Anypoint CLI (anypoint-cli-v4 governance api validate). Results are shown on a read-only canvas: brokers, agents and MCP servers with findings get a shield badge (red = violation, amber = warning, blue = info), and every finding has a fix based on the v1 or v2 reference. A local compliance check only: the selection and results are saved in VS Code (workspace storage), never in the project, and build, publish and deploy ignore them. Nothing is created or published in your organization or in P4A.
 
-**When to use it:** Before you publish or deploy, or to check a project against your company standards.
+**When to use it:** Before you publish or deploy, or to check a project against your company standards. Governance is only available while you are connected to Agent Fabric (Setup & Connect); without the connection the shield buttons in Projects & Deploy, Validate and Fix are disabled and Octoloom offers Connect.
 
 <figure markdown>
 ![Governance: rulesets, the project canvas and findings](../assets/ui/governance-light.webp#only-light){ loading=lazy }
@@ -112,7 +112,7 @@ A ruleset is a governance profile (YAML) of rules with a severity. Octoloom list
 
 The workspace report lists every agent network project in the workspace: conformance and identified issues across all governed services, one row per project, then each canvas with its marked components. Validate all checks every project that has rulesets selected. Report / Workspace report saves a stand-alone HTML file: an overview (conformance, issues, governed services table), a section per service with its rules (expand a rule to see each finding and its fix) and a Configuration tab with the scope and every rule of the selected rulesets (light and dark, no scripts). Reports are saved outside your projects by default (Octoloom storage), so they are never published or deployed.
 
-**When to use it:** Reviews, audits, or sharing the state of all projects with your team.
+**When to use it:** Reviews, audits, or sharing the state of all projects with your team. Needs the connection to Agent Fabric, like Governance.
 
 <figure markdown>
 ![Real findings with Fix all](../assets/ui/governance-fix-all-light.webp#only-light){ loading=lazy }
