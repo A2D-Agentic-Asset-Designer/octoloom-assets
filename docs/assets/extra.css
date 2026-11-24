@@ -54,7 +54,7 @@
 /* buttons */
 .md-typeset .md-button { border-radius: 8px; font-weight: 700; border: 1px solid var(--ol-border); color: var(--md-default-fg-color); padding: .5em 1.3em; }
 .md-typeset .md-button--primary { background: var(--ol-cyan); border-color: var(--ol-cyan); color: #06121f; }
-.md-typeset .md-button:hover { border-color: var(--ol-blue); color: var(--ol-blue); }
+.md-typeset .md-button:not(.md-button--primary):hover, .md-typeset .md-button:not(.md-button--primary):focus { background-color: var(--ol-blue); border-color: var(--ol-blue); color: #fff; }
 .md-typeset .md-button--primary:hover { background: var(--ol-blue); color: #fff; }
 /* screenshots */
 .md-typeset img:not(.hero-logo):not(.emojione):not(.twemoji):not(.ol-plain) {
