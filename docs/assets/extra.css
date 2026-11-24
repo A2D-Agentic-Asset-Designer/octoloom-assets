@@ -92,3 +92,40 @@
 .md-header__inner > .md-search { order: 2; margin-left: auto; }
 .md-header__inner > form.md-header__option { order: 3; margin-left: .4rem; }
 .md-header__inner > .ol-mk { order: 4; margin: 0 .2rem 0 .6rem; }
+/* usage page (octoloom#334): sequential blue ramp, validated light (from 250) and dark (to 600) */
+:root, [data-md-color-scheme="default"] { --ol-u0: #86b6ef; --ol-u1: #5598e7; --ol-u2: #2a78d6; --ol-u3: #1c5cab; --ol-u4: #104281; --ol-u-land: #e9ecf0; --ol-u-line: #2a78d6; }
+[data-md-color-scheme="slate"] { --ol-u0: #184f95; --ol-u1: #256abf; --ol-u2: #3987e5; --ol-u3: #6da7ec; --ol-u4: #9ec5f4; --ol-u-land: #23262c; --ol-u-line: #6da7ec; }
+.ol-u-map { border: 1px solid var(--ol-border); border-radius: 12px; background: var(--ol-soft); padding: .6rem; }
+.ol-map { width: 100%; height: auto; display: block; }
+.ol-map path { fill: var(--ol-u-land); stroke: var(--md-default-bg-color); stroke-width: .5; transition: opacity .15s; }
+.ol-map path.ol-c0 { fill: var(--ol-u0); } .ol-map path.ol-c1 { fill: var(--ol-u1); } .ol-map path.ol-c2 { fill: var(--ol-u2); }
+.ol-map path.ol-c3 { fill: var(--ol-u3); } .ol-map path.ol-c4 { fill: var(--ol-u4); }
+.ol-map path[class^="ol-c"]:hover, .ol-map path[class^="ol-c"]:focus { stroke: var(--md-default-fg-color); stroke-width: 1; outline: none; }
+.ol-u-legend { display: flex; align-items: center; gap: .5rem; font-size: .62rem; color: var(--ol-muted); margin: .4rem 0 .8rem; }
+.ol-u-legend i { display: inline-block; width: 8rem; height: .5rem; border-radius: 4px; background: linear-gradient(90deg, var(--ol-u0), var(--ol-u1), var(--ol-u2), var(--ol-u3), var(--ol-u4)); }
+.ol-u-bars { display: grid; gap: .35rem; max-width: 46rem; }
+.ol-u-bar { display: grid; grid-template-columns: minmax(7rem, 14rem) 1fr 4rem; align-items: center; gap: .6rem; font-size: .68rem; border-radius: 6px; padding: .1rem .2rem; }
+.ol-u-bar:hover, .ol-u-bar:focus { background: var(--ol-soft); outline: none; }
+.ol-u-bar-l { color: var(--md-default-fg-color); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ol-u-bar-t { height: .55rem; }
+.ol-u-bar-t i { display: block; height: 100%; background: var(--ol-u2); border-radius: 0 4px 4px 0; }
+.ol-u-bar-v { text-align: right; font-weight: 700; color: var(--md-default-fg-color); }
+.ol-u-line { width: 100%; max-width: 46rem; height: auto; }
+.ol-u-line path { fill: none; stroke: var(--ol-u-line); stroke-width: 2; stroke-linejoin: round; }
+.ol-u-line .ol-u-axis { stroke: var(--ol-border); stroke-width: 1; }
+.ol-u-line .ol-u-hit { fill: transparent; }
+.ol-u-line .ol-u-hit:hover, .ol-u-line .ol-u-hit:focus { fill: color-mix(in srgb, var(--ol-u-line) 8%, transparent); outline: none; }
+.ol-u-line text { font-size: 11px; fill: var(--md-default-fg-color); font-weight: 700; }
+.ol-u-none { color: var(--ol-muted); font-size: .68rem; }
+.ol-u-empty { border: 1px dashed var(--ol-border); border-radius: 10px; padding: .7rem 1rem; color: var(--ol-muted); background: var(--ol-soft); }
+.ol-u-empty b { color: var(--md-default-fg-color); }
+.ol-u-meta { font-size: .64rem; color: var(--ol-muted); margin-top: 1.6rem; }
+.ol-u-table { font-size: .66rem !important; }
+.ol-u-tip { position: fixed; z-index: 10; pointer-events: none; background: var(--md-default-bg-color); color: var(--md-default-fg-color); border: 1px solid var(--ol-border);
+  border-radius: 8px; padding: .3rem .55rem; font-size: .64rem; font-weight: 700; box-shadow: 0 6px 20px rgba(16, 24, 40, .14); max-width: 210px; }
+.ol-usage table.ol-u-table { border-collapse: collapse; margin: .4rem 0 1rem; min-width: 18rem; }
+.ol-usage table.ol-u-table th { text-align: left; color: var(--ol-muted); font-weight: 600; border-bottom: 1px solid var(--ol-border); padding: .3rem .9rem .3rem 0; }
+.ol-usage table.ol-u-table td { padding: .22rem .9rem .22rem 0; border-bottom: 1px solid var(--ol-border); }
+.ol-usage table.ol-u-table td:last-child, .ol-usage table.ol-u-table th:last-child { text-align: right; }
+.ol-usage table.ol-u-table td + td { font-variant-numeric: tabular-nums; }
+.md-typeset table:not([class]) td:first-child code { white-space: nowrap; }
