@@ -95,7 +95,7 @@ def data_page(repo):
     for name, props in cat:
         ps = '<br>'.join(f'`{k}`: {PROP_DESC.get(k, "")}' + (f' ({t})' if t else '') for k, t in props) or 'common properties only'
         rows.append(f'| `{name}` | {PURPOSE.get(name, "")} | {ps} |')
-    note = '' if src == 'telemetry.json' else '\n!!! note "Source"\n    This list is generated from the extension\'s event catalog. The machine-readable `telemetry.json` that ships in the extension is added by [octoloom#330](https://github.com/A2D-Agentic-Asset-Designer/octoloom/issues/330) and ships with the release that starts sending.\n'
+    note = '' if src == 'telemetry.json' else '\n!!! note "Source"\n    This list is generated from the extension\'s event catalog. The machine-readable `telemetry.json` that ships in the extension ships with the release that starts sending.\n'
     return f'''<span class="ol-pill">About</span>
 
 # Data we collect
@@ -139,7 +139,7 @@ Every event also carries these common properties:
 
 ## Deletion
 
-Raw events are **deleted automatically after 1 year**. On our current PostHog plan the events of a single machine can't be deleted earlier, so we don't offer deletion on request. Turning telemetry off (above) stops every further event at once. No IP address and no person profile is stored, so the events are not linked to you. The decision is recorded in [octoloom #324](https://github.com/A2D-Agentic-Asset-Designer/octoloom/issues/324).
+Raw events are **deleted automatically after 1 year**. On our current PostHog plan the events of a single machine can't be deleted earlier, so we don't offer deletion on request. Turning telemetry off (above) stops every further event at once. No IP address and no person profile is stored, so the events are not linked to you.
 '''
 
 

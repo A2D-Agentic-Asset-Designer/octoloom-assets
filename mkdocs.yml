@@ -49,7 +49,7 @@ extra_javascript:
 extra:
   generator: false
   version: "0.9.29"
-  installs: "147"
+  installs: "146"
   marketplace: https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom
   social:
     - icon: material/microsoft-visual-studio-code

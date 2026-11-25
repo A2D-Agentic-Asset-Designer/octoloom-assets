@@ -63,4 +63,4 @@ Every event also carries these common properties:
 
 ## Deletion
 
-Raw events are **deleted automatically after 1 year**. On our current PostHog plan the events of a single machine can't be deleted earlier, so we don't offer deletion on request. Turning telemetry off (above) stops every further event at once. No IP address and no person profile is stored, so the events are not linked to you. The decision is recorded in [octoloom #324](https://github.com/A2D-Agentic-Asset-Designer/octoloom/issues/324).
+Raw events are **deleted automatically after 1 year**. On our current PostHog plan the events of a single machine can't be deleted earlier, so we don't offer deletion on request. Turning telemetry off (above) stops every further event at once. No IP address and no person profile is stored, so the events are not linked to you.

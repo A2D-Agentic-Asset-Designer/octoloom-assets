@@ -156,6 +156,13 @@ def clean(s):
     s = re.sub(r'\*\*[A-Z]{3}\*\* (icon|button)', r'**Tracer** \1', s)
     s = re.sub(r'\bThe \*\*[A-Z]{3}\*\* icon', 'The **Tracer** icon', s)
     s = re.sub(r'\b' + 'A' + 'NT' + r' (icon|button)\b', r'Tracer \1', s)
+    # The octoloom source repo is private: no page links to it (octoloom#389). Drop "Decision record" pointers,
+    # keep the text of any other link, and fail if a link survives (octoloom-assets, public, is fine).
+    priv = r'https://github\.com/A2D-Agentic-Asset-Designer/octoloom(?![-\w])[^)\s]*'
+    s = re.sub(r' ?(Decision record:|The decision is recorded in) \[[^\]]*\]\(' + priv + r'\)\.', '', s)
+    s = re.sub(r'\[([^\]]*)\]\(' + priv + r'\)', r'\1', s)
+    if re.search(priv, s):
+        raise SystemExit('docs: link to the private octoloom repo left in a page')
     return s
 
 
