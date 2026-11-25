@@ -860,7 +860,7 @@ site_url: {SITE}
 repo_url: https://github.com/A2D-Agentic-Asset-Designer/octoloom-assets
 repo_name: octoloom-assets
 edit_uri: ""
-copyright: 'Octoloom for Agent Fabric {version} · <a href="{MARKET}">VS Code Marketplace</a>'
+copyright: 'Octoloom for Agent Fabric {version} · <a href="{MARKET}">VS Code Marketplace</a><br>Made with <span class="ol-heart" aria-label="love">&#9829;</span> for AI Engineers'
 theme:
   name: material
   custom_dir: docs-src/overrides
@@ -902,6 +902,7 @@ extra_javascript:
   - assets/usage.js
   - assets/catalog.js
 extra:
+  generator: false
   version: "{version}"
   installs: "{MK['installs']:,}"
   marketplace: {MARKET}
