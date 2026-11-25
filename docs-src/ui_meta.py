@@ -201,7 +201,7 @@ REF_SHOT = {
 }
 CARD_IMG = {
     'broker': 'card-broker', 'agent': 'card-agent', 'mcp': 'card-mcp', 'llm': 'card-llm', 'policy': 'card-policy',
-    'trigger': 'card-trigger', 'generator': 'card-generator', 'subagent': 'card-subagent', 'router': 'card-router',
+    'trigger': 'card-trigger', 'generator': 'card-generator', 'subagent': 'card-subagent', 'orchestrator': 'card-orchestrator', 'router': 'card-router',
     'executor': 'card-executor', 'echo': 'card-echo', 'flowOutline': 'flow-explorer', 'toolbar': 'toolbar-network',
     'canvasTools': 'canvas-fabs', 'problems': 'problems-bar', 'explainAnything': 'explain-button',
 }

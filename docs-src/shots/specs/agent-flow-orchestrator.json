@@ -1,0 +1,10 @@
+{
+  "name": "agent-flow-orchestrator",
+  "view": "agent",
+  "messages": [
+    { "type": "doc", "kind": "agent", "fileName": "claims-broker.agent", "uri": "file:///demo/insurance-claims/brokers/claims-broker.agent",
+      "text": "@file:media/templates/v2-insurance-claims/brokers/claims-broker.agent",
+      "guidesSeen": ["v1", "v2", "agent"],
+      "agent": { "brokerKey": "octo_ic2_claims_broker", "connections": { "fnol_agent_connection": "a2a", "fraud_agent_connection": "a2a", "adjuster_agent_connection": "a2a", "payments_agent_connection": "a2a", "policy_admin_mcp_connection": "mcp", "claims_mcp_connection": "mcp", "openai_connection": "llm" } } }
+  ]
+}

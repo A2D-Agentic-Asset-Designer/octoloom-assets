@@ -1244,6 +1244,13 @@
    "light"
   ]
  },
+ "agent-flow-orchestrator": {
+  "size": "1500,900",
+  "themes": [
+   "dark",
+   "light"
+  ]
+ },
  "code-yaml": {
   "size": "1300,700",
   "themes": [

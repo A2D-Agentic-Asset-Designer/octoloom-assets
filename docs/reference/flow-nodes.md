@@ -150,9 +150,16 @@ An LLM loop that may call the actions you list (MCP tools or A2A agents) up to m
 
 ## Orchestrator
 
+<div class="grid" markdown>
+
+![card-orchestrator](../assets/ui/card-orchestrator-light.webp#only-light){ loading=lazy }
+![card-orchestrator](../assets/ui/card-orchestrator-dark.webp#only-dark){ loading=lazy }
+
 Like a subagent, but meant to coordinate several agents and tools in one step, usually following numbered system instructions.
 
 **When to use it:** Two or more agents or tools must be combined and the order can vary.
+
+</div>
 
 **Examples and details:**
 
