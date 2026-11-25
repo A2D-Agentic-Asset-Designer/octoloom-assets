@@ -8,46 +8,101 @@
   "controls": [
    {
     "n": 1,
-    "title": "",
-    "text": "Open folder…"
+    "title": "Collapse Quick Actions",
+    "text": "Quick Actions"
    },
    {
     "n": 2,
     "title": "",
-    "text": "Projects & Deploy"
+    "text": "Open folder…"
    },
    {
     "n": 3,
     "title": "",
-    "text": "Setup & Connect"
+    "text": "Projects & Deploy"
    },
    {
     "n": 4,
-    "title": "Open the Getting started tutorial on GitHub",
-    "text": "Getting started"
+    "title": "",
+    "text": "Setup & Connect"
    },
    {
     "n": 5,
-    "title": "Open the list of template tutorials on GitHub",
-    "text": "All template tutorials"
-   },
-   {
-    "n": 6,
-    "title": "Open the Octoloom documentation site (octoloom.a2d-ai.com): every view, button and component with screenshots",
-    "text": "Documentation"
-   },
-   {
-    "n": 7,
-    "title": "Open the folder in this window",
-    "text": "Open folder"
-   },
-   {
-    "n": 8,
     "title": "Open the coverage map: policies, governance, authentication and where the assets of every agent network come from",
     "text": "Coverage map"
    },
    {
+    "n": 6,
+    "title": "Collapse Quick Start",
+    "text": "Quick Start"
+   },
+   {
+    "n": 7,
+    "title": "Open the Beginner onboarding: 9 steps",
+    "text": "Beginner9 steps · ~30 minPick a fully mo"
+   },
+   {
+    "n": 8,
+    "title": "Agent Fabric is connected",
+    "text": "Agent Fabric"
+   },
+   {
     "n": 9,
+    "title": "Open the Advanced onboarding: 9 steps",
+    "text": "Advanced9 steps · ~45 minConnect A²D, bu"
+   },
+   {
+    "n": 10,
+    "title": "A²D is connected",
+    "text": "A²D"
+   },
+   {
+    "n": 11,
+    "title": "Open the Expert onboarding: 10 steps",
+    "text": "Expert10 steps · ~60 minConnect A²D and "
+   },
+   {
+    "n": 12,
+    "title": "Needs P4A: the onboarding shows how to connect it",
+    "text": "P4A"
+   },
+   {
+    "n": 13,
+    "title": "Collapse Tutorials",
+    "text": "Tutorials"
+   },
+   {
+    "n": 14,
+    "title": "Open the Getting started tutorial on GitHub",
+    "text": "Getting started"
+   },
+   {
+    "n": 15,
+    "title": "Open the list of template tutorials on GitHub",
+    "text": "All template tutorials"
+   },
+   {
+    "n": 16,
+    "title": "Open the Octoloom documentation site (octoloom.a2d-ai.com): every view, button and component with screenshots",
+    "text": "Documentation"
+   },
+   {
+    "n": 17,
+    "title": "Collapse Recently built",
+    "text": "Recently built"
+   },
+   {
+    "n": 18,
+    "title": "Open the folder in this window",
+    "text": "Open folder"
+   },
+   {
+    "n": 19,
+    "title": "Collapse Your statistics",
+    "text": "Your statistics"
+   },
+   {
+    "n": 20,
     "title": "Explain anything: click, then click any object (the guided tour starts from here too). Drag to move; double-click to reset its place",
     "text": ""
    }
@@ -228,16 +283,71 @@
    },
    {
     "n": 3,
-    "title": "",
-    "text": "Cancel"
+    "title": "Governed, secured and IDMC networks",
+    "text": "Expert 12"
    },
    {
     "n": 4,
     "title": "",
-    "text": "Create from template"
+    "text": "Data management 1"
    },
    {
     "n": 5,
+    "title": "",
+    "text": "Field service & utilities 1"
+   },
+   {
+    "n": 6,
+    "title": "",
+    "text": "Finance & insurance 4"
+   },
+   {
+    "n": 7,
+    "title": "",
+    "text": "IT 2"
+   },
+   {
+    "n": 8,
+    "title": "",
+    "text": "Marketing 1"
+   },
+   {
+    "n": 9,
+    "title": "",
+    "text": "Retail & supply chain 3"
+   },
+   {
+    "n": 10,
+    "title": "An OpenAI API key (or an OpenAI-compatible LLM gateway)",
+    "text": "LLM key 12"
+   },
+   {
+    "n": 11,
+    "title": "An Informatica IDMC org",
+    "text": "Informatica IDMC 1"
+   },
+   {
+    "n": 12,
+    "title": "",
+    "text": "≤ 20 min 8"
+   },
+   {
+    "n": 13,
+    "title": "",
+    "text": "30 min + 4"
+   },
+   {
+    "n": 14,
+    "title": "",
+    "text": "Cancel"
+   },
+   {
+    "n": 15,
+    "title": "",
+    "text": "Create from template"
+   },
+   {
+    "n": 16,
     "title": "Explain anything: click, then click any object (the guided tour starts from here too). Drag to move; double-click to reset its place",
     "text": ""
    }
@@ -593,26 +703,31 @@
    },
    {
     "n": 5,
-    "title": "Connect",
-    "text": "Connect"
+    "title": "Connect to P4A",
+    "text": ""
    },
    {
     "n": 6,
-    "title": "Re-check",
+    "title": "Connect to Headless IDMC",
     "text": ""
    },
    {
     "n": 7,
+    "title": "Re-check",
+    "text": ""
+   },
+   {
+    "n": 8,
     "title": "Follow the VS Code color theme",
     "text": "Auto"
    },
    {
-    "n": 8,
+    "n": 9,
     "title": "Light mode for all Octoloom views",
     "text": "Light"
    },
    {
-    "n": 9,
+    "n": 10,
     "title": "Dark mode for all Octoloom views",
     "text": "Dark"
    }

@@ -5,7 +5,7 @@ site_url: https://a2d-agentic-asset-designer.github.io/octoloom-assets/
 repo_url: https://github.com/A2D-Agentic-Asset-Designer/octoloom-assets
 repo_name: octoloom-assets
 edit_uri: ""
-copyright: 'Octoloom for Agent Fabric 0.9.28 · <a href="https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom">VS Code Marketplace</a>'
+copyright: 'Octoloom for Agent Fabric 0.9.29 · <a href="https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom">VS Code Marketplace</a>'
 theme:
   name: material
   custom_dir: docs-src/overrides
@@ -47,8 +47,8 @@ extra_javascript:
   - assets/usage.js
   - assets/catalog.js
 extra:
-  version: "0.9.28"
-  installs: "143"
+  version: "0.9.29"
+  installs: "145"
   marketplace: https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom
   social:
     - icon: material/microsoft-visual-studio-code

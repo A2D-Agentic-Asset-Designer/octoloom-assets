@@ -17,9 +17,20 @@
 |---|---|---|
 | <span class="ol-n">1</span> | **Blank** | An empty network |
 | <span class="ol-n">2</span> | **Use cases** | Business scenarios |
-| <span class="ol-n">3</span> | **Cancel** | Close without changes |
-| <span class="ol-n">4</span> | **Create from template** | Create the project |
-| <span class="ol-n">5</span> | **Explain anything** | Explain anything: click, then click any object (the guided tour starts from here too). Drag to move; double-click to reset its place |
+| <span class="ol-n">3</span> | **Expert 12** | Governed, secured and IDMC networks |
+| <span class="ol-n">4</span> | **Data management 1** |  |
+| <span class="ol-n">5</span> | **Field service & utilities 1** |  |
+| <span class="ol-n">6</span> | **Finance & insurance 4** |  |
+| <span class="ol-n">7</span> | **IT 2** |  |
+| <span class="ol-n">8</span> | **Marketing 1** |  |
+| <span class="ol-n">9</span> | **Retail & supply chain 3** |  |
+| <span class="ol-n">10</span> | **LLM key 12** | An OpenAI API key (or an OpenAI-compatible LLM gateway) |
+| <span class="ol-n">11</span> | **Informatica IDMC 1** | An Informatica IDMC org |
+| <span class="ol-n">12</span> | **≤ 20 min 8** |  |
+| <span class="ol-n">13</span> | **30 min + 4** |  |
+| <span class="ol-n">14</span> | **Cancel** | Close without changes |
+| <span class="ol-n">15</span> | **Create from template** | Create the project |
+| <span class="ol-n">16</span> | **Explain anything** | Explain anything: click, then click any object (the guided tour starts from here too). Drag to move; double-click to reset its place |
 
 ## How to use it
 

@@ -17,7 +17,7 @@ Octoloom turns <code>agent-network.yaml</code> and AgentScript <code>.agent</cod
 deploys them with the Anypoint CLI and lets you chat with the deployed broker and trace every call. Meet Loomi, the octopus who weaves your agents together.</p>
 
 <div class="ol-stats">
-<a class="ol-stat" href="https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom"><b class="ol-installs" data-fallback="143">143</b><span>Marketplace installs</span></a>
+<a class="ol-stat" href="https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom"><b class="ol-installs" data-fallback="145">145</b><span>Marketplace installs</span></a>
 <a class="ol-stat" href="https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom&ssr=false#review-details"><b><span class="ol-rating">5.0</span> ★</b><span><span class="ol-ratings">3</span> ratings</span></a>
 <div class="ol-stat"><b class="ol-version">0.9.28</b><span>Latest version</span></div>
 <a class="ol-stat" href="catalog/"><b>43</b><span>Templates (20 v1 · 23 v2)</span></a>
@@ -102,7 +102,7 @@ deploys them with the Anypoint CLI and lets you chat with the deployed broker an
 
     ---
 
-    Search **Octoloom** in the Extensions view, or open the Marketplace page. Version 0.9.28, 143 installs.
+    Search **Octoloom** in the Extensions view, or open the Marketplace page. Version 0.9.28, 145 installs.
 
 -   :material-rocket-launch: **[Getting started](getting-started.md)**
 
@@ -224,7 +224,7 @@ deploys them with the Anypoint CLI and lets you chat with the deployed broker an
 
     ---
 
-    See what a deployed broker did for each task: the path it took through its `.agent` graph, the tools and LLMs it called, what failed and why. Read-only, from Anypoint logs, task state and traces. Export a whole task as JSON for Splunk or Datadog.
+    See what a deployed broker did for each task: the path it took through its `.agent` graph, the tools and LLMs it called, what failed and why. Read-only, from Anypoint logs, task state and traces. Also for **Run locally**, read from the Docker logs of the local run. Export a whole task as JSON for Splunk or Datadog.
 -   **Build, publish, deploy**
 
     ---

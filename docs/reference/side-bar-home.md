@@ -12,15 +12,26 @@
 
 | # | Control | What it does |
 |---|---|---|
-| <span class="ol-n">1</span> | **Open folder…** | Open the project folder |
-| <span class="ol-n">2</span> | **Projects & Deploy** | The projects list with status lights |
-| <span class="ol-n">3</span> | **Setup & Connect** | Connect Anypoint, A²D and IDMC |
-| <span class="ol-n">4</span> | **Getting started** | Open the Getting started tutorial on GitHub |
-| <span class="ol-n">5</span> | **All template tutorials** | Open the list of template tutorials on GitHub |
-| <span class="ol-n">6</span> | **Open the Octoloom documentation site** | Open the Octoloom documentation site (octoloom.a2d-ai.com): every view, button and component with screenshots |
-| <span class="ol-n">7</span> | **Open folder** | Open the folder in this window |
-| <span class="ol-n">8</span> | **Open the coverage map** | Open the coverage map: policies, governance, authentication and where the assets of every agent network come from |
-| <span class="ol-n">9</span> | **Explain anything** | Explain anything: click, then click any object (the guided tour starts from here too). Drag to move; double-click to reset its place |
+| <span class="ol-n">1</span> | **Quick Actions** | Collapse Quick Actions |
+| <span class="ol-n">2</span> | **Open folder…** | Open the project folder |
+| <span class="ol-n">3</span> | **Projects & Deploy** | The projects list with status lights |
+| <span class="ol-n">4</span> | **Setup & Connect** | Connect Anypoint, A²D and IDMC |
+| <span class="ol-n">5</span> | **Open the coverage map** | Open the coverage map: policies, governance, authentication and where the assets of every agent network come from |
+| <span class="ol-n">6</span> | **Quick Start** | Collapse Quick Start |
+| <span class="ol-n">7</span> | **Open the Beginner onboarding** | Open the Beginner onboarding: 9 steps |
+| <span class="ol-n">8</span> | **Agent Fabric** | Agent Fabric is connected |
+| <span class="ol-n">9</span> | **Open the Advanced onboarding** | Open the Advanced onboarding: 9 steps |
+| <span class="ol-n">10</span> | **A²D** | A²D is connected |
+| <span class="ol-n">11</span> | **Open the Expert onboarding** | Open the Expert onboarding: 10 steps |
+| <span class="ol-n">12</span> | **Needs P4A** | Needs P4A: the onboarding shows how to connect it |
+| <span class="ol-n">13</span> | **Tutorials** | Collapse Tutorials |
+| <span class="ol-n">14</span> | **Getting started** | Open the Getting started tutorial on GitHub |
+| <span class="ol-n">15</span> | **All template tutorials** | Open the list of template tutorials on GitHub |
+| <span class="ol-n">16</span> | **Open the Octoloom documentation site** | Open the Octoloom documentation site (octoloom.a2d-ai.com): every view, button and component with screenshots |
+| <span class="ol-n">17</span> | **Recently built** | Collapse Recently built |
+| <span class="ol-n">18</span> | **Open folder** | Open the folder in this window |
+| <span class="ol-n">19</span> | **Your statistics** | Collapse Your statistics |
+| <span class="ol-n">20</span> | **Explain anything** | Explain anything: click, then click any object (the guided tour starts from here too). Drag to move; double-click to reset its place |
 
 ## Setup & Connect
 

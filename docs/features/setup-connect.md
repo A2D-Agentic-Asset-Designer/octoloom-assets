@@ -19,11 +19,12 @@
 | <span class="ol-n">2</span> | **Select environment** | Pick the Anypoint environment |
 | <span class="ol-n">3</span> | **Disconnect from Agent Fabric** | Sign out of Anypoint |
 | <span class="ol-n">4</span> | **Disconnect from A²D** | Remove the A²D API key |
-| <span class="ol-n">5</span> | **Connect** | Connect with these settings |
-| <span class="ol-n">6</span> | **Re-check** | Run the checks again |
-| <span class="ol-n">7</span> | **Auto** | Follow the VS Code color theme |
-| <span class="ol-n">8</span> | **Light** | Light mode for all Octoloom views |
-| <span class="ol-n">9</span> | **Dark** | Dark mode for all Octoloom views |
+| <span class="ol-n">5</span> | **Connect to P4A** |  |
+| <span class="ol-n">6</span> | **Connect to Headless IDMC** |  |
+| <span class="ol-n">7</span> | **Re-check** | Run the checks again |
+| <span class="ol-n">8</span> | **Auto** | Follow the VS Code color theme |
+| <span class="ol-n">9</span> | **Light** | Light mode for all Octoloom views |
+| <span class="ol-n">10</span> | **Dark** | Dark mode for all Octoloom views |
 
 ## How to use it
 

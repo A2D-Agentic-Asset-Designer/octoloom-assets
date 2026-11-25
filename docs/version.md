@@ -12,7 +12,7 @@ Everyone who suggested or built a change. A change counts for the person who fil
 
 ## 0.9.29
 
-<span class="ol-ver-meta">in development</span>
+<span class="ol-ver-meta">2026-11-25 · released</span>
 
 - **Projects & Deploy: Tracer button on the Running locally box**. While a project runs locally, its **Running locally** box has the same Agent Network Tracer button as a running deployment. It opens the chat on **Local** with the Tracer of the local run open, read from the local Docker logs. The deployed box is unchanged.
 
@@ -52,15 +52,15 @@ Everyone who suggested or built a change. A change counts for the person who fil
 
 - **Coverage map: Governance button needs Agent Fabric**. The Governance button of a picked network is disabled with the tooltip *Connect to Agent Fabric to use governance* while nobody is connected to Agent Fabric, and turns on again when you connect.
 
-    <span class="ol-by">:material-account-heart-outline: [Tommaso Bolis](https://github.com/tommasobolis), [Amir Khan](https://github.com/amirkhan-ak-sf), [George Jeffcock](https://github.com/jeffcock)</span>
+    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf), [Tommaso Bolis](https://github.com/tommasobolis), [George Jeffcock](https://github.com/jeffcock)</span>
 
 - **Projects & Deploy: governance buttons need Agent Fabric**. The shield buttons (Governance report in the Projects title bar and Governance on each project card) are disabled while nobody is connected to Agent Fabric.
 
-    <span class="ol-by">:material-account-heart-outline: [Tommaso Bolis](https://github.com/tommasobolis), [Amir Khan](https://github.com/amirkhan-ak-sf), [George Jeffcock](https://github.com/jeffcock)</span>
+    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf), [Tommaso Bolis](https://github.com/tommasobolis), [George Jeffcock](https://github.com/jeffcock)</span>
 
 - **Governance needs the connection to Agent Fabric**. Governance is only available while you are connected to Agent Fabric (Setup & Connect). Without the connection the governance commands are disabled; opening Governance anyway says *Governance needs a connection to Agent Fabric.* and offers **Connect**, and an open Governance panel shows that notice with a **Connect** button while Validate, Validate all and Fix are disabled (tooltip *Connect to Agent Fabric to use governance*). Connecting enables everything again without reloading.
 
-    <span class="ol-by">:material-account-heart-outline: [Tommaso Bolis](https://github.com/tommasobolis), [Amir Khan](https://github.com/amirkhan-ak-sf), [George Jeffcock](https://github.com/jeffcock)</span>
+    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf), [Tommaso Bolis](https://github.com/tommasobolis), [George Jeffcock](https://github.com/jeffcock)</span>
 
 - **Home: the Quick Start intro says "short videos"**. The steps show recorded videos since the Quick Start videos; the intro still said pictures.
 
@@ -72,7 +72,7 @@ Everyone who suggested or built a change. A change counts for the person who fil
 
 - **Broker: see the connection of each action**. On the AgentScript flow canvas the tooltip of an action chip names the connection it goes through (for example *reserve_seats - MCP tool on event_ticketing_booking_mcp_connection*). In the inspector the connection name under an action is a link: it opens the network canvas of agent-network.yaml with that connection selected, so you can follow an action to its MCP server or agent without reading the YAML.
 
-    <span class="ol-by">:material-account-heart-outline: [Tommaso Bolis](https://github.com/tommasobolis), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf), [Tommaso Bolis](https://github.com/tommasobolis)</span>
 
 - **Broker canvas: agent actions get their own section**. A card on the AgentScript flow canvas showed every action under one Actions section with the MCP icon, also the actions that send an A2A message to an agent. Now MCP tools are listed under **MCP actions** (MCP icon and colour, as before) and agents under **Agent actions** (agent icon and colour), each only when the card has such actions; a card without actions keeps the single empty Actions section. Folded sections stay folded. Actions that are not defined stay with the MCP actions and keep their error mark. The Tracer graph is unchanged.
 
