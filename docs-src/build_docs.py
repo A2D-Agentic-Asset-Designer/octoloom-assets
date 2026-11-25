@@ -784,6 +784,13 @@ def ref_pages():
         if os.path.exists(os.path.join(REPO, 'telemetry.json')):
             shutil.copyfile(os.path.join(REPO, 'telemetry.json'), os.path.join(DOCS, 'assets', 'telemetry.json'))
             body = body.replace('](telemetry.json)', '](../assets/telemetry.json)')
+        if rel == 'requirements.md' and '### Tooling versions' in body:
+            # Tooling versions get their own page (octoloom#379); Requirements links to it.
+            body, tv = body.split('### Tooling versions', 1)
+            tv = tv.strip().split('\n### ', 1)
+            if len(tv) > 1: body += '### ' + tv[1]
+            body = body.rstrip() + '\n\nThe minimum, tested and installed versions of each tool are on [Tooling versions](tooling-versions.md).'
+            write('about/tooling-versions.md', '# Tooling versions\n\n' + tv[0].strip() + '\n')
         write(f'about/{rel}', f'# {title}\n\n' + body)
 
 
@@ -841,7 +848,7 @@ def main():
     # Public usage (octoloom#334): aggregates written by the usage Action (#333), and what telemetry collects.
     write('usage.md', usage_page.usage_page())
     write('data-we-collect.md', usage_page.data_page(REPO))
-    nav.append(('About', [('Requirements', 'about/requirements.md'), ('Privacy and security', 'about/privacy.md'),
+    nav.append(('About', [('Requirements', 'about/requirements.md'), ('Tooling versions', 'about/tooling-versions.md'), ('Privacy and security', 'about/privacy.md'),
                           ('Usage', 'usage.md'), ('Data we collect', 'data-we-collect.md'),
                           ('Known limitations', 'about/limitations.md'), ('Meet the Octoloomies', 'team.md')]))
     write('version.md', changelog_page.page(REPO, MK.get('version') or version))

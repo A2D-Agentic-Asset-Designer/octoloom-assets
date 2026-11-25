@@ -51,7 +51,7 @@
 
 The first view in the Octoloom side bar, above Projects & Deploy and Asset Palette. It holds one-time setup, most important first. The line on top shows what is left, for example *2 of 3 connected · tools ready*:
 - **Connections**: Agent Fabric (business group and environment pickers), A²D and P4A. Connect or disconnect with one click.
-- **Tooling**: Node.js, Java, anypoint-cli-v4 and the agent-network plugin, with one-click install or repair. The Octoloom row shows the installed version and *<version> available* when the Marketplace has a newer one.
+- **Tooling**: Node.js, Java, anypoint-cli-v4 and the agent-network plugin, with one-click install or repair. Each row knows its minimum and tested version (see [Tooling versions](#tooling-versions)): below the minimum it warns, for example *needs 1.5.0 or newer*, and **Install tested versions** installs the pinned versions after a confirmation; newer than tested shows *untested*. Nothing is blocked. The Octoloom row shows the installed version and *<version> available* when the Marketplace has a newer one.
 - **Appearance**: auto, light or dark for every Octoloom view.
   When the forced mode doesn't match VS Code (for example Octoloom dark in a light VS Code), a hint says so, with **Follow VS Code**.
 

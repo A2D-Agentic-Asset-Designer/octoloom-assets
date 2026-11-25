@@ -2,7 +2,7 @@
 
 # Version history
 
-<p class="lede">Every Octoloom release from the very first, newest first: what changed, in plain words, and who made it happen. <b>60 versions</b>, <b>222 changes</b>.</p>
+<p class="lede">Every Octoloom release from the very first, newest first: what changed, in plain words, and who made it happen. <b>60 versions</b>, <b>230 changes</b>.</p>
 
 ## Contributors
 
@@ -13,6 +13,38 @@ Everyone who suggested or built a change. A change counts for the person who fil
 ## 0.9.29
 
 <span class="ol-ver-meta">in development</span>
+
+- **Projects & Deploy: Tracer button on the Running locally box**. While a project runs locally, its **Running locally** box has the same Agent Network Tracer button as a running deployment. It opens the chat on **Local** with the Tracer of the local run open, read from the local Docker logs. The deployed box is unchanged.
+
+    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+
+- **Chat: Tracer icon under local replies**. A reply from a broker of a running local run now has the **Open this turn's task in the Agent Network Tracer** icon next to Copy. It opens the reply's task in the Tracer, read from the Docker logs of the local run. Local replies still have no trace (spans) icon, because the local agent graph runs with tracing off. Deployed replies are unchanged.
+
+    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+
+- **Tooling: plugin 1.6.1 is the tested version**. Plugin 1.6.1 passed the 10-template test (build, publish, deploy and chat), so Setup & Connect → Tooling shows 1.6.1 as tested and **Install tested versions** installs plugin 1.6.1, with Node.js 22.23.4 when yours is older (plugin 1.6 needs it). The minimum stays 1.5.0 and existing setups are not changed. The README and the new *Tooling versions* page of the documentation site list the versions. Run locally with an LLM still does not work with 1.6.1 (see Known limitations).
+
+    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+
+- **Agent Network Tracer for local runs**. While **Run locally** is running, switching the chat to **Local** shows the Agent Network Tracer under it, read from the Docker logs of the local agent graph (`docker compose logs`, read-only; the files in `.deployment/local/` are not changed). The header says *Local · Docker / localhost:<port> / <broker>*; the Tasks list, the path on the broker graph, Tree, List, Message, Metadata, Log and JSON work as for a deployment, with no Anypoint call. Story and the spans are not available locally (the local agent graph keeps its state in memory and runs with tracing off), and Status says *Not available for local runs*. The deployed Tracer is unchanged.
+
+    <span class="ol-by">:material-account-heart-outline: [George Jeffcock](https://github.com/jeffcock), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+
+- **Tooling: minimum and tested versions**. Octoloom now knows the oldest and the tested version of the Agent Fabric CLI plugin (1.5.0 / 1.5.0), anypoint-cli-v4 (1.6.0 / 1.6.28), Node.js (22.12 / 22.x and 24.x; plugin 1.6 needs 22.23.4) and Java (17). In **Setup & Connect → Tooling** a tool below its minimum shows a warning such as *needs 1.5.0 or newer*, a tool newer than tested shows *untested*, and **Install tested versions** installs the pinned versions after a confirmation that lists them and says that the plugin install also changes your own anypoint-cli-v4 setup. New installs and repairs always use the pinned versions (no more `latest`). Nothing is blocked: a failed build, publish, deploy, run-local or governance command names an outdated or untested plugin or CLI as the likely cause. The versions are listed in the README and on the documentation site.
+
+    <span class="ol-by">:material-account-heart-outline: [George Jeffcock](https://github.com/jeffcock), [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+
+- **Open from Exchange: no more "The editor could not be opened"**. When the window had no folder (or one folder without a workspace file), adding the downloaded network restarted the extension host and the canvas tab showed VS Code's error page. The canvas (and for v2 the broker flow) now opens after the restart, the same way New Project already does.
+
+    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+
+- **New Project: template filters**. Chips above the template list filter by **Level** (Beginner = fully mocked use cases, Advanced = other use cases, Expert = governed, secured and IDMC), **Industry**, **Needs** (nothing else, an LLM key, Informatica IDMC) and **Time**, with live counts, **Clear filters** and an empty state. The Quick Start journeys open New Project with their level set (removable). The template catalog (`index.json`) gains the optional `level`, `industry`, `minutes` and `needs` fields; older catalogs without them get the same values derived from `mocked`, `category` and `requires`.
+
+    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
+
+- **Telemetry: honest deletion wording**. The README *Privacy and security* section no longer offers deletion on request: on the current PostHog plan the events of one machine can't be deleted early. It now says raw events are deleted automatically after 1 year, that turning telemetry off stops every further event at once, and that no IP address or person profile is stored.
+
+    <span class="ol-by">:material-account-heart-outline: [Amir Khan](https://github.com/amirkhan-ak-sf)</span>
 
 - **Documentation site on the Marketplace**. The README starts its top links with **Documentation** and names [octoloom.a2d-ai.com](https://octoloom.a2d-ai.com/) under the intro, and the Marketplace **Homepage** link (Learn) now opens the documentation site.
 

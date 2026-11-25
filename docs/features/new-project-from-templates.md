@@ -51,6 +51,8 @@
 
 ## In detail
 
+**Filters (#322).** Above the template list, chips filter by **Level** (Beginner = fully mocked use cases, no LLM key; Advanced = the other use cases; Expert = governed, secured and IDMC networks), **Industry**, **Needs** (nothing else, an LLM key, Informatica IDMC) and **Time** (about 10, 20 or 30+ minutes). Each chip shows how many templates it leaves; **Clear filters** resets them, and the choice is kept while the dialog is open. The Beginner, Advanced and Expert Quick Start journeys open New Project with their level already set.
+
 **New Project** opens a dialog with **37 ready-made examples**: 15 business use cases, each as a plain network and as a **governed** variant with built-in Agent Fabric policies (rate limiting, PII detection, schema validation, header injection, prompt decoration). Five of them also come as a **secured** variant: every agent and MCP connection authenticates (Basic or Client ID enforcement) with `exchange.json` variables (passwords and client secrets are secret variables, asked at deploy time), the LLM URL is a variable (`llmGateway.url`, your LLM gateway or api.openai.com), the broker is rate limited and v2 upstream calls are logged with the outbound Message Logging policy.
 
 | | Use cases | Technical (governed / secured) |
@@ -70,7 +72,7 @@ The same text as the in-app **Explain** button (click the floating **i**, then t
 
 ### New project
 
-Creates an agent network project: pick the style (Probabilistic or Deterministic), a template and a name, and Octoloom writes the files. An empty network has no broker and no variables; turn on Add a starter broker for one broker to start from. Initialise a Git repository runs git init and a first commit, so every later change can be reviewed and undone with Git.
+Creates an agent network project: pick the style (Probabilistic or Deterministic), a template and a name, and Octoloom writes the files. An empty network has no broker and no variables; turn on Add a starter broker for one broker to start from. Above the templates, filter chips narrow the list: Level (Beginner: fully mocked use cases, no LLM key; Advanced: the other use cases; Expert: governed, secured and IDMC networks), Industry, Needs (nothing else, an LLM key, Informatica IDMC) and Time; each chip shows how many templates it leaves, and Clear filters resets them. A Quick Start journey opens New Project with its level already set; click the chip to remove it. Initialise a Git repository runs git init and a first commit, so every later change can be reviewed and undone with Git.
 
 **When to use it:** Starting a network from scratch or from a template.
 
@@ -85,6 +87,8 @@ Creates an agent network project: pick the style (Probabilistic or Deterministic
 - An empty network, then add brokers from the palette
 - Add a starter broker: the old blank project with one broker
 - Filter the templates by kind: use case, technical, governed, secured
+- Level Beginner + Industry Travel & hospitality: the fully mocked Hotel Concierge or Event Ticketing
+- Needs: Nothing else lists the templates that run with only an Anypoint org
 - The preview shows the network the template creates
 - Each template README has Deploy in 3 steps (the variables to set and the secrets you are asked for) and Try it: prompts to paste into the chat, with what you should see
 - Two technical templates need Informatica IDMC (IDMC Customer Data Steward, IDMC Data Trust): their README lists the IDMC setup step by step (pod, MCP servers, MCP client) before the deploy steps

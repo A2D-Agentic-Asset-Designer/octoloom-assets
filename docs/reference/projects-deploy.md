@@ -179,7 +179,7 @@ Deploys the project with the Anypoint CLI. Pick a gateway from the chips (the ga
 - "Error while trying to apply policies" (3025 on every broker): the CLI applies the policies to the API Manager instance of each connection, so one bad instance or policy fails them all. Fix that policy or instance
 - A deploy that seems to hang has almost always created the app: open its log in Runtime Manager before you retry
 - 403 on publish or deploy is a missing role or scope (for example Exchange Contributor or Runtime Manager deploy rights), not a project problem: ask your Anypoint admin
-- "Converting circular structure to JSON" hides the real CLI error: a flag the installed agent-network plugin does not support. Update the plugin (anypoint-cli-v4 plugins:install) or turn the switch that adds the flag off
+- "Converting circular structure to JSON" hides the real CLI error: a flag the installed agent-network plugin does not support. Install the tested plugin version in Setup & Connect → Tooling or turn the switch that adds the flag off
 
 <figure markdown>
 ![The Deploy form: gateways, target space and switches](../assets/ui/deploy-form-light.webp#only-light){ loading=lazy }

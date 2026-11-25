@@ -198,7 +198,7 @@ The picked network: its policy coverage, the gaps worst first, the rulesets of t
 
 ## New project
 
-Creates an agent network project: pick the style (Probabilistic or Deterministic), a template and a name, and Octoloom writes the files. An empty network has no broker and no variables; turn on Add a starter broker for one broker to start from. Initialise a Git repository runs git init and a first commit, so every later change can be reviewed and undone with Git.
+Creates an agent network project: pick the style (Probabilistic or Deterministic), a template and a name, and Octoloom writes the files. An empty network has no broker and no variables; turn on Add a starter broker for one broker to start from. Above the templates, filter chips narrow the list: Level (Beginner: fully mocked use cases, no LLM key; Advanced: the other use cases; Expert: governed, secured and IDMC networks), Industry, Needs (nothing else, an LLM key, Informatica IDMC) and Time; each chip shows how many templates it leaves, and Clear filters resets them. A Quick Start journey opens New Project with its level already set; click the chip to remove it. Initialise a Git repository runs git init and a first commit, so every later change can be reviewed and undone with Git.
 
 **When to use it:** Starting a network from scratch or from a template.
 
@@ -207,6 +207,8 @@ Creates an agent network project: pick the style (Probabilistic or Deterministic
 - An empty network, then add brokers from the palette
 - Add a starter broker: the old blank project with one broker
 - Filter the templates by kind: use case, technical, governed, secured
+- Level Beginner + Industry Travel & hospitality: the fully mocked Hotel Concierge or Event Ticketing
+- Needs: Nothing else lists the templates that run with only an Anypoint org
 - The preview shows the network the template creates
 - Each template README has Deploy in 3 steps (the variables to set and the secrets you are asked for) and Try it: prompts to paste into the chat, with what you should see
 - Two technical templates need Informatica IDMC (IDMC Customer Data Steward, IDMC Data Trust): their README lists the IDMC setup step by step (pod, MCP servers, MCP client) before the deploy steps

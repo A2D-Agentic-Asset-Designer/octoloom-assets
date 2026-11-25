@@ -48,7 +48,7 @@ extra_javascript:
   - assets/catalog.js
 extra:
   version: "0.9.28"
-  installs: "139"
+  installs: "143"
   marketplace: https://marketplace.visualstudio.com/items?itemName=octoloom.octoloom
   social:
     - icon: material/microsoft-visual-studio-code
@@ -238,6 +238,7 @@ nav:
       - "agent-network-v2-flows": skills/agent-network-v2-flows.md
   - "About":
       - "Requirements": about/requirements.md
+      - "Tooling versions": about/tooling-versions.md
       - "Privacy and security": about/privacy.md
       - "Usage": usage.md
       - "Data we collect": data-we-collect.md

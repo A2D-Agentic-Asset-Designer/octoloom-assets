@@ -119,7 +119,7 @@ Click the chat icon next to a deployed broker URL in the project's deployment bo
 
 #### Trace of a reply
 
-A deployed reply has two icons next to **Copy**. The **trace** icon (a pulse line) shows that reply's distributed trace on the left. The **Tracer** icon opens the reply's task in the Agent Network Tracer. **Network | Trace** above the left column switches between the network and the trace. Opening a task in the Agent Network Tracer's **Tasks** list also shows that task's trace here, so you can walk through older tasks with the waterfall.
+A deployed reply has two icons next to **Copy**. The **trace** icon (a pulse line) shows that reply's distributed trace on the left. The **Tracer** icon opens the reply's task in the Agent Network Tracer. **Network | Trace** above the left column switches between the network and the trace. Opening a task in the Agent Network Tracer's **Tasks** list also shows that task's trace here, so you can walk through older tasks with the waterfall. A reply of a running **local** run has only the **Tracer** icon: it opens the reply's task in the Tracer from the local Docker logs (a local run has no spans, so there is no trace icon).
 
 The **legend** above the waterfall names each colour: Broker, Agent, LLM, MCP, Router, Other and Error (only the kinds in that trace). Click a name to pick your own colour for it; **Reset colours** brings back the defaults. Your colours are kept on this machine only.
 
