@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "refreshed": "2026-11-25T11:50:24.866Z",
+  "refreshed": "2026-11-26T11:39:09.843Z",
   "window": {
     "days": 30,
     "k": 5,
@@ -8,30 +8,45 @@
   },
   "totals": {
     "active": {
-      "day": 1,
-      "week": 1,
-      "month": 1,
-      "quarter": 1
+      "day": 10,
+      "week": 10,
+      "month": 10,
+      "quarter": 10
     },
     "events": {
       "build": 1,
       "validate": 2,
       "publish": 0,
-      "deploy": 10,
-      "governance": 2,
-      "create": 9
+      "deploy": 12,
+      "governance": 4,
+      "create": 12
     }
   },
-  "countries": [],
-  "versions": [],
+  "countries": [
+    {
+      "code": "Other",
+      "machines": 14
+    }
+  ],
+  "versions": [
+    {
+      "version": "0.9.29",
+      "machines": 10
+    }
+  ],
   "platforms": {
-    "os": []
+    "os": [
+      {
+        "os": "mac",
+        "machines": 8
+      }
+    ]
   },
   "features": [
     {
       "id": "Other",
-      "machines": 18,
-      "uses": 24
+      "machines": 27,
+      "uses": 40
     }
   ],
   "templates": [
@@ -39,7 +54,7 @@
       "style": "other",
       "template": "Other",
       "machines": 7,
-      "uses": 9
+      "uses": 12
     }
   ],
   "styles": {
@@ -59,19 +74,19 @@
     "governance": null
   },
   "connections": {
-    "machines": 1,
-    "anypoint": null,
-    "a2d": null,
+    "machines": 10,
+    "anypoint": 5,
+    "a2d": 5,
     "p4a": null,
     "idmc": null
   },
   "trends": [
     {
       "week": "2026-11-23",
-      "active": 1,
+      "active": 10,
       "build": 1,
-      "deploy": 10,
-      "create": 9
+      "deploy": 12,
+      "create": 12
     }
   ],
   "empty": false
