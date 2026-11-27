@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "refreshed": "2026-11-26T11:39:09.843Z",
+  "refreshed": "2026-11-27T11:31:51.219Z",
   "window": {
     "days": 30,
     "k": 5,
@@ -8,21 +8,31 @@
   },
   "totals": {
     "active": {
-      "day": 10,
-      "week": 10,
-      "month": 10,
-      "quarter": 10
+      "day": 14,
+      "week": 19,
+      "month": 19,
+      "quarter": 19
     },
     "events": {
-      "build": 1,
+      "build": 7,
       "validate": 2,
-      "publish": 0,
-      "deploy": 12,
+      "publish": 2,
+      "deploy": 19,
       "governance": 4,
-      "create": 12
+      "create": 13
     }
   },
   "countries": [
+    {
+      "code": "IT",
+      "name": "Italy",
+      "machines": 6
+    },
+    {
+      "code": "US",
+      "name": "United States",
+      "machines": 5
+    },
     {
       "code": "Other",
       "machines": 14
@@ -31,30 +41,40 @@
   "versions": [
     {
       "version": "0.9.29",
-      "machines": 10
+      "machines": 20
     }
   ],
   "platforms": {
     "os": [
       {
         "os": "mac",
-        "machines": 8
+        "machines": 16
       }
     ]
   },
   "features": [
     {
+      "id": "agentNetwork.openChat",
+      "machines": 5,
+      "uses": 6
+    },
+    {
+      "id": "agentNetwork.status",
+      "machines": 5,
+      "uses": 5
+    },
+    {
       "id": "Other",
-      "machines": 27,
-      "uses": 40
+      "machines": 44,
+      "uses": 57
     }
   ],
   "templates": [
     {
       "style": "other",
       "template": "Other",
-      "machines": 7,
-      "uses": 12
+      "machines": 8,
+      "uses": 13
     }
   ],
   "styles": {
@@ -74,19 +94,19 @@
     "governance": null
   },
   "connections": {
-    "machines": 10,
-    "anypoint": 5,
-    "a2d": 5,
-    "p4a": null,
+    "machines": 19,
+    "anypoint": 8,
+    "a2d": 9,
+    "p4a": 6,
     "idmc": null
   },
   "trends": [
     {
       "week": "2026-11-23",
-      "active": 10,
-      "build": 1,
-      "deploy": 12,
-      "create": 12
+      "active": 19,
+      "build": 7,
+      "deploy": 19,
+      "create": 13
     }
   ],
   "empty": false
